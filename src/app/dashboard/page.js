@@ -283,7 +283,7 @@ export default function Homepage() {
       <Navbar search={search} setSearch={setSearch} setShowFilter={setShowFilter} setIsModalOpen={setIsModalOpen} setShowGallery={setShowGallery} />
 
 
-      <div className="py-4">
+      <main className="flex-grow">
         
 
       {selectedAlbum !== null && (
@@ -580,8 +580,9 @@ export default function Homepage() {
             </div>
           </div>
         )}
+        </main>
         <Footer />
       </div>
-    </div>
+    
   );
 }
