@@ -14,7 +14,7 @@ const EventCard = () => {
 
   const handleRedownload = async (title) => {
     try {
-      const response = await fetch("http://localhost:5000/fetch-album-photos", {
+      const response = await fetch("https://cmo-back-livee.onrender.com/fetch-album-photos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ eventName: title }),

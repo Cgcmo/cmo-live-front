@@ -26,19 +26,19 @@ export default function Navbar({ setShowGallery, setGalleryPhotos }) {
   
   useEffect(() => {
     // Fetch Events
-    fetch("http://localhost:5000/get-events")
+    fetch("https://cmo-back-livee.onrender.com/get-events")
       .then(res => res.json())
       .then(data => setEventList(data))
       .catch(err => console.error("Failed to fetch events:", err));
   
     // Fetch Categories (Departments)
-    fetch("http://localhost:5000/departments")
+    fetch("https://cmo-back-livee.onrender.com/departments")
       .then(res => res.json())
       .then(data => setCategoryList(data.map(d => d.name)))  // extract only names
       .catch(err => console.error("Failed to fetch departments:", err));
   
     // Fetch Districts
-    fetch("http://localhost:5000/districts")
+    fetch("https://cmo-back-livee.onrender.com/districts")
       .then(res => res.json())
       .then(data => setDistrictList(data.map(d => d.name)))
       .catch(err => console.error("Failed to fetch districts:", err));
@@ -46,7 +46,7 @@ export default function Navbar({ setShowGallery, setGalleryPhotos }) {
   
 
   useEffect(() => {
-    fetch("http://localhost:5000/search-suggestions")
+    fetch("https://cmo-back-livee.onrender.com/search-suggestions")
       .then(res => res.json())
       .then(data => {
         const combined = [
