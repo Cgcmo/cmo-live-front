@@ -28,7 +28,7 @@ export default function AuthPage() {
 
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/districts")
+    fetch("https://cmo-back-livee.onrender.com/districts")
       .then((res) => res.json())
       .then((data) => setDistricts(data))
       .catch((err) => console.error("Failed to fetch districts:", err));
@@ -54,7 +54,7 @@ export default function AuthPage() {
   }, []);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/record-visit", {
+    fetch("https://cmo-back-livee.onrender.com/record-visit", {
       method: "POST"
     }).catch((err) => console.error("Failed to record visit:", err));
   }, []);
@@ -101,7 +101,7 @@ export default function AuthPage() {
     
 
   try {
-    const res = await fetch("http://127.0.0.1:5000/send-otp", {
+    const res = await fetch("https://cmo-back-livee.onrender.com/send-otp", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ mobile })
@@ -125,7 +125,7 @@ const handleSignIn = async () => {
   if (!/^[6-9]\d{9}$/.test(mobile)) return alert("Invalid mobile number.");
 
   try {
-    const res = await fetch("http://127.0.0.1:5000/client-login", {
+    const res = await fetch("https://cmo-back-livee.onrender.com/client-login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ mobile, password })
@@ -172,14 +172,14 @@ const handleSignIn = async () => {
     const enteredOTP = otp.join("");
   
     try {
-      const otpRes = await fetch("http://127.0.0.1:5000/verify-otp", {
+      const otpRes = await fetch("https://cmo-back-livee.onrender.com/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mobile, otp: enteredOTP })
       });
       
       if (otpRes.ok && showSignup) {
-        const regRes = await fetch("http://127.0.0.1:5000/complete-signup", {
+        const regRes = await fetch("https://cmo-back-livee.onrender.com/complete-signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
