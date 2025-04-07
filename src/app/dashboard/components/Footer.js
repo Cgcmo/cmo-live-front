@@ -165,7 +165,7 @@ const Footer = () => {
     ];
 
     return (
-        <footer className="bg-gray-200 text-black py-8">
+        <footer className="bg-gray-200 text-black mt-8">
             <div className="max-w-[1621px] mx-auto px-6 md:px-16">
 
                 {/* District List */}

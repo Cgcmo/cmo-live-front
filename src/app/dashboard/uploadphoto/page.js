@@ -363,7 +363,7 @@ export default function UploadPhoto() {
                 htmlFor="file-upload"
                 className="flex flex-row items-center justify-center w-full p-4 border border-gray-400 rounded-full cursor-pointer text-gray-600 mt-4 bg-white hover:bg-gray-100"
               >
-                <img src="/up_ph.png" width={22} height={22} alt="Upload Icon" className="mr-2" />
+                <img src="/UP_PH.png" width={22} height={22} alt="Upload Icon" className="mr-2" />
                 <p className="text-sm text-[#170645] font-semibold">Drag An Image Here Or Upload A File</p>
                 <input id="file-upload" type="file" className="hidden" onChange={handleFileChange} />
               </label>
