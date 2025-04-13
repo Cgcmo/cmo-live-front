@@ -8,6 +8,8 @@ import React from 'react';
 import AuthPage from './AuthPage'; // ✅ Correct for default export
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation'; // add at the top
+import { Suspense } from 'react';
+import SearchParamHandler from './SearchParamHandler';
 
 const arc1Images = ['share.png', 'heart.png'];
 const arc2Images = ['download.png', 'smily.png', 'gallery.png'];
@@ -122,6 +124,9 @@ useEffect(() => {
 
   return (
     <>
+     <Suspense fallback={null}>
+      <SearchParamHandler onShowLogin={setShowLoginPage} />
+    </Suspense>
       {showLoginPage ? (
         <AuthPage />
       ) : (
