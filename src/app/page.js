@@ -110,7 +110,7 @@ export default function Home() {
     }
   }, [showLoginPage]);
 
-  const searchParams = useSearchParams();
+
 
 
 
