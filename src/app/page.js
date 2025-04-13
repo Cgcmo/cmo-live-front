@@ -115,13 +115,7 @@ export default function Home() {
 
   const searchParams = useSearchParams();
 
-useEffect(() => {
-  const fromOtpless = searchParams.get("showSignup");
-  if (fromOtpless === "true") {
-    setShowLoginPage(true); // ✅ Show the AuthPage
-    // No need to use `setShowSignup(true)` here, AuthPage will handle it via URL param
-  }
-}, []);
+
 
   return (
     <>
