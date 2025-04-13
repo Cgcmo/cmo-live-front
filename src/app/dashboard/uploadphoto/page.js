@@ -66,7 +66,7 @@ export default function UploadPhoto() {
       let uploadPhotos = [];
 
       if (eventSelect && eventSelect !== "Select Event") {
-        const eventResponse = await fetch("https://cmo-back-livee.onrender.com/fetch-album-photos", {
+        const eventResponse = await fetch("http://127.0.0.1:5000/fetch-album-photos", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           mode: "cors",
@@ -81,7 +81,7 @@ export default function UploadPhoto() {
       }
 
       if (selectedDate) {
-        const dateResponse = await fetch("https://cmo-back-livee.onrender.com/fetch-photos-by-date", {
+        const dateResponse = await fetch("http://127.0.0.1:5000/fetch-photos-by-date", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           mode: "cors",
@@ -99,7 +99,7 @@ export default function UploadPhoto() {
         const reader = new FileReader();
         reader.onloadend = async () => {
           const base64String = reader.result.split(",")[1];
-          const uploadResponse = await fetch("https://cmo-back-livee.onrender.com/search-by-upload", {
+          const uploadResponse = await fetch("http://127.0.0.1:5000/search-by-upload", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ image: base64String }),
@@ -163,7 +163,7 @@ export default function UploadPhoto() {
 
   const handleDownloadC = async () => {
     try {
-      await fetch("https://cmo-back-livee.onrender.com/increment-download-count", {
+      await fetch("http://127.0.0.1:5000/increment-download-count", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
@@ -302,7 +302,7 @@ export default function UploadPhoto() {
   const totalPages = Math.ceil(images.length / imagesPerPage);
 
   useEffect(() => {
-    fetch("https://cmo-back-livee.onrender.com/get-events")
+    fetch("http://127.0.0.1:5000/get-events")
       .then((response) => response.json())
       .then((data) => setEvents(data))
       .catch((error) => console.error("Error fetching events:", error));
@@ -363,7 +363,7 @@ export default function UploadPhoto() {
                 htmlFor="file-upload"
                 className="flex flex-row items-center justify-center w-full p-4 border border-gray-400 rounded-full cursor-pointer text-gray-600 mt-4 bg-white hover:bg-gray-100"
               >
-                <img src="/UP_PH.png" width={22} height={22} alt="Upload Icon" className="mr-2" />
+                <img src="/up_ph.png" width={22} height={22} alt="Upload Icon" className="mr-2" />
                 <p className="text-sm text-[#170645] font-semibold">Drag An Image Here Or Upload A File</p>
                 <input id="file-upload" type="file" className="hidden" onChange={handleFileChange} />
               </label>

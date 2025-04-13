@@ -16,7 +16,7 @@ const AllPhotos = ({ isSelectAll, setSelectedImages: updateSelectedImages }) => 
   useEffect(() => {
     const fetchPhotos = async () => {
       try {
-        const response = await fetch("https://cmo-back-livee.onrender.com/fetch-all-photos");
+        const response = await fetch("http://127.0.0.1:5000/fetch-all-photos");
         const data = await response.json();
         const imageUrls = data.map((item) => {
           const img = item.image;

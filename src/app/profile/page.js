@@ -5,9 +5,9 @@ import { Menu, X, ChevronDown, BarChart2, Users, Image, User } from 'lucide-reac
 import './ToggleSwitch.css';
 import CustomBarChart from './CustomBarChart';
 import ModalPopup from "./ModalPopup";
-import Profile from "./Profile"; 
+import Profile from "./Profile";
 import EventCard from "./EventCard";
-import AllPhotos from "./AllPhotos"; 
+import AllPhotos from "./AllPhotos";
 import Navbar from '@/app/dashboard/components/Navbar';
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -26,29 +26,29 @@ function App() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [otpUser, setOtpUser] = useState(null);
-  
 
-  const [users, setUsers] = useState([ ]);
+
+  const [users, setUsers] = useState([]);
   useEffect(() => {
     const checkAuth = () => {
       const storedUser = localStorage.getItem("otpUser");
-  
+
       if (status === "loading") return;
-  
+
       if (!storedUser && status === "unauthenticated") {
         router.replace("/"); // 🔐 Redirect to home/login
       } else {
         setOtpUser(JSON.parse(storedUser)); // ✅ Allow access
       }
     };
-  
+
     checkAuth(); // Run immediately
     window.addEventListener("storage", checkAuth); // Handle logout from other tabs
-  
+
     return () => window.removeEventListener("storage", checkAuth);
   }, [status, router]);
-  
-  
+
+
   const eventNames = ["Rajyotsava", "Mahtarivandan Yojna", "Mor Awas Mor Adhikar"];
 
   const handleDownload = () => {
@@ -56,7 +56,7 @@ function App() {
       alert("No images selected for download.");
       return;
     }
-  
+
     selectedImages.forEach((image) => {
       const link = document.createElement("a");
       link.href = image; // Assuming image URLs are valid direct links
@@ -65,10 +65,10 @@ function App() {
       link.click();
       document.body.removeChild(link);
     });
-  
+
     alert(`Downloading ${selectedImages.length} images.`);
   };
-  
+
   const Switch = ({ checked, onChange }) => {
     return (
       <label className="switch">
@@ -81,8 +81,8 @@ function App() {
   const handleSelectAll = (event) => {
     setIsSelectAll(event.target.checked);
   };
-  
-  
+
+
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(search.toLowerCase()) ||
     user.district.toLowerCase().includes(search.toLowerCase()) ||
@@ -96,7 +96,7 @@ function App() {
     { label: "Total Image", count: "0", image: "/timage.png", bg: "#90C0F6" },
     { label: "Total Event", count: "0", image: "/tevent.png", bg: "#F6CB90" },
   ]);
-  
+
 
   const toggleStatus = (id) => {
     setUsers((users) =>
@@ -109,17 +109,17 @@ function App() {
   const fetchAllStats = async () => {
     try {
       const [userRes, albumRes, photoRes, downloadRes] = await Promise.all([
-        fetch("https://cmo-back-livee.onrender.com/count-users"),
-        fetch("https://cmo-back-livee.onrender.com/count-albums"),
-        fetch("https://cmo-back-livee.onrender.com/count-photos"),
-        fetch("https://cmo-back-livee.onrender.com/get-download-count"),
+        fetch("http://127.0.0.1:5000/count-users"),
+        fetch("http://127.0.0.1:5000/count-albums"),
+        fetch("http://127.0.0.1:5000/count-photos"),
+        fetch("http://127.0.0.1:5000/get-download-count"),
       ]);
-  
+
       const totalUsers = (await userRes.json()).total_users;
       const totalAlbums = (await albumRes.json()).total_albums;
       const totalPhotos = (await photoRes.json()).total_photos;
       const totalDownloads = (await downloadRes.json()).count || 0;
-  
+
       setStats([
         { label: "Total User", count: totalUsers.toString(), image: "/tuser.png", bg: "#A889FC80" },
         { label: "Total Download", count: totalDownloads.toString(), image: "/tdownload.png", bg: "#A1C181" },
@@ -130,20 +130,20 @@ function App() {
       console.error("Failed to fetch stats:", error);
     }
   };
-  
+
   useEffect(() => {
     fetchAllStats();
   }, []);
-  
+
   useEffect(() => {
     fetchAllStats();
   }, []);
-  
+
 
   return (
     <div className="min-h-screen bg-white">
       {/* Navbar */}
-      <Navbar search={search} setSearch={setSearch} setShowFilter={setShowFilter} setShowGallery={setShowGallery}   />
+      <Navbar search={search} setSearch={setSearch} setShowFilter={setShowFilter} setShowGallery={setShowGallery} />
 
       {/* Filter Modal */}
       {showFilter && (
@@ -269,7 +269,16 @@ function App() {
       )}
 
       {/* Hero Section */}
-      <div className="bg-gradient-to-b from-[#1a0645] via-[#170645] to-[#000000ee] text-white p-6 md:p-12 flex flex-col md:flex-row justify-between items-center rounded-b-[30px] md:rounded-b-[100px]">
+
+      <div className="relative bg-gradient-to-b from-[#1a0645] via-[#170645] to-[#000000ee] text-white p-6 md:p-12 flex flex-col md:flex-row justify-between items-center rounded-b-[30px] md:rounded-b-[100px]">
+
+        {/* ✅ Back Button inside Hero */}
+        <button
+          onClick={() => router.push("/dashboard")}
+          className="absolute top-4 left-4 text-[white] px-4 py-1.5  text-md font-semibold"
+        >
+          ← Back
+        </button>
         <div className="text-center md:text-left mb-8 md:mb-0">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">Welcome To CMO Gallery</h1>
           <p className="text-base sm:text-lg mt-2 mb-4">Here's Everything You Need To Know To Get Started.</p>
@@ -295,7 +304,7 @@ function App() {
             {stats.map((item, index) => (
               <div
                 key={index}
-                className="w-full h-full max-w-[200px] h-[200px] aspect-square mx-auto rounded-[25px] flex flex-col items-center justify-center shadow-md transition-all duration-300 hover:border-2 hover:border-[#170645]"
+                className="w-full h-full max-w-[200px] h-[200px] aspect-square mx-auto rounded-[25px] flex flex-col items-center justify-center shadow-md transition-all duration-300 hover:scale-105 transform transition-transform duration-300"
                 style={{ backgroundColor: item.bg }}
               >
                 <div className="w-8 h-8 mb-2 mt-2 flex items-center justify-center">
@@ -308,19 +317,19 @@ function App() {
           </div>
         </div>
 
-        
+
         {/* Chart Section */}
-<div className="flex-1 mt-8 lg:mt-0">
-  <div className="flex justify-between items-center mb-2">
-    <h2 className="text-lg font-semibold text-[#170645]">Total User</h2>
-    {percentageChange !== null && (
-      <p className={`font-semibold ${percentageChange >= 0 ? "text-green-600" : "text-red-600"}`}>
-        {Math.abs(percentageChange)}% {percentageChange >= 0 ? "↑" : "↓"}
-      </p>
-    )}
-  </div>
-  <CustomBarChart onPercentageChange={setPercentageChange} />
-</div>
+        <div className="flex-1 mt-8 lg:mt-0">
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-lg font-semibold text-[#170645]">Total User</h2>
+            {percentageChange !== null && (
+              <p className={`font-semibold ${percentageChange >= 0 ? "text-green-600" : "text-red-600"}`}>
+                {Math.abs(percentageChange)}% {percentageChange >= 0 ? "↑" : "↓"}
+              </p>
+            )}
+          </div>
+          <CustomBarChart onPercentageChange={setPercentageChange} />
+        </div>
 
       </div>
 
@@ -363,22 +372,22 @@ function App() {
           )}
         </div>
 
-        
-        {currentTab === "All Photos" && <AllPhotos isSelectAll={isSelectAll}  setSelectedImages={setSelectedImages} />}
+
+        {currentTab === "All Photos" && <AllPhotos isSelectAll={isSelectAll} setSelectedImages={setSelectedImages} />}
 
         {/* My Downloads Tab Content */}
-        
-      {currentTab === "My Downloads" && (
-        <EventCard />
-      )}
+
+        {currentTab === "My Downloads" && (
+          <EventCard />
+        )}
 
 
         {/* Profile Update Tab Content */}
-        {currentTab === "Profile Update" && <Profile  />}
-          
-          
+        {currentTab === "Profile Update" && <Profile />}
 
-        
+
+
+
 
       </div>
     </div>

@@ -43,7 +43,7 @@ function App() {
 
   const fetchAlbums = async () => {
     try {
-      const response = await fetch("https://cmo-back-livee.onrender.com/albums");
+      const response = await fetch("http://127.0.0.1:5000/albums");
       if (!response.ok) {
         throw new Error("Failed to fetch albums");
       }
@@ -70,10 +70,10 @@ function App() {
   const fetchAllStats = async () => {
     try {
       const [userRes, albumRes, photoRes, downloadRes] = await Promise.all([
-        axios.get("https://cmo-back-livee.onrender.com/count-users"),
-        axios.get("https://cmo-back-livee.onrender.com/count-albums"),
-        axios.get("https://cmo-back-livee.onrender.com/count-photos"),
-        axios.get("https://cmo-back-livee.onrender.com/get-download-count"),
+        axios.get("http://127.0.0.1:5000/count-users"),
+        axios.get("http://127.0.0.1:5000/count-albums"),
+        axios.get("http://127.0.0.1:5000/count-photos"),
+        axios.get("http://127.0.0.1:5000/get-download-count"),
       ]);
   
       const totalUsers = userRes.data.total_users;
@@ -98,7 +98,7 @@ function App() {
   useEffect(() => {
     const fetchDownloadCount = async () => {
       try {
-        const res = await fetch("https://cmo-back-livee.onrender.com/get-download-count");
+        const res = await fetch("http://127.0.0.1:5000/get-download-count");
         const data = await res.json();
         const downloadCount = data.count || 0;
   
@@ -132,7 +132,7 @@ function App() {
   useEffect(() => {
     const fetchDownloadCount = async () => {
       try {
-        const res = await fetch("https://cmo-back-livee.onrender.com/get-download-count");
+        const res = await fetch("http://127.0.0.1:5000/get-download-count");
         const data = await res.json();
         const downloadCount = data.count || 0;
 

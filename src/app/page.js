@@ -1,485 +1,833 @@
-"use client";
-import { Poppins } from "next/font/google";
-import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { signIn, signOut, useSession } from "next-auth/react";
+'use client'
+import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
+import dynamic from 'next/dynamic';
+import VideoPlayer from './VideoPlayer';
+const SearchBar = dynamic(() => import('./SearchBar'), { ssr: false });
+import React from 'react';
+import AuthPage from './AuthPage'; // ✅ Correct for default export
+import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation'; // add at the top
 
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-poppins", // CSS Variable for Tailwind
-});
-export default function AuthPage() {
-  const [showVideoThumbnail, setShowVideoThumbnail] = useState(false);
-  const [mobile, setMobile] = useState("");
-  const [showOTP, setShowOTP] = useState(false);
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const otpRefs = Array.from({ length: 6 }, () => useRef());
-  const [showSignup, setShowSignup] = useState(false);
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const { data: session } = useSession();
+const arc1Images = ['share.png', 'heart.png'];
+const arc2Images = ['download.png', 'smily.png', 'gallery.png'];
+
+
+
+export default function Home() {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const mainVideoRef = useRef(null);
+  const [mainPlaying, setMainPlaying] = useState(false);
+  const [showLoginPage, setShowLoginPage] = useState(false);
+  const [fontSize, setFontSize] = useState(16); // default font size
+  const [isHindi, setIsHindi] = useState(false);
   const router = useRouter();
-  const [showVideoFrame, setShowVideoFrame] = useState(false);
-  const [districts, setDistricts] = useState([]);
-  const [selectedDistrict, setSelectedDistrict] = useState("");
-  const [signupData, setSignupData] = useState({});
 
 
-  useEffect(() => {
-    fetch("https://cmo-back-livee.onrender.com/districts")
-      .then((res) => res.json())
-      .then((data) => setDistricts(data))
-      .catch((err) => console.error("Failed to fetch districts:", err));
-  }, []);
+  // Put this early inside your component before useState
+  const videoData = [
+    { src: '/videos/clip1.mp4', title: isHindi ? 'छत्तीसगढ़ विजन 2030' : 'Chhattisgarh Vision 2030' },
+    { src: '/videos/clip2.mp4', title: isHindi ? 'सीएमओ मीट झलकियां' : 'CMO Meet Highlights' },
+    { src: '/videos/clip3.mp4', title: isHindi ? 'युवा पैनल' : 'Youth Panel' },
+    { src: '/videos/clip4.mp4', title: isHindi ? 'स्मार्ट सिटी लॉन्च' : 'Smart City Launch' },
+  ];
 
-  
-  useEffect(() => {
-    if (showSignup) {
-      setShowVideoFrame(true);
-    } else {
-      setShowVideoFrame(false);
-    }
-  }, [showSignup]);
-  
-  useEffect(() => {
-    const handleBackButton = () => {
-      setShowOTP(false);
-      setShowSignup(false);
-    };
 
-    window.addEventListener("popstate", handleBackButton);
-    return () => window.removeEventListener("popstate", handleBackButton);
-  }, []);
+  // Now this will work correctly
+  const [mainVideo, setMainVideo] = useState(videoData[0]);
+  const [shouldAutoPlay, setShouldAutoPlay] = useState(false);
+  // default to first video
 
-  useEffect(() => {
-    fetch("https://cmo-back-livee.onrender.com/record-visit", {
-      method: "POST"
-    }).catch((err) => console.error("Failed to record visit:", err));
-  }, []);
-  
-  const handleSignUp = async () => {
-    let errors = [];
 
-    if (!fullName.trim()) {
-      errors.push("Full Name is required.");
-    } else if (!/^[A-Za-z ]+$/.test(fullName)) {
-      errors.push("Full Name should contain only alphabets.");
-    }
 
-    if (!mobile.trim()) {
-      errors.push("Mobile number is required.");
-    } else if (!/^[6-9]\d{9}$/.test(mobile)) {
-      errors.push("Mobile number must be exactly 10 digits and start with 6-9.");
-    }
+  const [arc1Points, setArc1Points] = useState([]);
+  const [arc2Points, setArc2Points] = useState([]);
 
-    if (!email.trim()) {
-      errors.push("Email is required.");
-    } else if (!/^[\w.-]+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)) {
-      errors.push("Please enter a valid email address.");
-    }
-    if (!selectedDistrict) {
-      errors.push("Please select a district.");
-    }
+  const arc1Ref = useRef(null);
+  const arc2Ref = useRef(null);
+  const getResponsiveSize = () => {
+    if (typeof window === 'undefined') return 32; // default for SSR
 
-    if (!password.trim()) {
-      errors.push("Password is required.");
-    } else if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)) {
-      errors.push("Password must be at least 8 characters long and include a letter, a number, and a special character.");
-    }
+    const width = window.innerWidth;
 
-    if (errors.length > 0) return alert(errors.join("\n"));
-
-    setSignupData({
-      name: fullName,
-      email,
-      password,
-      district: selectedDistrict,
-      fromSignup: true, // ✅ Add this
-    });
-    
-
-  try {
-    const res = await fetch("https://cmo-back-livee.onrender.com/send-otp", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mobile })
-    });
-
-    const result = await res.json();
-    if (res.ok) {
-      setShowOTP(true);
-      alert("OTP sent successfully!");
-    } else {
-      alert(result.error || "Failed to send OTP.");
-    }
-  } catch (err) {
-    alert("Something went wrong while sending OTP.");
-    console.error(err);
-  }
-};
-
-const handleSignIn = async () => {
-  if (!mobile || !password) return alert("Mobile number and password are required.");
-  if (!/^[6-9]\d{9}$/.test(mobile)) return alert("Invalid mobile number.");
-
-  try {
-    const res = await fetch("https://cmo-back-livee.onrender.com/client-login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mobile, password })
-    });
-
-    const result = await res.json();
-
-    if (res.ok) {
-      localStorage.setItem("otpUser", JSON.stringify(result));
-      router.push("/dashboard");
-    } else {
-      alert(result.error || "Login failed.");
-    }
-  } catch (err) {
-    console.error("Login error:", err);
-    alert("Something went wrong during login.");
-  }
-};
-
-  const handleOTPChange = (index, value) => {
-    if (/^\d?$/.test(value)) {
-      const newOtp = [...otp];
-      newOtp[index] = value;
-      setOtp(newOtp);
-
-      // Move to the next input field automatically
-      if (value && index < otpRefs.length - 1) {
-        otpRefs[index + 1].current.focus();
-      }
-    }
+    if (width < 480) return 28;    // Mobile
+    if (width < 768) return 36;    // Tablet
+    if (width < 1024) return 44;   // Small Desktop
+    return 48;                     // Large Desktop
   };
 
-  const handleOTPKeyDown = (index, event) => {
-    if (event.key === "Backspace" && !otp[index] && index > 0) {
-      otpRefs[index - 1].current.focus();
-    }
-  };
+  const [emojiSize, setEmojiSize] = useState(getResponsiveSize());
 
-  const handleOTPSubmit = async () => {
-    if (!otp.every((digit) => digit !== "")) {
-      return alert("Please enter the complete OTP.");
-    }
-  
-    const enteredOTP = otp.join("");
-  
-    try {
-      const otpRes = await fetch("https://cmo-back-livee.onrender.com/verify-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mobile, otp: enteredOTP })
+  useEffect(() => {
+    const getArcPoints = (path, imageArray) => {
+      if (!path) return [];
+
+      const length = path.getTotalLength();
+      return imageArray.map((_, idx) => {
+        const pct = (idx + 1) / (imageArray.length + 1);
+        return path.getPointAtLength(length * pct);
       });
-      
-      if (otpRes.ok && showSignup) {
-        const regRes = await fetch("https://cmo-back-livee.onrender.com/complete-signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: signupData.name,
-            email: signupData.email,
-            password: signupData.password,
-            district: signupData.district,
-            mobile
-          })
-        });
-      
-        const result = await regRes.json();
-      
-        if (regRes.ok) {
-          localStorage.setItem("otpUser", JSON.stringify(result));
-          router.push("/dashboard");
-        } else {
-          alert(result.error || "Signup failed.");
-        }
-      } else {
-        alert("OTP verification failed.");
-      }      
-    } catch (err) {
-      alert("Something went wrong while verifying OTP.");
-      console.error(err);
-    }
-  };
-  
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setShowVideoThumbnail((prev) => !prev); // Toggle state every 2 seconds
-    }, 4000); // Total cycle duration: 4 seconds (2s fade-out + 2s fade-in)
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const col1DefaultImages = [
-    "/ban-01.png",
-    "/ban-02.png",
-    "/ban-03.png",
-  ];
-
-  const col2DefaultImages = [
-    "/ban-04.png",
-    "/ban-03.png",
-    "/ban-02.png",
-  ];
-
-  const col3DefaultImages = [
-    "/ban-02.png",
-    "/ban-04.png",
-    "/ban-01.png",
-  ];
-
-  // State for each column, initialized with unique default images
-  const [col1Images, setCol1Images] = useState(col1DefaultImages);
-  const [col2Images, setCol2Images] = useState(col2DefaultImages);
-  const [col3Images, setCol3Images] = useState(col3DefaultImages);
-
-  useEffect(() => {
-    const style = document.createElement("style");
-    style.innerHTML = `
-      @keyframes scrollDownSlow {
-        from { transform: translateY(-50%); }
-        to { transform: translateY(0%); }
-      }
-
-      @keyframes scrollDownFast {
-        from { transform: translateY(-50%); }
-        to { transform: translateY(0%); }
-      }
-
-      @keyframes scrollUpMedium {
-        from { transform: translateY(0%); }
-        to { transform: translateY(-50%); }
-      }
-
-      .scroll-column {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        animation-timing-function: linear;
-        animation-iteration-count: infinite;
-      }
-
-      .col1 {
-        animation-name: scrollDownSlow;
-        animation-duration: 40s; /* Slow Speed */
-      }
-
-      .col2 {
-        animation-name: scrollUpMedium;
-        animation-duration: 30s; /* Medium Speed */
-      }
-
-      .col3 {
-        animation-name: scrollDownFast;
-        animation-duration: 20s; /* Fast Speed */
-      }
-    `;
-    document.head.appendChild(style);
-
-    return () => {
-      document.head.removeChild(style);
     };
+
+    if (arc1Ref.current) {
+      setArc1Points(getArcPoints(arc1Ref.current, arc1Images));
+    }
+
+    if (arc2Ref.current) {
+      setArc2Points(getArcPoints(arc2Ref.current, arc2Images));
+    }
+  }, []); // ✅ empty dependency array - only run once
+
+
+
+
+  useEffect(() => {
+    const updateSize = () => setEmojiSize(getResponsiveSize());
+
+    updateSize(); // initial
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
   }, []);
 
-  
+
+
+
+  useEffect(() => {
+    if (showLoginPage) {
+      // Push a new entry to browser history when login page is shown
+      window.history.pushState({ login: true }, '');
+
+      // When user presses back, set showLoginPage to false
+      const handlePopState = (e) => {
+        setShowLoginPage(false);
+      };
+
+      window.addEventListener('popstate', handlePopState);
+
+      return () => {
+        window.removeEventListener('popstate', handlePopState);
+      };
+    }
+  }, [showLoginPage]);
+
+  const searchParams = useSearchParams();
+
+useEffect(() => {
+  const fromOtpless = searchParams.get("showSignup");
+  if (fromOtpless === "true") {
+    setShowLoginPage(true); // ✅ Show the AuthPage
+    // No need to use `setShowSignup(true)` here, AuthPage will handle it via URL param
+  }
+}, []);
 
   return (
-    <div className="flex flex-col md:flex-row w-full h-screen bg-gray-100">
-      {/* Left Side: Login Box */}
-      <div className="w-full md:w-1/3 flex flex-col items-center justify-center p-6 md:p-12">
-        <img src="/CG logo.webp" alt="Logo" className="w-24 h-24 mb-4" />
-        <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-[516px]">
-          {session ? (
-            <div className="text-center">
-              <p className="text-xl font-bold text-[#170645]">Welcome, {session.user.name}</p>
-              <img
-                src={session.user.image}
-                alt="Profile"
-                className="w-12 h-12 rounded-full mx-auto mt-2"
+    <>
+      {showLoginPage ? (
+        <AuthPage />
+      ) : (
+        <div className="bg-[#170645] text-white">
+          <nav className="flex items-center justify-between px-4 sm:px-6 py-3">
+            {/* Left: Logo */}
+            <div className="flex items-center">
+              <Image
+                src="/Group 833.png"
+                alt="Logo"
+                width={45}
+                height={45}
+                className="rounded-full"
               />
+            </div>
+
+            {/* Hamburger Icon on Mobile */}
+            <div className="sm:hidden">
               <button
-                onClick={() => signOut()}
-                className="w-full bg-red-500 text-white p-3 mt-5 rounded-lg font-bold"
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="text-white focus:outline-none"
               >
-                Logout
+                {/* Hamburger Icon */}
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  {menuOpen ? (
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  ) : (
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
+                  )}
+                </svg>
               </button>
             </div>
-          ) : showOTP ? (
-            <div className="text-center">
-              <h2 className="text-2xl pt-2 font-bold text-[#170645]">Verification Code</h2>
-              <p className="text-[#170645] pt-2 mt-2">We Have Sent The Verification Code To Your Mobile Number</p>
-              <div className="flex justify-center gap-3 flex-wrap py-2 mt-4">
-                {otp.map((digit, index) => (
-                  <input
-                    key={index}
-                    ref={otpRefs[index]}
-                    type="text"
-                    maxLength="1"
-                    value={digit}
-                    onChange={(e) => handleOTPChange(index, e.target.value)}
-                    onKeyDown={(e) => handleOTPKeyDown(index, e)}
-                    className="w-12 h-12 text-center border-[#908AA0] text-[#170645] text-xl border rounded"
-                  />
-                ))}
-              </div>
-              <button onClick={handleOTPSubmit} className="w-full bg-[#170645] text-yellow-400 p-3 mt-5 mb-4 rounded-full text-lg font-bold">
-                Confirm
-              </button>
-            </div>
-          ) : showSignup ? (
-            <div>
-              <h2 className="text-3xl font-bold text-center text-[#170645]">AI Based CMO Gallery</h2>
-              <p className="text-center text-[#170645] text-lg mt-1">One Click Download</p>
-              <button onClick={async () => {
-                  console.log("🔵 Google Sign-In button clicked");
-                  const result = await signIn("google", { callbackUrl: "/dashboard" }); // ✅ Redirect to Dashboard after login
-                  console.log("✅ Sign-in result:", result);
-                }} className="flex items-center h-11 justify-center w-full border p-3 mt-4 rounded-lg hover:bg-gray-200" >
-                <img src="/google pic.png" alt="Google" className="w-5 mr-2" />
-                <p className="text-[#170645] font-normal">Sign Up With Google</p>
-              </button>
-              <div className="flex items-center my-4">
-                <hr className="flex-grow border-gray-300" />
-                <span className="px-3 text-[#908AA0] text-sm">Or, Sign Up With Your Email</span>
-                <hr className="flex-grow border-gray-300" />
-              </div>
-              <div className="flex gap-2">
-                <input type="text" placeholder="Full Name" value={fullName}
-                  onChange={(e) => setFullName(e.target.value)} className="border w-1/2 p-3 h-11 rounded-lg placeholder-[#170645] text-[#170645]" />
-                <input type="text" placeholder="Mobile No." value={mobile} onChange={(e) => setMobile(e.target.value)} className="border w-1/2 p-3 h-11 rounded-lg placeholder-[#170645] text-[#170645]" />
-              </div>
-              <input type="email" value={email}
-                onChange={(e) => setEmail(e.target.value)} placeholder="Email Id" className="border w-full p-3 h-11 rounded-lg mt-3 placeholder-[#170645] text-[#170645]" />
-                <select
-  value={selectedDistrict}
-  onChange={(e) => setSelectedDistrict(e.target.value)}
-  className="border w-full p-3 h-11 rounded-lg mt-3 text-[#170645]"
+
+            {/* Right Controls (Hidden on Mobile) */}
+            <div className="hidden sm:flex items-center space-x-3">
+            <button
+  className="bg-white text-[#170645] px-3 py-1 rounded-full text-sm"
+  onClick={() => setIsHindi(!isHindi)}
 >
-  <option value="">Select District</option>
-  {districts.map((d, index) => (
-    <option key={index} value={d.name}>
-      {d.name}
-    </option>
-  ))}
-</select>
+  A<sub>अ</sub> {isHindi ? 'Eng' : 'Hindi'}
+</button>
 
-              <input type="password" placeholder="Create Your Password" value={password}
-                onChange={(e) => setPassword(e.target.value)} className="border h-11 w-full p-3 rounded-lg mt-3 placeholder-[#170645] text-[#170645]" />
-              <button onClick={handleSignUp} className="w-full h-11 bg-[#170645] text-[#FFE100] px-3 rounded-lg mt-4 text-lg font-bold">
-                Sign Up
-              </button>
-              <div className="flex justify-center gap-6 mt-4">
-                <button className="text-[#170645] hover:underline text-sm">Customer Support</button>
-                <button className="text-[#170645] hover:underline text-sm">Terms of Service</button>
+
+              <div className="bg-white text-[#170645] px-3 py-1 rounded-full text-sm flex space-x-2">
+                <button onClick={() => setFontSize((prev) => Math.min(prev + 2, 24))}>A+</button>
+                <button onClick={() => setFontSize((prev) => Math.max(prev - 2, 12))}>A-</button>
               </div>
+
+
+              <button onClick={() => setShowLoginPage(true)} className="bg-yellow-400 text-[#170645] px-4 py-1 rounded-full font-medium flex items-center space-x-1">
+                <span>👤</span>
+                <span>Login</span>
+              </button>
             </div>
-          ) : (
-            <div>
-              <h2 className="text-2xl font-bold text-center text-[#170645]">AI Based CMO Gallery</h2>
-              <p className="text-center text-[#170645]">One Click Download</p>
-              <button className="flex items-center justify-center w-full border p-2 mt-4 rounded-full hover:bg-gray-200" onClick={() => signIn("google")}>
-                <img src="/google pic.png" alt="Google" className="w-5 mr-2" onClick={async () => {
-                  console.log("🔵 Google Sign-In button clicked");
-                  const result = await signIn("google", { callbackUrl: "/dashboard" }); // ✅ Redirect to Dashboard after login
-                  console.log("✅ Sign-in result:", result);
-                }} />
-                <p className="text-[#170645]">Sign In With Google</p>
-              </button>
-              <div className="flex items-center my-4">
-                <hr className="flex-grow border-gray-300" />
-                <span className="px-3 text-[#908AA0]">Or, Sign In With Phone No.</span>
-                <hr className="flex-grow border-gray-300" />
-              </div>
-              <input
-                type="text"
-                placeholder="Mobile No."
-                value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
-                className="border w-full p-2 rounded-full mb-4 text-[#170645]"
-              />
-              <input
-  type="password"
-  placeholder="Password"
-  value={password}
-  onChange={(e) => setPassword(e.target.value)}
-  className="border w-full p-2 rounded-full mb-4 text-[#170645]"
-/>
+          </nav>
 
-              <button onClick={handleSignIn} className="w-full bg-[#170645] text-yellow-400 p-2 rounded-full">
-                Sign In
-              </button>
-              <p className="text-center text-[#170645] text-sm mt-3">
-                Not Registered Yet? <span className="text-[#170645] font-bold cursor-pointer" onClick={() => setShowSignup(true)}>Register Now</span>
-              </p>
-              <div className="flex justify-center gap-4 mt-4">
-                <button className="text-[#170645] hover:underline">Customer Support</button>
-                <button className="text-[#170645] hover:underline">Terms of Service</button>
+          {/* Mobile Menu */}
+          {menuOpen && (
+            <div className="sm:hidden px-4 pb-4 space-y-2">
+              <button
+  className="bg-white text-[#170645] px-3 py-1 rounded-full text-sm"
+  onClick={() => setIsHindi(!isHindi)}
+>
+  A<sub>अ</sub> {isHindi ? 'Eng' : 'Hindi'}
+</button>
+
+
+              <div className="bg-white text-[#170645] w-full py-2 rounded-full text-sm flex justify-around">
+                <button onClick={() => setFontSize((prev) => Math.min(prev + 2, 24))}>A+</button>
+                <button onClick={() => setFontSize((prev) => Math.max(prev - 2, 12))}>A-</button>
               </div>
+
+
+              <button onClick={() => setShowLoginPage(true)} className="bg-yellow-400 text-[#170645] w-full py-2 rounded-full font-medium flex items-center justify-center space-x-1">
+                <span>👤</span>
+                <span>Login</span>
+              </button>
             </div>
           )}
-        </div>
-        <p className="text-center text-black ml-[-10px] mt-6">Initiative By DPR Chhattisgarh</p>
-      </div>
 
-      <div className="hidden md:flex md:w-2/3 relative overflow-hidden items-center">
-      {showVideoFrame ? (
-  <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-  <div className="w-[50vw] max-w-[60vw] h-auto max-h-[80vh] aspect-[9/16] mt-12 rounded-tl-[50px] rounded-br-[50px] overflow-hidden shadow-lg">
-    <video
-      src="/ycm.mp4"
-      autoPlay
-      muted
-      loop
-      controls
-      className="w-full h-full object-cover"
-    />
+
+
+
+          <div className="relative w-full h-auto sm:h-[30px] md:h-[60px]">
+            <svg viewBox="0 0 1440 400" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto absolute top-0 left-0 pointer-events-none z-0">
+              {/* Draw arcs */}
+              <path
+                ref={arc1Ref}
+                d="M0,380 Q720,-120 1440,380"
+                stroke="white"
+                strokeWidth="1.5"
+                fill="transparent"
+                opacity="0.1"
+              />
+              <path
+                ref={arc2Ref}
+                d="M0,180 Q720,-80 1440,180"
+                stroke="white"
+                strokeWidth="1.5"
+                fill="transparent"
+                opacity="0.1"
+              />
+
+              {arc1Points.map((pt, idx) =>
+                arc1Images[idx] ? (
+                  <image
+                    key={`arc1-${idx}`}
+                    href={`/${arc1Images[idx]}`}
+                    x={pt.x - emojiSize / 2}
+                    y={pt.y - emojiSize / 2}
+                    width={emojiSize}
+                    height={emojiSize}
+                  />
+
+                ) : null
+              )}
+
+              {arc2Points.map((pt, idx) =>
+                arc2Images[idx] ? (
+                  <image
+                    key={`arc2-${idx}`}
+                    href={`/${arc2Images[idx]}`}
+                    x={pt.x - emojiSize / 2}
+                    y={pt.y - emojiSize / 2}
+                    width={emojiSize}
+                    height={emojiSize}
+                  />
+                ) : null
+              )}
+
+
+            </svg>
+
+          </div>
+
+          {/* Hero Section */}
+          <div className="relative text-center px-1 pt-60  z-10">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-snug max-w-3xl mx-auto">
+            {isHindi ? 'छत्तीसगढ़ की पहली ' : 'Chhattisgarh First '}{' '}
+              <span className="inline-block align-middle">
+                <button
+                  className="group relative outline-0 bg-sky-200 [--sz-btn:52px] mt-[-10px] [--space:calc(var(--sz-btn)/5.5)] [--gen-sz:calc(var(--space)*2)] [--sz-text:calc(var(--sz-btn)-var(--gen-sz))] h-[var(--sz-btn)] w-[var(--sz-btn)] border border-solid border-transparent rounded-xl flex items-center justify-center aspect-square cursor-pointer transition-transform duration-200 active:scale-[0.95] bg-[linear-gradient(45deg,#efad21,#ffd60f)] [box-shadow:#3c40434d_0_1px_2px_0,#3c404326_0_2px_6px_2px,#0000004d_0_30px_60px_-30px,#34343459_0_-2px_6px_0_inset]"
+                >
+                  <svg
+                    className="animate-pulse absolute z-10 overflow-visible transition-all duration-300 text-[#ffea50] group-hover:text-white top-[calc(var(--sz-text)/7)] left-[calc(var(--sz-text)/7)] h-[var(--gen-sz)] w-[var(--gen-sz)] group-hover:h-[var(--sz-text)] group-hover:w-[var(--sz-text)] group-hover:left-[calc(var(--sz-text)/4)] group-hover:top-[calc(calc(var(--gen-sz))/2)]"
+                    stroke="none"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M9 4.5a.75.75 0 01.721.544l.813 2.846a3.75 3.75 0 002.576 2.576l2.846.813a.75.75 0 010 1.442l-2.846.813a3.75 3.75 0 00-2.576 2.576l-.813 2.846a.75.75 0 01-1.442 0l-.813-2.846a3.75 3.75 0 00-2.576-2.576l-2.846-.813a.75.75 0 010-1.442l2.846-.813A3.75 3.75 0 007.466 7.89l.813-2.846A.75.75 0 019 4.5zM18 1.5a.75.75 0 01.728.568l.258 1.036c.236.94.97 1.674 1.91 1.91l1.036.258a.75.75 0 010 1.456l-1.036.258c-.94.236-1.674.97-1.91 1.91l-.258 1.036a.75.75 0 01-1.456 0l-.258-1.036a2.625 2.625 0 00-1.91-1.91l-1.036-.258a.75.75 0 010-1.456l1.036-.258a2.625 2.625 0 001.91-1.91l.258-1.036A.75.75 0 0118 1.5zM16.5 15a.75.75 0 01.712.513l.394 1.183c.15.447.5.799.948.948l1.183.395a.75.75 0 010 1.422l-1.183.395c-.447.15-.799.5-.948.948l-.395 1.183a.75.75 0 01-1.422 0l-.395-1.183a1.5 1.5 0 00-.948-.948l-1.183-.395a.75.75 0 010-1.422l1.183-.395c.447-.15.799-.5.948-.948l.395-1.183A.75.75 0 0116.5 15z"
+                    ></path>
+                  </svg>
+                  <span
+                    className="[font-size:var(--sz-text)] font-extrabold leading-none text-white transition-all duration-200 group-hover:opacity-0"
+                  >
+                    AI
+                  </span>
+                </button>
+
+              </span >{' '}<br></br>
+              {isHindi ? 'आधारित सीएमओ चित्र खोज मंच' : 'Based CMO Image Search Platform'}
+            </h1>
+
+            <div className="relative mx-auto mt-8 max-w-md w-full flex justify-center">
+              <SearchBar />
+            </div>
+
+            <div className="relative w-full overflow-hidden mt-12">
+  <div className="photo-marquee whitespace-nowrap flex items-center gap-6 px-4">
+    {[...Array(2)].map((_, loopIdx) => (
+      [201, 202, 203, 204, 205,].map((img, idx) => (
+        <Image
+          key={`${loopIdx}-${img}`}
+          src={`/${img}.png`}
+          alt={`img-${img}`}
+          width={326}
+          height={404}
+          className="rounded-[25px] object-cover max-w-[326px] h-[404px] mt-4 transform transition duration-300"
+          style={{ rotate: idx % 2 === 0 ? '3deg' : '-3deg' , marginBottom: '-60px'}}
+        />
+      ))
+    ))}
   </div>
+  <style>{`
+  @keyframes scroll-loop {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .marquee-track {
+    animation: scroll-loop 30s linear infinite;
+    width: max-content;
+  }
+
+  @keyframes scroll-photos {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .photo-marquee {
+    animation: scroll-photos 40s linear infinite;
+    width: max-content;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+`}</style>
+
 </div>
 
 
-) : ( <div
-          className="absolute w-full max-w-[656px] h-full top-0 bottom-0 left-1/2 transform -translate-x-1/2 rotate-[-1.32deg] transition-opacity duration-2000 ease-in-out"
-        >
 
-          <div className="grid grid-cols-3 gap-1">
-            {/* Column 1 - Moves Down */}
-            <div className="relative space-y-2 overflow-hidden">
-              <div className="scroll-column col1">
-                {[...col1Images, ...col1Images].map((src, index) => (
-                  <img key={`col1-${index}`} src={src} alt={`Column 1 - ${index}`} className="w-[30vh] rounded-lg" />
-                ))}
-              </div>
-            </div>
-
-            {/* Column 2 - Moves Up */}
-            <div className="relative space-y-2 overflow-hidden">
-              <div className="scroll-column col2">
-                {[...col2Images, ...col2Images].map((src, index) => (
-                  <img key={`col2-${index}`} src={src} alt={`Column 2 - ${index}`} className="w-[30vh] rounded-lg" />
-                ))}
-              </div>
-            </div>
-
-            {/* Column 3 - Moves Down */}
-            <div className="relative space-y-2 overflow-hidden">
-              <div className="scroll-column col3">
-                {[...col3Images, ...col3Images].map((src, index) => (
-                  <img key={`col3-${index}`} src={src} alt={`Column 3 - ${index}`} className="w-[30vh] rounded-lg" />
-                ))}
-              </div>
-            </div>
           </div>
-        </div>
-  )}
-      </div>
 
-    </div>
+
+
+          {/* video section */}
+          <section className="px-4 sm:px-6 md:px-8 py-12 bg-white text-[#170645]">
+            <h2 className="text-center text-xl sm:text-2xl md:text-3xl font-semibold mb-8">
+            {isHindi ? 'लेटेस्ट ' : 'Latest '} <span className="bg-yellow-300 px-1 rounded">{isHindi ? 'वीडियो' : 'Videos'}</span>
+            </h2>
+
+            <div className="grid lg:grid-cols-3 gap-6 w-full px-2 sm:px-4 lg:px-6">
+
+              {/* Left Large Video */}
+              <div className="lg:col-span-2">
+                <div className="rounded-2xl overflow-hidden shadow-lg">
+                  <div className="aspect-video w-full">
+                    <div className="relative w-full h-full group">
+                      <VideoPlayer
+                        key={mainVideo.src} // Important for re-mounting on change
+                        src={mainVideo.src}
+                        title={mainVideo.title}
+                        aspect="aspect-video"
+                        variant="main"
+                        autoPlay={shouldAutoPlay}
+                      />
+
+
+                      {/* <source src="/videos/main.mp4" type="video/mp4" /> */}
+
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right: 2x2 grid on large, vertical on mobile */}
+              <div className="grid grid-cols-2 gap-4 lg:mt-12">
+                {videoData.map((video, idx) => (
+
+                  <div
+                    key={idx}
+                    className="rounded-2xl overflow-hidden relative group cursor-pointer hover:opacity-90 transition"
+                  >
+                    <VideoPlayer
+                      src={video.src}
+                      title={video.title}
+                      aspect="aspect-[4/3]"
+                      variant="small"
+                      onClick={() => {
+                        setMainVideo(video);
+                        setShouldAutoPlay(true); // now autoplay
+                      }}
+
+
+                    />
+                  </div>
+                ))}
+
+
+              </div>
+            </div>
+          </section>
+          {/* vidoe seciton ended */}
+
+
+
+          {/* Chief Minister Section */}
+          <section className="relative py-12 px-4 sm:px-6 md:px-12">
+            {/* Background Split */}
+            <div className="absolute inset-0 flex">
+              <div className="w-1/3 bg-white"></div>
+              <div className="w-2/3 bg-[#e9e1fe]"></div>
+            </div>
+
+            {/* Foreground Content */}
+            <div className="relative max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-10 z-10">
+              {/* Left: Image */}
+              <div className="w-full lg:w-1/2 flex  justify-center">
+                <img
+                  src="/cm.jpeg" // Place this image in /public
+                  alt="Shri Vishnu Deo Sai"
+                  className="rounded-2xl w-full w-[30vw] h-[70vh] object-cover shadow-lg"
+                />
+              </div>
+
+              {/* Right: Text */}
+              <div className="w-full lg:w-1/2 text-center lg:text-left">
+                <p style={{ fontSize: `${fontSize}px` }} className="text-lg text-gray-800 font-medium mb-2">
+                {isHindi ? 'आपके ' : 'Know Your '}{' '}
+                  <span style={{ fontSize: `${fontSize}px` }} className="bg-yellow-300 px-2 py-0.5 rounded-sm font-bold text-black">
+                  {isHindi ? 'मुख्यमंत्री' : 'Chief Minister'}
+                  </span>
+                </p>
+                <h2 style={{ fontSize: `${fontSize}px` }} className="text-2xl sm:text-3xl font-bold text-[#170645] mb-4">
+                {isHindi ? 'श्री विष्णुदेव साय' : 'Shri Vishnu Deo Sai'}
+                </h2>
+                <p style={{ fontSize: `${fontSize}px` }} className="text-gray-800 leading-relaxed mb-3">
+                {isHindi
+                    ? '21 फरवरी 1964 को जन्मे, वे छत्तीसगढ़ के वर्तमान और चौथे मुख्यमंत्री हैं। वे इस पद को संभालने वाले पहले आदिवासी नेता हैं। वे 2020 से 2022 तक भारतीय जनता पार्टी, छत्तीसगढ़ के अध्यक्ष भी रह चुके हैं और वर्तमान में कुनकुरी से विधायक हैं।'
+                    : 'Born 21 February 1964, he is an Indian politician currently serving as the 4th Chief Minister of Chhattisgarh. He is the first tribal leader to hold the post. He also served as President of Bharatiya Janata Party, Chhattisgarh from 2020 until 2022. He currently represents Kunkuri in the Chhattisgarh Legislative Assembly.'}
+                </p>
+                <p style={{ fontSize: `${fontSize}px` }}  className="text-gray-800 leading-relaxed mb-3">
+                {isHindi
+                    ? 'श्री विष्णुदेव साय का जन्म जशपुर जिले के बगिया गांव में एक कृषक परिवार में श्री राम प्रसाद साय और श्रीमती जशमणी देवी के घर हुआ था। उन्होंने 1991 में श्रीमती कौशल्या देवी से विवाह किया।'
+                    : 'Shri Vishnu Deo Sai was born in a farmer\'s family in Bagia village of Jashpur District to Shri Ram Prasad Sai and Smt. Jashmani Devi on 21 February 1964. He married Kaushalya Devi in 1991.'}
+                </p>
+                <p style={{ fontSize: `${fontSize}px` }} className="text-gray-800 leading-relaxed">
+                {isHindi
+                    ? '13 दिसंबर 2023 को, श्री विष्णुदेव साय ने रायपुर के साइंस कॉलेज ग्राउंड में छत्तीसगढ़ के मुख्यमंत्री पद की शपथ ली।'
+                    : 'On 13 December 2023, Shri Vishnu Deo Sai took oath as Chief Minister of Chhattisgarh at the Science College Ground in Raipur.'}
+                </p>
+              </div>
+            </div>
+          </section>
+
+
+
+
+          {/* AI Upload Info Section */}
+          <section className="bg-black text-white py-16 px-4 sm:px-8 md:px-16">
+            <div className="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center gap-12">
+
+              {/* Left Content */}
+              <div className="w-full md:w-1/2">
+                <h2 style={{ fontSize: `${fontSize}px` }} className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-snug mb-4">
+                {isHindi
+    ? 'अपनी तस्वीरों को' : 'Discover Perfect Image Matches With'}{' '}
+                  <span
+                    className="text-black px-4 py-1 rounded-sm font-bold inline-block"
+                    style={{
+                      backgroundImage: "url('/bgy.png')", // Place this image in public folder
+                      backgroundSize: 'contain',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'center',
+                      fontSize: `${fontSize}px` ,
+                    }}
+                  >
+                    AI-Powered
+                  </span>{' '}
+                  {isHindi ? 'तकनिकी से खोजें' : 'Uploads'} :
+                </h2>
+
+                <p style={{ fontSize: `${fontSize}px` }} className="text-gray-300 mb-6">
+                {isHindi
+    ? 'अपनी छवि अपलोड करें और हमारी एआई तकनीक से मिलती-जुलती तस्वीरें तुरंत पाएं।'
+    : 'Upload your image and let our AI technology work its magic. Our advanced image recognition system scans the ImgAR dataset to find the most accurate and relevant matches to your uploaded image.'}
+                </p>
+
+                <h3 style={{ fontSize: `${fontSize}px` }} className="text-lg sm:text-xl font-bold mb-4">{isHindi ? 'कैसे काम करता है:' : 'How It Works:'}</h3>
+                <ul className="space-y-3 text-gray-200">
+                  <li className="flex items-start gap-2">
+                    <img src="/arrow.png" alt="arrow" className="w-[20px] h-[20px] mt-[2px] mr-2" />
+                    <span style={{ fontSize: `${fontSize}px` }} > {isHindi ? 'तस्वीर अपलोड करें: ड्रैग-एंड-ड्रॉप या फाइल चुनें।' : 'Upload an image: Drag and drop or choose from your files.'}
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <img src="/arrow.png" alt="arrow" className="w-[20px] h-[20px] mt-[3px] mr-2" />
+                    <span style={{ fontSize: `${fontSize}px` }}> {isHindi ? 'एआई विश्लेषण: हमारी प्रणाली तस्वीर का विश्लेषण करती है।' : 'AI Analysis: Our AI scans and analyzes the image, identifying key features, colors, and patterns.'}.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <img src="/arrow.png" alt="arrow" className="w-[20px] h-[20px] mt-[3px] mr-2" />
+                    <span style={{ fontSize: `${fontSize}px` }}>{isHindi ? 'सटीक मिलान पाएं: आपकी तस्वीर से मिलती छवियों की सूची तुरंत पाएं।' : 'Find Exact Matches: Receive a curated set of matching images in seconds.'}</span>
+                  </li>
+                </ul>
+
+                <button onClick={() => router.push('/verification')} style={{ fontSize: `${fontSize}px` }} className="mt-8 border border-yellow-400 text-yellow-400 px-14 py-4 rounded-full hover:bg-yellow-400 hover:text-black transition">
+                {isHindi ? 'रजिस्टर करें' : 'Register Now'}
+                </button>
+              </div>
+
+              {/* Right Image */}
+              <div className="w-full md:w-1/2 flex flex-col items-center justify-center">
+                <img
+                  src="/Ai.gif" // Save your glowing face image as this
+                  alt="AI Face Recognition"
+                  className="w-[50vw] w-full"
+                />
+                {/* <p className="text-xs mt-2 text-gray-400 tracking-wider uppercase">
+        Face recognition is under way...
+      </p> */}
+              </div>
+            </div>
+          </section>
+
+          {/* Trending Social Media Section */}
+          <section className="py-12 px-4 sm:px-6 md:px-12 bg-white text-center">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-[#170645]">
+            {isHindi ? 'ट्रेंडिंग' : 'Trending'}{' '}
+              <span
+                className="inline-block font-bold text-black px-3 py-1"
+                style={{
+                  backgroundImage: "url('/bgy.png')",
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: 'contain',
+                  backgroundPosition: 'center',
+                }}
+              >
+               {isHindi ? 'सोशल मीडिया' : 'Social Media'}
+              </span>
+            </h2>
+
+            {/* Social Media Cards */}
+            <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
+              {/* Twitter */}
+              <div className="flex flex-col items-center">
+                <div className="text-[#170645] text-2xl font-semibold flex items-center gap-2 mb-2">
+                  <img src="/x.png" alt="Twitter" className="w-[35px] h-[35px]" />
+                  <span>Twitter</span>
+                </div>
+
+                <div className="relative border-[10px] border-black rounded-[39px] overflow-hidden w-full max-w-[280px]">
+                  {/* Background Image */}
+                  <img
+                    src="/twitter.png"
+                    alt="Twitter Post"
+                    className="w-full h-full object-cover"
+                  />
+
+                  {/* Overlay Image */}
+                  <img
+                    src="/jansam.png"
+                    alt="Overlay"
+                    className="absolute mt-5 top-0 left-0 w-full max-w-[253px] h-full max-h-[100px] object-cover animate-y-vibe "
+                  />
+                </div>
+              </div>
+
+              <style jsx>{`
+  @keyframes y-rotate-vibe {
+      0% {
+      transform: rotateY(0deg);
+    }
+    20% {
+      transform: rotateY(400deg);
+    }
+    22% {
+      transform: rotateY(320deg); /* Recoil */
+    }
+    24% {
+      transform: rotateY(380deg);
+    }
+    26% {
+      transform: rotateY(340deg); /* Recoil */
+    }
+    28% {
+      transform: rotateY(360deg); /* Settle back */
+    }
+
+    100% {
+      transform: rotateY(360deg); /* Hold */
+    }
+  }
+  .animate-y-vibe {
+    animation: y-rotate-vibe 6s ease-in-out infinite;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+  }
+    
+
+`}</style>
+
+
+              {/* Instagram */}
+              <div className="flex flex-col items-center">
+                <div className="text-[#170645] text-2xl font-semibold flex items-center gap-2 mb-2">
+                  <img src="/insta.png" alt="Instagram" className="w-[40px] h-[40px]" />
+                  <span>Instagram</span>
+                </div>
+                <div className="border-[10px] border-black rounded-[39px] overflow-hidden w-full max-w-[280px]">
+                  <img
+                    src="/instagram.png"
+                    alt="Instagram Post"
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+
+              {/* Facebook */}
+              <div className="flex flex-col items-center">
+                <div className="text-[#170645] text-2xl font-semibold flex items-center gap-2 mb-2">
+                  <img src="/fb.png" alt="Facebook" className="w-[41px] h-[41px]" />
+                  <span>Facebook</span>
+                </div>
+                <div className="border-[10px] border-black rounded-[39px] overflow-hidden w-full max-w-[280px]">
+                  <img
+                    src="/facebk.png"
+                    alt="Facebook Post"
+                    className="object-cover "
+                  />
+                </div>
+              </div>
+            </div>
+
+          </section>
+
+
+          {/* Department Logos Section */}
+          {/* Department Logos Scrolling Section */}
+          <section className="py-12 bg-white overflow-hidden">
+            <div className="relative w-full">
+              <div className="marquee-track whitespace-nowrap flex items-center gap-12 px-4">
+                {[...Array(2)].map((_, i) => (
+                  <React.Fragment key={i}>
+                    <img src="/Group 833.png" alt="Logo 1" className="h-[20vh] w-[12vw] object-contain" />
+                    <img src="/1 91.png" alt="Logo 2" className="h-[20vh] w-[10vw] object-contain" />
+                    <img src="/2 25.png" alt="Logo 3" className="h-[20vh] w-[10vw] object-contain" />
+                    <img src="/3 8.png" alt="Logo 4" className="h-[20vh] w-[10vw] object-contain" />
+                    <img src="/44.png" alt="Logo 5" className="h-[20vh] w-[10vw] object-contain" />
+                    <img src="/6 1.png" alt="Logo 6" className="h-[20vh] w-[10vw] object-contain" />
+                    <img src="/7 7.png" alt="Logo 7" className="h-[20vh] w-[10vw] object-contain" />
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+
+          </section>
+
+
+          {/* Footer Section */}
+          <footer className="bg-gray-200 text-black py-8 ">
+            <div className="max-w-[1621px] mx-auto px-6 md:px-16">
+
+              {/* Districts List */}
+              <div className="border-b border-gray-400 pb-6 mb-6">
+                <h3 className="font-bold text-lg text-gray-800 mb-3">Districts List</h3>
+                <p className="text-sm text-gray-600 leading-relaxed flex flex-wrap gap-2">
+                  {[
+                    "Bijapur", "Sukma", "Dantewada", "Bastar", "Kondagaon", "Narayanpur", "Kanker", "Kawardha", "Balod",
+                    "Rajnandgaon", "Durg", "Bemetara", "Dhamtari", "Gariaband", "Raipur", "Baloda Bazar", "Mahasamund",
+                    "Bilaspur", "Mungeli", "Korba", "Janjgir-Champa", "Raigarh", "Jashpur", "Korea", "Surajpur", "Surguja", "Balrampur"
+                  ].map((district, index, arr) => (
+                    <span key={index} className="flex items-center whitespace-nowrap">
+                      {district}
+                      {index !== arr.length - 1 && <span className="mx-2">|</span>}
+                    </span>
+                  ))}
+                </p>
+              </div>
+
+              {/* Featured Links & Reach Us */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-16">
+
+                {/* Featured Links */}
+                <div>
+                  <h3 className="font-bold text-lg text-gray-800 mb-3">Featured Links</h3>
+                  <div className="text-sm text-gray-600 flex flex-wrap gap-x-2 gap-y-2">
+                    {[
+                      "Home", "Copyright Policy", "Disclaimer", "Site Map",
+                      "Hyperlink Policy", "Privacy Policy", "Terms And Conditions", "Terms Of Use"
+                    ].map((name, index, arr) => (
+                      <span key={index} className="flex items-center">
+                        <a href="#" className="hover:underline">{name}</a>
+                        {index !== arr.length - 1 && <span className="mx-2">|</span>}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Reach Us */}
+                <div>
+                  <h3 className="font-bold text-lg text-gray-800 mb-3">Reach Us</h3>
+                  <div className="text-sm text-gray-600 space-y-3">
+                    <p className="flex items-center gap-3">
+                      <img src="/loc.png" alt="Location" className="w-[10px] h-auto md:w-[15px]" />
+                      Directorate of Public Relations, Naya Raipur, Chhattisgarh, 492001
+                    </p>
+                    <p className="flex items-center gap-3">
+                      <img src="/cal.png" alt="Phone" className="w-[10px] h-auto md:w-[15px]" />
+                      +91-771-2221614
+                    </p>
+                    <p className="flex items-center gap-3">
+                      <img src="/mai.png" alt="Email" className="w-[10px] h-auto md:w-[15px]" />
+                      dprcgh@gmail.com
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Horizontal Divider */}
+              <div className="border-b border-gray-400 my-6"></div>
+
+              {/* App, Logos, Social */}
+              <div className="flex flex-col md:flex-row justify-between items-center gap-12">
+
+                {/* Download Our App */}
+                <div>
+                  <h3 className="font-bold text-lg text-gray-800 mb-3 text-center md:text-left">Download Our App</h3>
+                  <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+                    <img src="/play_store 1 (1).png" alt="Google Play" className="w-[80px] sm:w-[120px] md:w-[150px] h-auto max-w-full" />
+                    <img src="/app_store 1.png" alt="App Store" className="w-[80px] sm:w-[120px] md:w-[150px] h-auto max-w-full" />
+                  </div>
+                </div>
+
+                {/* Logos */}
+                <div>
+                  <div className="flex flex-wrap justify-center gap-4 mt-6">
+                    <img src="/Group 833.png" alt="Logo 1" className="w-[40px] md:w-[60px] h-auto" />
+                    <img src="/digitalIndia 1 (1).png" alt="Logo 2" className="w-[60px] md:w-[90px] h-auto" />
+                    <img src="/mygov1.png" alt="Logo 3" className="w-[60px] md:w-[90px] h-auto" />
+                    <img src="/azadi-ka-amrit-mahotsav 1 (1).png" alt="Logo 4" className="w-[60px] md:w-[90px] h-auto" />
+                  </div>
+                </div>
+
+                {/* Social Media */}
+                <div>
+                  <h3 className="font-bold text-lg text-gray-800 mb-3 text-center md:text-left">Follow Us</h3>
+                  <div className="flex gap-4 justify-center md:justify-start">
+                    {[
+                      { name: "Twitter", icon: "/x.png" },
+                      { name: "Facebook", icon: "/fb.png" },
+                      { name: "Instagram", icon: "/insta.png" },
+                      { name: "YouTube", icon: "/youtube 1 (1).png" },
+                      { name: "LinkedIn", icon: "/linkedin (1) 1 (1).png" }
+                    ].map((social, index) => (
+                      <a key={index} href="#">
+                        <img src={social.icon} alt={social.name} className="w-[30px] md:w-[40px] h-auto max-w-full" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Footer Bottom */}
+              <div className="w-full text-center py-4 mt-8">
+                <p className="text-sm text-gray-500">
+                  © 2025 CMO Gallery | Initiative by DPR Chhattisgarh
+                </p>
+              </div>
+
+            </div>
+          </footer>
+
+
+
+          <style>{`
+ @keyframes scroll-loop {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: scroll-loop 30s linear infinite;
+  width: max-content;
+}
+
+`}</style>
+
+
+
+
+          <style>{`
+        
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
+
+
+
+
+        </div>
+      )}
+    </>
   );
 }

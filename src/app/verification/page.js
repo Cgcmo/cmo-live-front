@@ -1,77 +1,139 @@
-"use client";
-import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+// "use client";
+// import { useState, useRef } from "react";
+// import { useRouter } from "next/navigation";
 
-export default function VerificationPage() {
+// export default function VerificationPage() {
+//   const router = useRouter();
+//   const [code, setCode] = useState(["", "", "", "", "", ""]);
+//   const inputRefs = useRef([]);
+
+//   const handleChange = (index, value) => {
+//     if (!isNaN(value) && value.length <= 1) {
+//       const newCode = [...code];
+//       newCode[index] = value;
+//       setCode(newCode);
+
+//       // Move to the next input if a digit is entered
+//       if (value && index < 5) {
+//         inputRefs.current[index + 1].focus();
+//       }
+//     }
+//   };
+
+//   const handleKeyDown = (index, event) => {
+//     if (event.key === "Backspace" && !code[index] && index > 0) {
+//       inputRefs.current[index - 1].focus();
+//     }
+//   };
+
+//   const handleConfirm = () => {
+//     const otp = code.join(""); // Combine OTP digits
+//     if (otp === "123456") { //  Replace with actual OTP logic
+//       localStorage.setItem("otpVerified", "true"); // Store verification
+//       router.push("/profile-update"); //  Redirect to Profile Update
+//     } else {
+//       alert("Invalid OTP. Try again.");
+//     }
+//   };
+
+//   return (
+//     <div className="flex flex-col min-h-screen items-center justify-center bg-gray-100 p-4">
+//       {/* Logo on Top */}
+//       <img src="/img_1.png" alt="Logo" className="w-24 mx-auto mb-4" />
+
+//       {/* Verification Box */}
+//       <div className="bg-white shadow-lg p-6 rounded-lg w-full md:w-1/3">
+//         <h2 className="text-xl font-bold text-center text-purple-900">Verification Code</h2>
+//         <p className="text-sm text-center text-gray-500">
+//           We Have Sent The Verification Code To Your Mobile Number
+//         </p>
+
+//         {/* OTP Input Fields */}
+//         <div className="flex justify-center my-4">
+//           {code.map((digit, index) => (
+//             <input
+//               key={index}
+//               type="text"
+//               maxLength="1"
+//               value={digit}
+//               onChange={(e) => handleChange(index, e.target.value)}
+//               onKeyDown={(e) => handleKeyDown(index, e)}
+//               ref={(el) => (inputRefs.current[index] = el)}
+//               className="w-10 h-10 border text-center text-xl rounded-md mx-1 focus:outline-none focus:ring-2 focus:ring-purple-500"
+//             />
+//           ))}
+//         </div>
+
+//         {/* Confirm Button */}
+//         <button
+//           onClick={handleConfirm}
+//           className="w-full bg-purple-900 text-white p-2 rounded-md hover:bg-purple-700 transition"
+//         >
+//           Confirm
+//         </button>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+'use client';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+export default function OtplessSignupPage() {
   const router = useRouter();
-  const [code, setCode] = useState(["", "", "", "", "", ""]);
-  const inputRefs = useRef([]);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hasRefreshed = sessionStorage.getItem('verification_refreshed');
 
-  const handleChange = (index, value) => {
-    if (!isNaN(value) && value.length <= 1) {
-      const newCode = [...code];
-      newCode[index] = value;
-      setCode(newCode);
-
-      // Move to the next input if a digit is entered
-      if (value && index < 5) {
-        inputRefs.current[index + 1].focus();
+      if (!hasRefreshed) {
+        sessionStorage.setItem('verification_refreshed', 'true');
+        window.location.reload();
       }
     }
-  };
+  }, []);
 
-  const handleKeyDown = (index, event) => {
-    if (event.key === "Backspace" && !code[index] && index > 0) {
-      inputRefs.current[index - 1].focus();
-    }
-  };
+  useEffect(() => {
+    return () => {
+      sessionStorage.removeItem('verification_refreshed');
+    };
+  }, []);
+  
+  useEffect(() => {
+    // Wait a short time to ensure the SDK has loaded
+    const timeout = setTimeout(() => {
+      if (typeof window !== 'undefined') {
+        window.otpless = (user) => {
+          const mobileFromOtpless = user?.identities?.find(
+            (id) => id.identityType === "MOBILE" && id.verified
+          )?.identityValue;
+        
+          const cleanedMobile = mobileFromOtpless?.replace(/^91/, "").trim();
+        
+          if (cleanedMobile && /^[6-9]\d{9}$/.test(cleanedMobile)) {
+            localStorage.setItem("otplessUser", JSON.stringify({ mobile: cleanedMobile }));
+          } else {
+            alert("Verified mobile number not found.");
+            return;
+          }
+        
+          alert("✅ Signup successful!");
+          router.push("/?showSignup=true");
+        };
+        
+      }
+    }, 10); // slight delay to ensure script loads
 
-  const handleConfirm = () => {
-    const otp = code.join(""); // Combine OTP digits
-    if (otp === "123456") { //  Replace with actual OTP logic
-      localStorage.setItem("otpVerified", "true"); // Store verification
-      router.push("/profile-update"); //  Redirect to Profile Update
-    } else {
-      alert("Invalid OTP. Try again.");
-    }
-  };
+    return () => clearTimeout(timeout);
+  }, [router]);
 
   return (
-    <div className="flex flex-col min-h-screen items-center justify-center bg-gray-100 p-4">
-      {/* Logo on Top */}
-      <img src="/img_1.png" alt="Logo" className="w-24 mx-auto mb-4" />
-
-      {/* Verification Box */}
-      <div className="bg-white shadow-lg p-6 rounded-lg w-full md:w-1/3">
-        <h2 className="text-xl font-bold text-center text-purple-900">Verification Code</h2>
-        <p className="text-sm text-center text-gray-500">
-          We Have Sent The Verification Code To Your Mobile Number
-        </p>
-
-        {/* OTP Input Fields */}
-        <div className="flex justify-center my-4">
-          {code.map((digit, index) => (
-            <input
-              key={index}
-              type="text"
-              maxLength="1"
-              value={digit}
-              onChange={(e) => handleChange(index, e.target.value)}
-              onKeyDown={(e) => handleKeyDown(index, e)}
-              ref={(el) => (inputRefs.current[index] = el)}
-              className="w-10 h-10 border text-center text-xl rounded-md mx-1 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          ))}
-        </div>
-
-        {/* Confirm Button */}
-        <button
-          onClick={handleConfirm}
-          className="w-full bg-purple-900 text-white p-2 rounded-md hover:bg-purple-700 transition"
-        >
-          Confirm
-        </button>
-      </div>
+    <div className="min-h-screen flex flex-col items-center justify-center">
+      
+      <div id="otpless-login-page"></div>
     </div>
   );
 }

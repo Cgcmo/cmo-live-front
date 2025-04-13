@@ -1,7 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SessionWrapper from "./session-wrapper"; // Import SessionProvider wrapper
-
+import Script from "next/script";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -21,11 +21,19 @@ export const metadata = {
   },
 };
 
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
         <link rel="icon" href="/img_1.png" type="image/png" />
+        <Script
+  id="otpless-sdk"
+  strategy="afterInteractive"
+  src="https://otpless.com/v4/auth.js"
+  data-appid="936N5Z8BP088IVS1951D"
+  
+/>
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SessionWrapper> {/* ✅ Wrap children with SessionProvider */}

@@ -68,7 +68,7 @@ export default function Homepage() {
   
   const fetchAlbums = async () => {
     try {
-      const res = await fetch("https://cmo-back-livee.onrender.com/albums");
+      const res = await fetch("http://127.0.0.1:5000/albums");
       const data = await res.json();
       setAlbums(data);
     } catch (err) {
@@ -79,8 +79,14 @@ export default function Homepage() {
 
   const fetchPhotos = async (album) => {
     try {
-      const res = await fetch(`https://cmo-back-livee.onrender.com/photos/${album._id}`);
+      const res = await fetch(`http://127.0.0.1:5000/photos/${album._id}`);
       const data = await res.json();
+      
+      if (data.length === 0) {
+        alert("This album is empty");
+        return;
+      }
+
       setSelectedAlbum(album);
       setAlbumPhotos(data);
     } catch (err) {
@@ -167,7 +173,7 @@ export default function Homepage() {
     if (!album || !album._id) return;
 
     try {
-      const response = await fetch(`https://cmo-back-livee.onrender.com/photos/${album._id}`);
+      const response = await fetch(`http://127.0.0.1:5000/photos/${album._id}`);
       if (!response.ok) throw new Error("Failed to fetch photos");
       const photos = await response.json();
 
@@ -283,7 +289,7 @@ export default function Homepage() {
       <Navbar search={search} setSearch={setSearch} setShowFilter={setShowFilter} setIsModalOpen={setIsModalOpen} setShowGallery={setShowGallery} />
 
 
-      <main className="flex-grow">
+      <div className="pt-4">
         
 
       {selectedAlbum !== null && (
@@ -317,9 +323,9 @@ export default function Homepage() {
 )}
 
 <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+
+
   {selectedAlbum === null
-
-
             ? albums.slice(indexOfFirstImage, indexOfLastImage).map((album, index) => (
               <div
                 key={index}
@@ -377,9 +383,8 @@ export default function Homepage() {
               </div>
             ))
             : (
-              <>
               
-                
+              <>
                 {albumPhotos
                   .slice(indexOfFirstImage, indexOfLastImage)
                   .map((photo, index) => (
@@ -580,9 +585,8 @@ export default function Homepage() {
             </div>
           </div>
         )}
-        </main>
-        <Footer />
+        <Footer  />
       </div>
-    
+    </div>
   );
 }
