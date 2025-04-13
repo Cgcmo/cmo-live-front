@@ -10,7 +10,6 @@ import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation'; // add at the top
 import { Suspense } from 'react';
 import SearchParamHandler from './SearchParamHandler';
-
 const arc1Images = ['share.png', 'heart.png'];
 const arc2Images = ['download.png', 'smily.png', 'gallery.png'];
 
