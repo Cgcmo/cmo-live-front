@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, Suspense } from 'react';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import VideoPlayer from './VideoPlayer';
