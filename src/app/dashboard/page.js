@@ -68,7 +68,7 @@ export default function Homepage() {
   
   const fetchAlbums = async () => {
     try {
-      const res = await fetch("https://cmo-back-livee.onrender.com/albums");
+      const res = await fetch("http://127.0.0.1:5000/albums");
       const data = await res.json();
       setAlbums(data);
     } catch (err) {
@@ -79,7 +79,7 @@ export default function Homepage() {
 
   const fetchPhotos = async (album) => {
     try {
-      const res = await fetch(`https://cmo-back-livee.onrender.com/photos/${album._id}`);
+      const res = await fetch(`http://127.0.0.1:5000/photos/${album._id}`);
       const data = await res.json();
       
       if (data.length === 0) {
@@ -173,7 +173,7 @@ export default function Homepage() {
     if (!album || !album._id) return;
 
     try {
-      const response = await fetch(`https://cmo-back-livee.onrender.com/photos/${album._id}`);
+      const response = await fetch(`http://127.0.0.1:5000/photos/${album._id}`);
       if (!response.ok) throw new Error("Failed to fetch photos");
       const photos = await response.json();
 

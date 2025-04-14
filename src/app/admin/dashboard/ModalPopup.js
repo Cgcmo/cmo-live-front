@@ -19,7 +19,7 @@ const ModalPopup = ({ isOpen, setIsOpen, fetchAlbums, fetchAllStats }) => {
   useEffect(() => {
     const fetchDistricts = async () => {
       try {
-        const response = await fetch("https://cmo-back-livee.onrender.com/districts");
+        const response = await fetch("http://127.0.0.1:5000/districts");
         if (response.ok) {
           const data = await response.json();
           setDistricts(data); // Update state with fetched districts
@@ -40,7 +40,7 @@ const ModalPopup = ({ isOpen, setIsOpen, fetchAlbums, fetchAllStats }) => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await fetch("https://cmo-back-livee.onrender.com/departments");
+        const response = await fetch("http://127.0.0.1:5000/departments");
         if (response.ok) {
           const data = await response.json();
           setDepartments(data); // Update state with fetched departments
@@ -87,7 +87,7 @@ const ModalPopup = ({ isOpen, setIsOpen, fetchAlbums, fetchAllStats }) => {
         cover: base64Cover,
       };
 
-      const response = await fetch("https://cmo-back-livee.onrender.com/create-album", {
+      const response = await fetch("http://127.0.0.1:5000/create-album", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newAlbum),

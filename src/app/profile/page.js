@@ -109,10 +109,10 @@ function App() {
   const fetchAllStats = async () => {
     try {
       const [userRes, albumRes, photoRes, downloadRes] = await Promise.all([
-        fetch("https://cmo-back-livee.onrender.com/count-users"),
-        fetch("https://cmo-back-livee.onrender.com/count-albums"),
-        fetch("https://cmo-back-livee.onrender.com/count-photos"),
-        fetch("https://cmo-back-livee.onrender.com/get-download-count"),
+        fetch("http://127.0.0.1:5000/count-users"),
+        fetch("http://127.0.0.1:5000/count-albums"),
+        fetch("http://127.0.0.1:5000/count-photos"),
+        fetch("http://127.0.0.1:5000/get-download-count"),
       ]);
 
       const totalUsers = (await userRes.json()).total_users;
