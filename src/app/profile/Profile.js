@@ -33,7 +33,7 @@ const Profile = () => {
     }
 
     // fetch districts
-    fetch("http://127.0.0.1:5000/districts")
+    fetch("https://cmo-back-livee.onrender.com/districts")
       .then((res) => res.json())
       .then((data) => setDistricts(data))
       .catch((err) => console.error("Failed to load districts", err));
@@ -63,7 +63,7 @@ const Profile = () => {
     if (!user) return;
 
     try {
-      const res = await fetch(`http://127.0.0.1:5000/update-client/${user.userId}`, {
+      const res = await fetch(`https://cmo-back-livee.onrender.com/update-client/${user.userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

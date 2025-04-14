@@ -17,7 +17,7 @@ export default function SearchResults() {
   useEffect(() => {
     if (!query) return;
 
-    fetch("http://127.0.0.1:5000/master-search", {
+    fetch("https://cmo-back-livee.onrender.com/master-search", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query }),
