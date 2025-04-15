@@ -66,7 +66,7 @@ export default function UploadPhoto() {
       let uploadPhotos = [];
 
       if (eventSelect && eventSelect !== "Select Event") {
-        const eventResponse = await fetch("http://192.168.73.169:5000/fetch-album-photos", {
+        const eventResponse = await fetch("https://3211-2409-4043-400-c70d-b58e-5c61-b8a5-dfdc.ngrok-free.app/fetch-album-photos", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           mode: "cors",
@@ -81,7 +81,7 @@ export default function UploadPhoto() {
       }
 
       if (selectedDate) {
-        const dateResponse = await fetch("http://192.168.73.169:5000/fetch-photos-by-date", {
+        const dateResponse = await fetch("https://3211-2409-4043-400-c70d-b58e-5c61-b8a5-dfdc.ngrok-free.app/fetch-photos-by-date", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           mode: "cors",
@@ -99,7 +99,7 @@ export default function UploadPhoto() {
         const reader = new FileReader();
         reader.onloadend = async () => {
           const base64String = reader.result.split(",")[1];
-          const uploadResponse = await fetch("http://192.168.73.169:5000/search-by-upload", {
+          const uploadResponse = await fetch("https://3211-2409-4043-400-c70d-b58e-5c61-b8a5-dfdc.ngrok-free.app/search-by-upload", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ image: base64String }),
@@ -163,7 +163,7 @@ export default function UploadPhoto() {
 
   const handleDownloadC = async () => {
     try {
-      await fetch("http://192.168.73.169:5000/increment-download-count", {
+      await fetch("https://3211-2409-4043-400-c70d-b58e-5c61-b8a5-dfdc.ngrok-free.app/increment-download-count", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
@@ -302,7 +302,7 @@ export default function UploadPhoto() {
   const totalPages = Math.ceil(images.length / imagesPerPage);
 
   useEffect(() => {
-    fetch("http://192.168.73.169:5000/get-events")
+    fetch("https://3211-2409-4043-400-c70d-b58e-5c61-b8a5-dfdc.ngrok-free.app/get-events")
       .then((response) => response.json())
       .then((data) => setEvents(data))
       .catch((error) => console.error("Error fetching events:", error));
