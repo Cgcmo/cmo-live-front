@@ -66,7 +66,7 @@ export default function UploadPhoto() {
       let uploadPhotos = [];
 
       if (eventSelect && eventSelect !== "Select Event") {
-        const eventResponse = await fetch("https://3211-2409-4043-400-c70d-b58e-5c61-b8a5-dfdc.ngrok-free.app/fetch-album-photos", {
+        const eventResponse = await fetch("https://cmo-back-livee.onrender.com/fetch-album-photos", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           mode: "cors",
@@ -81,7 +81,7 @@ export default function UploadPhoto() {
       }
 
       if (selectedDate) {
-        const dateResponse = await fetch("https://3211-2409-4043-400-c70d-b58e-5c61-b8a5-dfdc.ngrok-free.app/fetch-photos-by-date", {
+        const dateResponse = await fetch("https://cmo-back-livee.onrender.com/fetch-photos-by-date", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           mode: "cors",
@@ -163,7 +163,7 @@ export default function UploadPhoto() {
 
   const handleDownloadC = async () => {
     try {
-      await fetch("https://3211-2409-4043-400-c70d-b58e-5c61-b8a5-dfdc.ngrok-free.app/increment-download-count", {
+      await fetch("https://cmo-back-livee.onrender.com/increment-download-count", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
@@ -302,7 +302,7 @@ export default function UploadPhoto() {
   const totalPages = Math.ceil(images.length / imagesPerPage);
 
   useEffect(() => {
-    fetch("https://3211-2409-4043-400-c70d-b58e-5c61-b8a5-dfdc.ngrok-free.app/get-events")
+    fetch("https://cmo-back-livee.onrender.com/get-events")
       .then((response) => response.json())
       .then((data) => setEvents(data))
       .catch((error) => console.error("Error fetching events:", error));
