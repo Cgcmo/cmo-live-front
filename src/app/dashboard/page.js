@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import UploadPhotoModal from "./components/UploadPhotoModal";
 import { useSession, signOut } from "next-auth/react";
+import Masonry from 'react-masonry-css';
 
 const images = [];
 
@@ -31,33 +32,20 @@ export default function Homepage() {
   const [albumPhotos, setAlbumPhotos] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
-  // ✅ Correctly get status from useSession
   const { data: session, status } = useSession();
   const [otpUser, setOtpUser] = useState(null);
-  // useEffect(() => {
-  //   if (status === "unauthenticated") {
-  //     router.push("/");
-  //   }
-  // }, [status, router]);
-
-  // if (status === "loading") {
-  //   return <p className="text-center mt-10">Loading...</p>;
-  // }
-
-  // useEffect(() => {
-  //   if (status === "unauthenticated") {
-  //     router.push("/");
-  //   } else {
-  //     fetchAlbums();  // fetch only when authenticated
-  //   }
-  // }, [status, router]);
-
+  const breakpointColumnsObj = {
+    default: 4,
+    1280: 3,
+    768: 2,
+    500: 1
+  };
 
   useEffect(() => {
     const storedUser = localStorage.getItem("otpUser");
-  
+
     if (status === "loading") return; // wait for NextAuth check
-  
+
     if (!storedUser && status === "unauthenticated") {
       router.push("/"); // ❌ No OTP user & not logged in via Google
     } else {
@@ -65,7 +53,7 @@ export default function Homepage() {
       fetchAlbums(); // ✅ Continue as logged in
     }
   }, [status]);
-  
+
   const fetchAlbums = async () => {
     try {
       const res = await fetch("https://cmo-back-livee.onrender.com/albums");
@@ -81,7 +69,7 @@ export default function Homepage() {
     try {
       const res = await fetch(`https://cmo-back-livee.onrender.com/photos/${album._id}`);
       const data = await res.json();
-      
+
       if (data.length === 0) {
         alert("This album is empty");
         return;
@@ -147,11 +135,11 @@ export default function Homepage() {
 
   const saveToDownloadHistory = (newItem) => {
     let history = JSON.parse(localStorage.getItem("downloadHistory") || "[]");
-  
+
     // Remove duplicate if any
     history = history.filter((item) => item.title !== newItem.title);
     history.unshift(newItem); // Add new item at top
-  
+
     let success = false;
     while (!success && history.length > 0) {
       try {
@@ -168,7 +156,7 @@ export default function Homepage() {
     }
   };
 
-  
+
   const handleDownloadAlbum = async (album) => {
     if (!album || !album._id) return;
 
@@ -201,7 +189,7 @@ export default function Homepage() {
         lastDownload: new Date().toLocaleDateString("en-GB"), // e.g., 07/04/2025
         photoCount: photos.length,
       };
-  
+
       saveToDownloadHistory(historyItem);
 
     } catch (error) {
@@ -290,43 +278,47 @@ export default function Homepage() {
 
 
       <div className="pt-4">
+
+
+        {selectedAlbum !== null && (
+          <div className="flex justify-between items-center w-full px-4 py-3 top-0 z-30">
+            <button
+              onClick={() => {
+                setSelectedAlbum(null);
+                setSelectedImages([]);
+                setSelectAll(false);
+              }}
+              className="text-[#170645] px-4 py-1 font-normal rounded-lg text-sm sm:text-base"
+            >
+              ← Back
+            </button>
+
+            <h2 className="text-center font-extrabold text-xl sm:text-3xl text-[#170645] truncate max-w-[50%]">
+              {selectedAlbum.name}
+            </h2>
+
+            <label className="flex items-center gap-2 text-[#170645] font-semibold text-sm sm:text-base cursor-pointer">
+              <input
+                type="checkbox"
+                checked={selectAll}
+                onChange={handleSelectAll}
+                className="accent-[#170645] w-4 h-4"
+              />
+              <span>Select All</span>
+            </label>
+
+          </div>
+        )}
+
         
 
-      {selectedAlbum !== null && (
-  <div className="flex justify-between items-center w-full px-4 py-3 top-0 z-30">
-    <button
-      onClick={() => {
-        setSelectedAlbum(null);
-        setSelectedImages([]);
-        setSelectAll(false);
-      }}
-      className="text-[#170645] px-4 py-1 font-normal rounded-lg text-sm sm:text-base"
-    >
-      ← Back
-    </button>
-
-    <h2 className="text-center font-extrabold text-xl sm:text-3xl text-[#170645] truncate max-w-[50%]">
-      {selectedAlbum.name}
-    </h2>
-
-    <label className="flex items-center gap-2 text-[#170645] font-semibold text-sm sm:text-base cursor-pointer">
-  <input
-    type="checkbox"
-    checked={selectAll}
-    onChange={handleSelectAll}
-    className="accent-[#170645] w-4 h-4"
-  />
-  <span>Select All</span>
-</label>
-
-  </div>
-)}
-
-<div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
-
-
-  {selectedAlbum === null
-            ? albums.slice(indexOfFirstImage, indexOfLastImage).map((album, index) => (
+          {selectedAlbum === null
+            ?(<Masonry
+              breakpointCols={breakpointColumnsObj}
+              className="my-masonry-grid"
+              columnClassName="my-masonry-grid_column"
+            >
+    { albums.slice(indexOfFirstImage, indexOfLastImage).map((album, index) => (
               <div
                 key={index}
                 onClick={() => fetchPhotos(album)}
@@ -379,12 +371,16 @@ export default function Homepage() {
                     <FiDownload size={16} className="text-gray-500 " />
                   </button>
                 </div>
-
               </div>
-            ))
+              ))}
+  </Masonry>)
             : (
-              
               <>
+              <Masonry
+      breakpointCols={breakpointColumnsObj}
+      className="my-masonry-grid"
+      columnClassName="my-masonry-grid_column"
+    >
                 {albumPhotos
                   .slice(indexOfFirstImage, indexOfLastImage)
                   .map((photo, index) => (
@@ -392,30 +388,31 @@ export default function Homepage() {
                       key={index}
                       className="break-inside-avoid bg-white p-4 rounded-lg group transition-all duration-300 cursor-pointer "
                     >
-                      
+
                       <div className="relative rounded-[30px] overflow-hidden">
-                      <input
-              type="checkbox"
-              className="absolute top-4 right-4 z-10 w-4 h-4 accent-[#170645]"
-              checked={selectedImages.includes(photo.image)}
-              onChange={() => handleImageSelect(photo.image)}
-            />
+                        <input
+                          type="checkbox"
+                          className="absolute top-4 right-4 z-10 w-4 h-4 accent-[#170645]"
+                          checked={selectedImages.includes(photo.image)}
+                          onChange={() => handleImageSelect(photo.image)}
+                        />
                         <img
                           src={photo.image}
                           alt={`Photo ${index + 1}`}
                           className="rounded-[20px] mb-4"
-                          style={{
-                            width: '100%',
-                            height: 'auto',
-                            display: 'block',
-                            breakInside: 'avoid',
-                          }}
+                          // style={{
+                          //   width: '100%',
+                          //   height: 'auto',
+                          //   display: 'block',
+                          //   breakInside: 'avoid',
+                          // }}
                         />
 
                       </div>
                     </div>
                   ))}
-                  
+                  </Masonry>
+
                 <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 flex flex-col sm:flex-row gap-3 px-4 py-3 rounded-full">
                   <button
                     onClick={handleShareAll}
@@ -433,7 +430,7 @@ export default function Homepage() {
 
               </>
             )}
-        </div>
+      
 
         {/* Pagination */}
         {totalPages > 1 && (
@@ -585,7 +582,7 @@ export default function Homepage() {
             </div>
           </div>
         )}
-        <Footer  />
+        <Footer />
       </div>
     </div>
   );

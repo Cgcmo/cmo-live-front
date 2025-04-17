@@ -107,13 +107,7 @@ export default function Navbar({ setShowGallery, setGalleryPhotos,fetchAlbums: f
         <img src="/CG logo.webp" alt="Logo" className="w-[60px] h-[60px] md:w-[71px] md:h-[71px]" />
       </div>
 
-      {/* Middle Section: Search Bar (Hidden in Small Screens) */}
-      {/* <div className="hidden md:flex items-center border border-gray-300 rounded-full overflow-hidden bg-gray-100 w-[600px] lg:w-[900px] h-[45px] px-3"> */}
-        {/* <button onClick={() => setShowFilter(true)} className="px-4 py-2 text-gray-600 flex items-center gap-2">
-          Filter <FaChevronDown className="text-sm" />
-        </button>
-        <span className="text-gray-400 px-3">|</span> */}
-        <div className="hidden md:flex flex-col relative w-[600px] lg:w-[900px]">
+        <div className="hidden md:flex flex-col relative w-[65vw]">
   <div className="flex items-center border border-gray-300 rounded-full overflow-hidden bg-gray-100 h-[45px] px-3 z-10">
     <input
       type="text"

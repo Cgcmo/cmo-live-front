@@ -107,7 +107,7 @@ export default function Profile() {
             placeholder="Enter Name"
             value={user.name}
             onChange={(e) => setUser({ ...user, name: e.target.value })}
-            className="w-full mt-2 p-3 border rounded-full text-[#170645] focus:outline-none focus:ring-2 focus:ring-[#170645]"
+            className="w-full mt-2 p-3 pl-5 border border-gray-500 rounded-full text-[#170645] focus:outline-none focus:ring-2 focus:ring-[#170645]"
           />
         </div>
 
@@ -118,7 +118,7 @@ export default function Profile() {
             placeholder="Contact"
             value={user.mobile}
             onChange={(e) => setUser({ ...user, mobile: e.target.value })}
-            className="w-full mt-2 p-3 border rounded-full text-[#170645] focus:outline-none focus:ring-2 focus:ring-[#170645]"
+            className="w-full mt-2 p-3 pl-5 border border-gray-500 rounded-full text-[#170645] focus:outline-none focus:ring-2 focus:ring-[#170645]"
           />
         </div>
 
@@ -127,7 +127,7 @@ export default function Profile() {
           <select
             value={user.district}
             onChange={(e) => setUser({ ...user, district: e.target.value })}
-            className="w-full mt-2 p-3 border rounded-full text-[#170645] focus:outline-none focus:ring-2 focus:ring-[#170645]"
+            className="w-full mt-2 p-3 pl-5 border border-gray-500 rounded-full text-[#170645] focus:outline-none focus:ring-2 focus:ring-[#170645]"
           >
             <option value="" disabled>Select District</option>
             {districts.map((dist, index) => (

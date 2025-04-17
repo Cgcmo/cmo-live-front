@@ -116,9 +116,9 @@ export default function Home() {
 
   return (
     <>
-     <Suspense fallback={null}>
-      <SearchParamHandler onShowLogin={setShowLoginPage} />
-    </Suspense>
+      <Suspense fallback={null}>
+        <SearchParamHandler onShowLogin={setShowLoginPage} />
+      </Suspense>
       {showLoginPage ? (
         <AuthPage />
       ) : (
@@ -129,8 +129,8 @@ export default function Home() {
               <Image
                 src="/Group 833.png"
                 alt="Logo"
-                width={45}
-                height={45}
+                width={71}
+                height={71}
                 className="rounded-full"
               />
             </div>
@@ -143,7 +143,7 @@ export default function Home() {
               >
                 {/* Hamburger Icon */}
                 <svg
-                  className="w-6 h-6"
+                  className="w-8 h-8"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -170,12 +170,12 @@ export default function Home() {
 
             {/* Right Controls (Hidden on Mobile) */}
             <div className="hidden sm:flex items-center space-x-3">
-            <button
-  className="bg-white text-[#170645] px-3 py-1 rounded-full text-sm"
-  onClick={() => setIsHindi(!isHindi)}
->
-  A<sub>अ</sub> {isHindi ? 'Eng' : 'Hindi'}
-</button>
+              <button
+                className="bg-white text-[#170645] px-3 py-1 rounded-full text-sm"
+                onClick={() => setIsHindi(!isHindi)}
+              >
+                A<sub>अ</sub> {isHindi ? 'Eng' : 'Hindi'}
+              </button>
 
 
               <div className="bg-white text-[#170645] px-3 py-1 rounded-full text-sm flex space-x-2">
@@ -195,11 +195,11 @@ export default function Home() {
           {menuOpen && (
             <div className="sm:hidden px-4 pb-4 space-y-2">
               <button
-  className="bg-white text-[#170645] px-3 py-1 rounded-full text-sm"
-  onClick={() => setIsHindi(!isHindi)}
->
-  A<sub>अ</sub> {isHindi ? 'Eng' : 'Hindi'}
-</button>
+                className="bg-white text-[#170645] px-3 py-1 rounded-full text-sm"
+                onClick={() => setIsHindi(!isHindi)}
+              >
+                A<sub>अ</sub> {isHindi ? 'Eng' : 'Hindi'}
+              </button>
 
 
               <div className="bg-white text-[#170645] w-full py-2 rounded-full text-sm flex justify-around">
@@ -272,8 +272,12 @@ export default function Home() {
 
           {/* Hero Section */}
           <div className="relative text-center px-1 pt-60  z-10">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-snug max-w-3xl mx-auto">
-            {isHindi ? 'छत्तीसगढ़ की पहली ' : 'Chhattisgarh First '}{' '}
+            <h1
+              className="max-w-5xl mx-auto font-bold leading-snug text-white text-center flex flex-wrap justify-center items-center gap-2"
+              style={{ fontSize: '57.28px', fontWeight: 700 }}
+            >
+              {isHindi ? 'छत्तीसगढ़ की पहली ' : 'Chhattisgarh First'}
+
               <span className="inline-block align-middle">
                 <button
                   className="group relative outline-0 bg-sky-200 [--sz-btn:52px] mt-[-10px] [--space:calc(var(--sz-btn)/5.5)] [--gen-sz:calc(var(--space)*2)] [--sz-text:calc(var(--sz-btn)-var(--gen-sz))] h-[var(--sz-btn)] w-[var(--sz-btn)] border border-solid border-transparent rounded-xl flex items-center justify-center aspect-square cursor-pointer transition-transform duration-200 active:scale-[0.95] bg-[linear-gradient(45deg,#efad21,#ffd60f)] [box-shadow:#3c40434d_0_1px_2px_0,#3c404326_0_2px_6px_2px,#0000004d_0_30px_60px_-30px,#34343459_0_-2px_6px_0_inset]"
@@ -287,41 +291,50 @@ export default function Home() {
                     <path
                       fillRule="evenodd"
                       clipRule="evenodd"
-                      d="M9 4.5a.75.75 0 01.721.544l.813 2.846a3.75 3.75 0 002.576 2.576l2.846.813a.75.75 0 010 1.442l-2.846.813a3.75 3.75 0 00-2.576 2.576l-.813 2.846a.75.75 0 01-1.442 0l-.813-2.846a3.75 3.75 0 00-2.576-2.576l-2.846-.813a.75.75 0 010-1.442l2.846-.813A3.75 3.75 0 007.466 7.89l.813-2.846A.75.75 0 019 4.5zM18 1.5a.75.75 0 01.728.568l.258 1.036c.236.94.97 1.674 1.91 1.91l1.036.258a.75.75 0 010 1.456l-1.036.258c-.94.236-1.674.97-1.91 1.91l-.258 1.036a.75.75 0 01-1.456 0l-.258-1.036a2.625 2.625 0 00-1.91-1.91l-1.036-.258a.75.75 0 010-1.456l1.036-.258a2.625 2.625 0 001.91-1.91l.258-1.036A.75.75 0 0118 1.5zM16.5 15a.75.75 0 01.712.513l.394 1.183c.15.447.5.799.948.948l1.183.395a.75.75 0 010 1.422l-1.183.395c-.447.15-.799.5-.948.948l-.395 1.183a.75.75 0 01-1.422 0l-.395-1.183a1.5 1.5 0 00-.948-.948l-1.183-.395a.75.75 0 010-1.422l1.183-.395c.447-.15.799-.5.948-.948l.395-1.183A.75.75 0 0116.5 15z"
+                      d="M9 4.5a.75.75 0 01.721.544l.813 2.846a3.75 3.75 0 002.576 2.576l2.846.813a.75.75 0 010 1.442l-2.846.813a3.75 3.75 0 00-2.576 2.576l-.813 2.846a.75.75 0 01-1.442 0l-.813-2.846a3.75 3.75 0 00-2.576-2.576l-2.846-.813a.75.75 0 010-1.442l2.846-.813A3.75 3.75 0 007.466 7.89l.813-2.846A.75.75 0 019 4.5z"
                     ></path>
                   </svg>
-                  <span
-                    className="[font-size:var(--sz-text)] font-extrabold leading-none text-white transition-all duration-200 group-hover:opacity-0"
-                  >
+                  <span className="[font-size:var(--sz-text)] font-extrabold leading-none text-white transition-all duration-200 group-hover:opacity-0">
                     AI
                   </span>
                 </button>
+              </span>
 
-              </span >{' '}<br></br>
-              {isHindi ? 'आधारित सीएमओ चित्र खोज मंच' : 'Based CMO Image Search Platform'}
+              <span
+                style={{
+                  background: 'linear-gradient(#FFFFFF -21.92%, #100236 156.58%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  display: 'inline-block',
+                }}
+              >
+                {isHindi ? 'आधारित सीएमओ चित्र खोज मंच' : 'Based CMO Image Search Platform'}
+              </span>
             </h1>
+
+
 
             <div className="relative mx-auto mt-8 max-w-md w-full flex justify-center">
               <SearchBar />
             </div>
 
             <div className="relative w-full overflow-hidden mt-12">
-  <div className="photo-marquee whitespace-nowrap flex items-center gap-6 px-4">
-    {[...Array(2)].map((_, loopIdx) => (
-      [201, 202, 203, 204, 205,].map((img, idx) => (
-        <Image
-          key={`${loopIdx}-${img}`}
-          src={`/${img}.png`}
-          alt={`img-${img}`}
-          width={326}
-          height={404}
-          className="rounded-[25px] object-cover max-w-[326px] h-[404px] mt-4 transform transition duration-300"
-          style={{ rotate: idx % 2 === 0 ? '3deg' : '-3deg' , marginBottom: '-60px'}}
-        />
-      ))
-    ))}
-  </div>
-  <style>{`
+              <div className="photo-marquee whitespace-nowrap flex items-center gap-6 px-4">
+                {[...Array(2)].map((_, loopIdx) => (
+                  [201, 202, 203, 204, 205,].map((img, idx) => (
+                    <Image
+                      key={`${loopIdx}-${img}`}
+                      src={`/${img}.png`}
+                      alt={`img-${img}`}
+                      width={326}
+                      height={404}
+                      className="rounded-[25px] object-cover max-w-[326px] h-[404px] mt-4 transform transition duration-300"
+                      style={{ rotate: idx % 2 === 0 ? '3deg' : '-3deg', marginBottom: '-60px' }}
+                    />
+                  ))
+                ))}
+              </div>
+              <style>{`
   @keyframes scroll-loop {
     0% {
       transform: translateX(0%);
@@ -354,7 +367,7 @@ export default function Home() {
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 `}</style>
 
-</div>
+            </div>
 
 
 
@@ -364,65 +377,66 @@ export default function Home() {
 
           {/* video section */}
           <section className="px-4 sm:px-6 md:px-8 py-12 bg-white text-[#170645]">
-            <h2 className="text-center text-xl sm:text-2xl md:text-3xl font-semibold mb-8">
-            {isHindi ? 'लेटेस्ट ' : 'Latest '} <span className="bg-yellow-300 px-1 rounded">{isHindi ? 'वीडियो' : 'Videos'}</span>
+            <h2 className="text-center text-xl sm:text-2xl md:text-3xl mb-8">
+              {isHindi ? 'लेटेस्ट ' : 'Latest '}
+              <span
+                className="inline-flex items-center justify-center text-black font-semibold text-xl sm:text-2xl md:text-3xl"
+                style={{
+                  backgroundImage: "url('/bgy.png')",
+                  backgroundSize: '100% 100%',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'center',
+                  width: '4em',  // based on text size
+                  height: '1.6em',
+                  lineHeight: 1,
+                }}
+              >
+                {isHindi ? 'वीडियो' : 'Videos'}
+              </span>
             </h2>
 
-            <div className="grid lg:grid-cols-3 gap-6 w-full px-2 sm:px-4 lg:px-6">
 
+            <div className="grid lg:grid-cols-2 gap-6 w-full px-2 sm:px-4 lg:px-6">
               {/* Left Large Video */}
-              <div className="lg:col-span-2">
+              <div className="w-full">
                 <div className="rounded-2xl overflow-hidden shadow-lg">
-                  <div className="aspect-video w-full">
-                    <div className="relative w-full h-full group">
-                      <VideoPlayer
-                        key={mainVideo.src} // Important for re-mounting on change
-                        src={mainVideo.src}
-                        title={mainVideo.title}
-                        aspect="aspect-video"
-                        variant="main"
-                        autoPlay={shouldAutoPlay}
-                      />
+                <div className="w-full aspect-video">
+  <VideoPlayer
+    key={mainVideo.src}
+    src={mainVideo.src}
+    title={mainVideo.title}
+    variant="main"
+    autoPlay={shouldAutoPlay}
+  />
+</div>
 
-
-                      {/* <source src="/videos/main.mp4" type="video/mp4" /> */}
-
-
-                    </div>
-                  </div>
                 </div>
               </div>
 
               {/* Right: 2x2 grid on large, vertical on mobile */}
-              <div className="grid grid-cols-2 gap-4 lg:mt-12">
+              <div className="grid grid-cols-2 gap-4 ">
                 {videoData.map((video, idx) => (
 
                   <div
                     key={idx}
-                    className="rounded-2xl overflow-hidden relative group cursor-pointer hover:opacity-90 transition"
+                    className="rounded-2xl overflow-hidden relative group cursor-pointer hover:opacity-90 transition aspect-video"
                   >
                     <VideoPlayer
                       src={video.src}
                       title={video.title}
-                      aspect="aspect-[4/3]"
+                      aspect="aspect-video"
                       variant="small"
                       onClick={() => {
                         setMainVideo(video);
                         setShouldAutoPlay(true); // now autoplay
                       }}
-
-
                     />
                   </div>
                 ))}
-
-
               </div>
             </div>
           </section>
           {/* vidoe seciton ended */}
-
-
 
           {/* Chief Minister Section */}
           <section className="relative py-12 px-4 sm:px-6 md:px-12">
@@ -445,27 +459,39 @@ export default function Home() {
 
               {/* Right: Text */}
               <div className="w-full lg:w-1/2 text-center lg:text-left">
-                <p style={{ fontSize: `${fontSize}px` }} className="text-lg text-gray-800 font-medium mb-2">
-                {isHindi ? 'आपके ' : 'Know Your '}{' '}
-                  <span style={{ fontSize: `${fontSize}px` }} className="bg-yellow-300 px-2 py-0.5 rounded-sm font-bold text-black">
-                  {isHindi ? 'मुख्यमंत्री' : 'Chief Minister'}
+                <p className=" text-gray-800 text-xl sm:text-2xl md:text-3xl mb-2">
+                  {isHindi ? 'आपके ' : 'Know Your '}{' '}
+                  <span
+                    className="inline-flex items-center justify-center font-bold text-black text-xl sm:text-2xl md:text-3xl"
+                    style={{
+                      backgroundImage: "url('/bgy.png')",
+                      backgroundSize: '100% 100%',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'center',
+                      width: '8em',
+                      height: '1.6em',
+                      lineHeight: 1,
+                    }}
+                  >
+                    {isHindi ? 'मुख्यमंत्री' : 'Chief Minister'}
                   </span>
                 </p>
-                <h2 style={{ fontSize: `${fontSize}px` }} className="text-2xl sm:text-3xl font-bold text-[#170645] mb-4">
-                {isHindi ? 'श्री विष्णुदेव साय' : 'Shri Vishnu Deo Sai'}
+                <br></br>
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#170645] mb-4">
+                  {isHindi ? 'श्री विष्णुदेव साय' : 'Shri Vishnu Deo Sai'}
                 </h2>
                 <p style={{ fontSize: `${fontSize}px` }} className="text-gray-800 leading-relaxed mb-3">
-                {isHindi
+                  {isHindi
                     ? '21 फरवरी 1964 को जन्मे, वे छत्तीसगढ़ के वर्तमान और चौथे मुख्यमंत्री हैं। वे इस पद को संभालने वाले पहले आदिवासी नेता हैं। वे 2020 से 2022 तक भारतीय जनता पार्टी, छत्तीसगढ़ के अध्यक्ष भी रह चुके हैं और वर्तमान में कुनकुरी से विधायक हैं।'
                     : 'Born 21 February 1964, he is an Indian politician currently serving as the 4th Chief Minister of Chhattisgarh. He is the first tribal leader to hold the post. He also served as President of Bharatiya Janata Party, Chhattisgarh from 2020 until 2022. He currently represents Kunkuri in the Chhattisgarh Legislative Assembly.'}
                 </p>
-                <p style={{ fontSize: `${fontSize}px` }}  className="text-gray-800 leading-relaxed mb-3">
-                {isHindi
+                <p style={{ fontSize: `${fontSize}px` }} className="text-gray-800 leading-relaxed mb-3">
+                  {isHindi
                     ? 'श्री विष्णुदेव साय का जन्म जशपुर जिले के बगिया गांव में एक कृषक परिवार में श्री राम प्रसाद साय और श्रीमती जशमणी देवी के घर हुआ था। उन्होंने 1991 में श्रीमती कौशल्या देवी से विवाह किया।'
                     : 'Shri Vishnu Deo Sai was born in a farmer\'s family in Bagia village of Jashpur District to Shri Ram Prasad Sai and Smt. Jashmani Devi on 21 February 1964. He married Kaushalya Devi in 1991.'}
                 </p>
                 <p style={{ fontSize: `${fontSize}px` }} className="text-gray-800 leading-relaxed">
-                {isHindi
+                  {isHindi
                     ? '13 दिसंबर 2023 को, श्री विष्णुदेव साय ने रायपुर के साइंस कॉलेज ग्राउंड में छत्तीसगढ़ के मुख्यमंत्री पद की शपथ ली।'
                     : 'On 13 December 2023, Shri Vishnu Deo Sai took oath as Chief Minister of Chhattisgarh at the Science College Ground in Raipur.'}
                 </p>
@@ -477,22 +503,20 @@ export default function Home() {
 
 
           {/* AI Upload Info Section */}
-          <section className="bg-black text-white py-16 px-4 sm:px-8 md:px-16">
+          <section className="bg-black text-white py-24 px-4 sm:px-8 md:px-16">
             <div className="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center gap-12">
 
               {/* Left Content */}
               <div className="w-full md:w-1/2">
-                <h2 style={{ fontSize: `${fontSize}px` }} className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-snug mb-4">
-                {isHindi
-    ? 'अपनी तस्वीरों को' : 'Discover Perfect Image Matches With'}{' '}
+                <h2 className="text-[32px] font-bold leading-snug mb-4">
+                  {isHindi ? 'अपनी तस्वीरों को' : 'Discover Perfect Image Matches With'}{' '}
                   <span
                     className="text-black px-4 py-1 rounded-sm font-bold inline-block"
                     style={{
-                      backgroundImage: "url('/bgy.png')", // Place this image in public folder
+                      backgroundImage: "url('/bgy.png')",
                       backgroundSize: 'contain',
                       backgroundRepeat: 'no-repeat',
                       backgroundPosition: 'center',
-                      fontSize: `${fontSize}px` ,
                     }}
                   >
                     AI-Powered
@@ -500,44 +524,50 @@ export default function Home() {
                   {isHindi ? 'तकनिकी से खोजें' : 'Uploads'} :
                 </h2>
 
-                <p style={{ fontSize: `${fontSize}px` }} className="text-gray-300 mb-6">
-                {isHindi
-    ? 'अपनी छवि अपलोड करें और हमारी एआई तकनीक से मिलती-जुलती तस्वीरें तुरंत पाएं।'
-    : 'Upload your image and let our AI technology work its magic. Our advanced image recognition system scans the ImgAR dataset to find the most accurate and relevant matches to your uploaded image.'}
+                <p className="text-gray-300 text-[18px] mb-6">
+                  {isHindi
+                    ? 'अपनी छवि अपलोड करें और हमारी एआई तकनीक से मिलती-जुलती तस्वीरें तुरंत पाएं।'
+                    : 'Upload your image and let our AI technology work its magic. Our advanced image recognition system scans the ImgAR dataset to find the most accurate and relevant matches to your uploaded image.'}
                 </p>
 
-                <h3 style={{ fontSize: `${fontSize}px` }} className="text-lg sm:text-xl font-bold mb-4">{isHindi ? 'कैसे काम करता है:' : 'How It Works:'}</h3>
-                <ul className="space-y-3 text-gray-200">
+                <h3 className="text-[28px] font-bold mb-4">{isHindi ? 'कैसे काम करता है:' : 'How It Works:'}</h3>
+
+                <ul className="space-y-3 text-gray-200 text-[18px]">
                   <li className="flex items-start gap-2">
                     <img src="/arrow.png" alt="arrow" className="w-[20px] h-[20px] mt-[2px] mr-2" />
-                    <span style={{ fontSize: `${fontSize}px` }} > {isHindi ? 'तस्वीर अपलोड करें: ड्रैग-एंड-ड्रॉप या फाइल चुनें।' : 'Upload an image: Drag and drop or choose from your files.'}
+                    <span>
+                      {isHindi ? 'तस्वीर अपलोड करें: ड्रैग-एंड-ड्रॉप या फाइल चुनें।' : 'Upload an image: Drag and drop or choose from your files.'}
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <img src="/arrow.png" alt="arrow" className="w-[20px] h-[20px] mt-[3px] mr-2" />
-                    <span style={{ fontSize: `${fontSize}px` }}> {isHindi ? 'एआई विश्लेषण: हमारी प्रणाली तस्वीर का विश्लेषण करती है।' : 'AI Analysis: Our AI scans and analyzes the image, identifying key features, colors, and patterns.'}.</span>
+                    <span>
+                      {isHindi ? 'एआई विश्लेषण: हमारी प्रणाली तस्वीर का विश्लेषण करती है।' : 'AI Analysis: Our AI scans and analyzes the image, identifying key features, colors, and patterns.'}
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <img src="/arrow.png" alt="arrow" className="w-[20px] h-[20px] mt-[3px] mr-2" />
-                    <span style={{ fontSize: `${fontSize}px` }}>{isHindi ? 'सटीक मिलान पाएं: आपकी तस्वीर से मिलती छवियों की सूची तुरंत पाएं।' : 'Find Exact Matches: Receive a curated set of matching images in seconds.'}</span>
+                    <span>
+                      {isHindi ? 'सटीक मिलान पाएं: आपकी तस्वीर से मिलती छवियों की सूची तुरंत पाएं।' : 'Find Exact Matches: Receive a curated set of matching images in seconds.'}
+                    </span>
                   </li>
                 </ul>
 
-                <button onClick={() => router.push('/verification')} style={{ fontSize: `${fontSize}px` }} className="mt-8 border border-yellow-400 text-yellow-400 px-14 py-4 rounded-full hover:bg-yellow-400 hover:text-black transition">
-                {isHindi ? 'रजिस्टर करें' : 'Register Now'}
+                <button
+                  onClick={() => router.push('/verification')}
+                  className="mt-8 border border-yellow-400 text-yellow-400 px-14 py-4 rounded-full hover:bg-yellow-400 hover:text-black transition text-[18px] font-semibold"
+                >
+                  {isHindi ? 'रजिस्टर करें' : 'Register Now'}
                 </button>
               </div>
 
               {/* Right Image */}
-              <div className="w-full md:w-1/2 flex flex-col items-center justify-center">
+              <div className="w-full md:w-1/2 flex flex-col items-center justify-end">
                 <img
-                  src="/Ai.gif" // Save your glowing face image as this
+                  src="/Ai.gif"
                   alt="AI Face Recognition"
-                  className="w-[50vw] w-full"
+                  className="w-full h-auto object-contain"
                 />
-                {/* <p className="text-xs mt-2 text-gray-400 tracking-wider uppercase">
-        Face recognition is under way...
-      </p> */}
               </div>
             </div>
           </section>
@@ -545,7 +575,7 @@ export default function Home() {
           {/* Trending Social Media Section */}
           <section className="py-12 px-4 sm:px-6 md:px-12 bg-white text-center">
             <h2 className="text-2xl sm:text-3xl font-semibold text-[#170645]">
-            {isHindi ? 'ट्रेंडिंग' : 'Trending'}{' '}
+              {isHindi ? 'ट्रेंडिंग' : 'Trending'}{' '}
               <span
                 className="inline-block font-bold text-black px-3 py-1"
                 style={{
@@ -555,7 +585,7 @@ export default function Home() {
                   backgroundPosition: 'center',
                 }}
               >
-               {isHindi ? 'सोशल मीडिया' : 'Social Media'}
+                {isHindi ? 'सोशल मीडिया' : 'Social Media'}
               </span>
             </h2>
 
@@ -654,7 +684,6 @@ export default function Home() {
           </section>
 
 
-          {/* Department Logos Section */}
           {/* Department Logos Scrolling Section */}
           <section className="py-12 bg-white overflow-hidden">
             <div className="relative w-full">

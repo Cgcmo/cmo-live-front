@@ -26,6 +26,7 @@ function App() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [otpUser, setOtpUser] = useState(null);
+  const userName = session?.user?.name || otpUser?.name || "";
 
 
   const [users, setUsers] = useState([]);
@@ -130,6 +131,8 @@ function App() {
       console.error("Failed to fetch stats:", error);
     }
   };
+
+
 
   useEffect(() => {
     fetchAllStats();
@@ -280,9 +283,12 @@ function App() {
           ← Back
         </button>
         <div className="text-center md:text-left mb-8 md:mb-0">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">Welcome To CMO Gallery</h1>
-          <p className="text-base sm:text-lg mt-2 mb-4">Here's Everything You Need To Know To Get Started.</p>
-          <p className="text-lg sm:text-xl font-semibold mt-6">Rajyotsava 2024 New Raipur</p>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold">Welcome To CMO Gallery</h1>
+          <p className="text-2xl sm:text-3xl md:text-4xl font-thin mt-2 mb-4">Here's Everything You Need To Know To Get Started.</p>
+          {userName && (
+            <p className="text-xl sm:text-2xl font-semibold mt-16">Hello , <span style={{ color: '#FFE100' }}>{userName}</span> Welcome To CMO Gallery</p>
+          )}
+
         </div>
         <img
           src="/CM.png"

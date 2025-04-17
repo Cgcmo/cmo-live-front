@@ -15,7 +15,7 @@ export default function VideoPlayer({
   useEffect(() => {
     setIsPlaying(autoPlay); // reset play state when src changes
     if (variant === 'main' && autoPlay && videoRef.current) {
-      videoRef.current.play().catch(() => {});
+      videoRef.current.play().catch(() => { });
     }
   }, [src, autoPlay, variant]);
 
@@ -26,9 +26,10 @@ export default function VideoPlayer({
 
   return (
     <div
-      className={`relative group rounded-2xl overflow-hidden shadow-lg w-full ${aspect} ${
-        variant !== 'main' ? 'cursor-pointer' : ''
-      }`}
+  className={`relative group rounded-2xl overflow-hidden shadow-lg w-full ${
+    variant === 'main' ? 'h-full' : aspect
+  } ${variant !== 'main' ? 'cursor-pointer' : ''}`}
+
       onClick={variant !== 'main' ? onClick : undefined}
     >
       <video
@@ -40,11 +41,11 @@ export default function VideoPlayer({
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         onEnded={() => {
-            if (variant === 'main' && videoRef.current) {
-              videoRef.current.currentTime = 0;
-              videoRef.current.play().catch(() => {});
-            }
-          }}
+          if (variant === 'main' && videoRef.current) {
+            videoRef.current.currentTime = 0;
+            videoRef.current.play().catch(() => { });
+          }
+        }}
       >
         <source src={src} type="video/mp4" />
       </video>
@@ -64,7 +65,7 @@ export default function VideoPlayer({
 
       {/* Title - Hidden when playing */}
       <div
-         className={`z-10 text-white bg-black bg-opacity-40 rounded-md transition-opacity duration-200 pointer-events-none ${titleStyles}`}
+        className={`z-10 text-white bg-black bg-opacity-40 rounded-md transition-opacity duration-200 pointer-events-none ${titleStyles}`}
         style={{ opacity: isPlaying ? 0 : 1 }}
       >
         {title}

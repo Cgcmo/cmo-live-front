@@ -308,6 +308,15 @@ export default function UploadPhoto() {
       .catch((error) => console.error("Error fetching events:", error));
   }, []);
 
+  useEffect(() => {
+    const otpUser = localStorage.getItem("otpUser");
+  
+    if (!otpUser && status !== "authenticated") {
+      router.replace("/"); // ❌ Not logged in
+    }
+  }, [status]);
+  
+
   return (
     <div className="flex flex-col items-center min-h-screen bg-white font-sans">
       <Navbar setShowGallery={setShowGallery} />
