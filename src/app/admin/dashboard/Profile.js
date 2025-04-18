@@ -87,7 +87,7 @@ export default function Profile() {
     //  ✅ Completely prevent Back/Forward navigation after logout
     window.history.replaceState(null, null, "/admin");
     window.history.pushState(null, null, "/admin");
-  
+
     // ✅ Reload the page to fully reset session state
     setTimeout(() => {
       window.location.href = "/admin"; // Full reload ensures session is cleared
@@ -123,11 +123,11 @@ export default function Profile() {
         </div>
 
         {/* District Dropdown */}
-        <div className="mt-4">
+        <div className="mt-4 relative">
           <select
             value={user.district}
             onChange={(e) => setUser({ ...user, district: e.target.value })}
-            className="w-full mt-2 p-3 pl-5 border border-gray-500 rounded-full text-[#170645] focus:outline-none focus:ring-2 focus:ring-[#170645]"
+            className="appearance-none w-full mt-2 p-3 pl-5 pr-10 border border-gray-500 rounded-full text-[#170645] focus:outline-none focus:ring-2 focus:ring-[#170645]"
           >
             <option value="" disabled>Select District</option>
             {districts.map((dist, index) => (
@@ -136,6 +136,18 @@ export default function Profile() {
               </option>
             ))}
           </select>
+
+          {/* Custom dropdown arrow */}
+          <div className="pointer-events-none absolute inset-y-0 pt-2 right-4 flex items-center text-[#170645]">
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
         </div>
 
         {/* Update Button */}

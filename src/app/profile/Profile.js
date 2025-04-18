@@ -180,18 +180,34 @@ const Profile = () => {
             onChange={(e) => setMobile(e.target.value)}
             className="w-full p-3 pl-5 border border-gray-500 rounded-full focus:outline-none text-[#170645]"
           />
-          <select
-            value={district}
-            onChange={(e) => setDistrict(e.target.value)}
-            className="w-full p-3 pl-5 border border-gray-500 text-[#170645] rounded-full focus:outline-none"
-          >
-            <option value="">Select District</option>
-            {districts.map((d, index) => (
-              <option key={index} value={d.name}>
-                {d.name}
-              </option>
-            ))}
-          </select>
+          <div className="relative w-full">
+  <select
+    value={district}
+    onChange={(e) => setDistrict(e.target.value)}
+    className="appearance-none w-full p-3 pl-5 pr-10 border border-gray-500 text-[#170645] rounded-full focus:outline-none"
+  >
+    <option value="">Select District</option>
+    {districts.map((d, index) => (
+      <option key={index} value={d.name}>
+        {d.name}
+      </option>
+    ))}
+  </select>
+
+  {/* Custom arrow */}
+  <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+    <svg
+      className="w-4 h-4 text-[#170645]"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
+  </div>
+</div>
+
 
           <button onClick={handleUpdate} className="w-full p-3 bg-[#170645] text-[#FFE100] rounded-full font-semibold">
             Update

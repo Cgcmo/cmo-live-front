@@ -28,7 +28,7 @@ function App() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [totalEvents, setTotalEvents] = useState(0);
-  const eventNames = ["Rajyotsava", "Mahtarivandan Yojna", "Mor Awas Mor Adhikar"];
+  const [userName, setUserName] = useState("");
   const [percentage, setPercentage] = useState(null);
   const [albums, setAlbums] = useState([]);
 
@@ -54,18 +54,6 @@ function App() {
     }
   };
 
-  // useEffect(() => {
-  //   const fetchEventCount = async () => {
-  //     try {
-  //       const response = await axios.get("/api/events/count"); // Call API to get count
-  //       setTotalEvents(response.data.count);
-  //     } catch (error) {
-  //       console.error("Error fetching event count:", error);
-  //     }
-  //   };
-
-  //   fetchEventCount();
-  // }, []);
 
   const fetchAllStats = async () => {
     try {
@@ -75,12 +63,12 @@ function App() {
         axios.get("https://cmo-back-livee.onrender.com/count-photos"),
         axios.get("https://cmo-back-livee.onrender.com/get-download-count"),
       ]);
-  
+
       const totalUsers = userRes.data.total_users;
       const totalAlbums = albumRes.data.total_albums;
       const totalPhotos = photoRes.data.total_photos;
       const totalDownloads = downloadRes.data.count || 0;
-  
+
       setStats([
         { label: "Total User", count: totalUsers.toString(), image: "/tuser.png", bg: "#A889FC80" },
         { label: "Total Download", count: totalDownloads.toString(), image: "/tdownload.png", bg: "#A1C181" },
@@ -91,7 +79,7 @@ function App() {
       console.error("Error fetching stats:", error);
     }
   };
-  
+
   useEffect(() => {
     fetchAllStats();
   }, []);
@@ -101,7 +89,7 @@ function App() {
         const res = await fetch("https://cmo-back-livee.onrender.com/get-download-count");
         const data = await res.json();
         const downloadCount = data.count || 0;
-  
+
         setStats(prev =>
           prev.map(stat =>
             stat.label === "Total Download"
@@ -113,22 +101,22 @@ function App() {
         console.error("Failed to fetch download count:", err);
       }
     };
-  
+
     fetchDownloadCount(); // initial fetch
-  
+
     const interval = setInterval(fetchDownloadCount, 10000); // 🔁 update every 10s
-  
+
     return () => clearInterval(interval); // cleanup
   }, []);
-  
-  
+
+
   const [stats, setStats] = useState([
     { label: "Total User", count: "0", image: "/tuser.png", bg: "#A889FC80" },
     { label: "Total Download", count: "0", image: "/tdownload.png", bg: "#A1C181" },
     { label: "Total Image", count: "0", image: "/timage.png", bg: "#90C0F6" },
     { label: "Total Event", count: "0", image: "/tevent.png", bg: "#F6CB90" },
   ]);
-  
+
   useEffect(() => {
     const fetchDownloadCount = async () => {
       try {
@@ -160,7 +148,15 @@ function App() {
   };
 
 
- 
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("otpUser");
+    if (storedUser) {
+      const userObj = JSON.parse(storedUser);
+      setUserName(userObj.name || "User");
+    }
+  }, []);
+
 
   useEffect(() => {
     const checkAuth = () => {
@@ -209,8 +205,8 @@ function App() {
   return (
     <div className="min-h-screen bg-white">
       {/* Navbar */}
-      <Navbar search={search} setSearch={setSearch} setShowFilter={setShowFilter} setShowGallery={setShowGallery}  fetchAlbums={fetchAlbums}
-  fetchAllStats={fetchAllStats} />
+      <Navbar search={search} setSearch={setSearch} setShowFilter={setShowFilter} setShowGallery={setShowGallery} fetchAlbums={fetchAlbums}
+        fetchAllStats={fetchAllStats} />
 
       {/* Filter Modal */}
       {showFilter && (
@@ -338,9 +334,12 @@ function App() {
       {/* Hero Section */}
       <div className="bg-gradient-to-b from-[#1a0645] via-[#170645] to-[#000000ee] text-white p-6 md:p-12 flex flex-col md:flex-row justify-between items-center rounded-b-[30px] md:rounded-b-[100px]">
         <div className="text-center md:text-left mb-8 md:mb-0">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">Welcome To CMO Gallery</h1>
-          <p className="text-base sm:text-lg mt-2 mb-4">Here's Everything You Need To Know To Get Started.</p>
-          <p className="text-lg sm:text-xl font-semibold mt-6">Rajyotsava 2024 New Raipur</p>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold">Welcome To CMO Gallery</h1>
+          <p className="text-2xl sm:text-3xl md:text-4xl font-thin mt-2 mb-4">Here's Everything You Need To Know To Get Started.</p>
+          <p className="text-xl sm:text-2xl font-semibold mt-16">
+            Hello, <span style={{ color: '#FFE100' }}>{userName} </span>Welcome to CMO Gallery
+          </p>
+
         </div>
         <img
           src="/CM.png"
@@ -403,18 +402,18 @@ function App() {
             ))}
           </div>
 
-        
+
         </div>
 
-            
+
         {currentTab === "All Events" && <AllPhotos albums={albums}
-  setAlbums={setAlbums} fetchAlbums={fetchAlbums} fetchAllStats={fetchAllStats} />}
+          setAlbums={setAlbums} fetchAlbums={fetchAlbums} fetchAllStats={fetchAllStats} />}
         {/* All Users Tab Content */}
         {/* Show UsersTable when the "All Users" tab is active */}
 
-        
+
         {currentTab === "All Users" && (
-          <UsersTable fetchAllStats={fetchAllStats}  toggleStatus={toggleStatus} />
+          <UsersTable fetchAllStats={fetchAllStats} toggleStatus={toggleStatus} />
         )}
 
 
