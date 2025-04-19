@@ -22,6 +22,7 @@ export default function Home() {
   const [fontSize, setFontSize] = useState(16); // default font size
   const [isHindi, setIsHindi] = useState(false);
   const router = useRouter();
+  const [scrolled, setScrolled] = useState(false);
 
 
   // Put this early inside your component before useState
@@ -110,6 +111,14 @@ export default function Home() {
     }
   }, [showLoginPage]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
 
 
@@ -120,100 +129,111 @@ export default function Home() {
         <SearchParamHandler onShowLogin={setShowLoginPage} />
       </Suspense>
       {showLoginPage ? (
-        <AuthPage />
+        <AuthPage setShowLoginPage={setShowLoginPage} />
       ) : (
         <div className="bg-[#170645] text-white">
-          <nav className="flex items-center justify-between px-4 sm:px-6 py-3">
-            {/* Left: Logo */}
-            <div className="flex items-center">
-              <Image
-                src="/Group 833.png"
-                alt="Logo"
-                width={71}
-                height={71}
-                className="rounded-full"
-              />
-            </div>
+          <div className="relative z-50">
+            <nav
+              className={`fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 sm:px-6 py-2 transition-all duration-300 ${scrolled ? 'bg-[#170645] shadow-md' : 'bg-transparent'
+                }`}
+            >
+              {/* Left: Logo */}
+              <div className="flex items-center">
+                <Image
+                  src="/Group 833.png"
+                  alt="Logo"
+                  width={71}
+                  height={71}
+                  className="rounded-full"
+                />
+              </div>
 
-            {/* Hamburger Icon on Mobile */}
-            <div className="sm:hidden">
-              <button
-                onClick={() => setMenuOpen(!menuOpen)}
-                className="text-white focus:outline-none"
-              >
-                {/* Hamburger Icon */}
-                <svg
-                  className="w-8 h-8"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
+              {/* Hamburger Icon on Mobile */}
+              <div className="sm:hidden relative z-50">
+                <button
+                  onClick={() => setMenuOpen(!menuOpen)}
+                  className="text-white focus:outline-none"
                 >
-                  {menuOpen ? (
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  ) : (
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 6h16M4 12h16M4 18h16"
-                    />
-                  )}
-                </svg>
-              </button>
-            </div>
-
-            {/* Right Controls (Hidden on Mobile) */}
-            <div className="hidden sm:flex items-center space-x-3">
-              <button
-                className="bg-white text-[#170645] px-3 py-1 rounded-full text-sm"
-                onClick={() => setIsHindi(!isHindi)}
-              >
-                A<sub>अ</sub> {isHindi ? 'Eng' : 'Hindi'}
-              </button>
-
-
-              <div className="bg-white text-[#170645] px-3 py-1 rounded-full text-sm flex space-x-2">
-                <button onClick={() => setFontSize((prev) => Math.min(prev + 2, 24))}>A+</button>
-                <button onClick={() => setFontSize((prev) => Math.max(prev - 2, 12))}>A-</button>
+                  <svg
+                    className="w-8 h-8"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    {menuOpen ? (
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    ) : (
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 6h16M4 12h16M4 18h16"
+                      />
+                    )}
+                  </svg>
+                </button>
               </div>
 
+              {/* Right Controls (Hidden on Mobile) */}
+              <div className="hidden sm:flex items-center space-x-3">
+                <button
+                  className="bg-white text-[#170645] px-4 h-[45px] rounded-full text-md"
+                  onClick={() => setIsHindi(!isHindi)}
+                >
+                  A<sub>अ</sub> {isHindi ? 'Eng' : 'Hindi'}
+                </button>
 
-              <button onClick={() => setShowLoginPage(true)} className="bg-yellow-400 text-[#170645] px-4 py-1 rounded-full font-medium flex items-center space-x-1">
-                <span>👤</span>
-                <span>Login</span>
-              </button>
-            </div>
-          </nav>
+                <div className="bg-white text-[#170645] px-4 h-[45px] rounded-full text-md flex space-x-2">
+                  <button onClick={() => setFontSize((prev) => Math.min(prev + 2, 24))}>A+</button>
+                  <button onClick={() => setFontSize((prev) => Math.max(prev - 2, 12))}>A-</button>
+                </div>
 
-          {/* Mobile Menu */}
-          {menuOpen && (
-            <div className="sm:hidden px-4 pb-4 space-y-2">
-              <button
-                className="bg-white text-[#170645] px-3 py-1 rounded-full text-sm"
-                onClick={() => setIsHindi(!isHindi)}
-              >
-                A<sub>अ</sub> {isHindi ? 'Eng' : 'Hindi'}
-              </button>
-
-
-              <div className="bg-white text-[#170645] w-full py-2 rounded-full text-sm flex justify-around">
-                <button onClick={() => setFontSize((prev) => Math.min(prev + 2, 24))}>A+</button>
-                <button onClick={() => setFontSize((prev) => Math.max(prev - 2, 12))}>A-</button>
+                <button
+                  onClick={() => setShowLoginPage(true)}
+                  className="bg-yellow-400 text-[#170645] px-4 h-[45px] rounded-full font-medium flex items-center space-x-1"
+                >
+                  <span>👤</span>
+                  <span>Login</span>
+                </button>
               </div>
+            </nav>
+
+            {/* Mobile Dropdown Menu (positioned below nav) */}
+            {menuOpen && (
+              <div className="fixed top-20 right-0 w-[30vw] px-4 py-4 flex flex-col items-end space-y-3  z-40">
+                {/* Language Toggle */}
+                <button
+                  className="bg-white text-[#170645] w-full max-w-[260px] py-2 rounded-full text-sm font-medium"
+                  onClick={() => setIsHindi(!isHindi)}
+                >
+                  A<sub className="text-xs">अ</sub> {isHindi ? 'Eng' : 'Hindi'}
+                </button>
+
+                {/* Font Size Controls */}
+                <div className="bg-white text-[#170645] w-full max-w-[260px] py-2 rounded-full text-sm font-medium flex justify-around">
+                  <button onClick={() => setFontSize((prev) => Math.min(prev + 2, 24))}>A+</button>
+                  <button onClick={() => setFontSize((prev) => Math.max(prev - 2, 12))}>A-</button>
+                </div>
+
+                {/* Login */}
+                <button
+                  onClick={() => setShowLoginPage(true)}
+                  className="bg-yellow-400 text-[#170645] w-full max-w-[260px] py-2 rounded-full font-semibold flex items-center justify-center space-x-2"
+                >
+                  <span>👤</span>
+                  <span>Login</span>
+                </button>
+              </div>
+            )}
+          </div>
 
 
-              <button onClick={() => setShowLoginPage(true)} className="bg-yellow-400 text-[#170645] w-full py-2 rounded-full font-medium flex items-center justify-center space-x-1">
-                <span>👤</span>
-                <span>Login</span>
-              </button>
-            </div>
-          )}
 
 
 
@@ -278,9 +298,9 @@ export default function Home() {
             >
               {isHindi ? 'छत्तीसगढ़ की पहली ' : 'Chhattisgarh First'}
 
-              <span className="inline-block align-middle">
+              <span className="inline-block ml-3 mt-2 align-middle">
                 <button
-                  className="group relative outline-0 bg-sky-200 [--sz-btn:52px] mt-[-10px] [--space:calc(var(--sz-btn)/5.5)] [--gen-sz:calc(var(--space)*2)] [--sz-text:calc(var(--sz-btn)-var(--gen-sz))] h-[var(--sz-btn)] w-[var(--sz-btn)] border border-solid border-transparent rounded-xl flex items-center justify-center aspect-square cursor-pointer transition-transform duration-200 active:scale-[0.95] bg-[linear-gradient(45deg,#efad21,#ffd60f)] [box-shadow:#3c40434d_0_1px_2px_0,#3c404326_0_2px_6px_2px,#0000004d_0_30px_60px_-30px,#34343459_0_-2px_6px_0_inset]"
+                  className="group relative outline-0 bg-sky-200 [--sz-btn:62px] mt-[-10px] [--space:calc(var(--sz-btn)/5.5)] [--gen-sz:calc(var(--space)*2)] [--sz-text:calc(var(--sz-btn)-var(--gen-sz))] h-[var(--sz-btn)] w-[var(--sz-btn)] border border-solid border-transparent rounded-xl flex items-center justify-center aspect-square cursor-pointer transition-transform duration-200 active:scale-[0.95] bg-[linear-gradient(45deg,#efad21,#ffd60f)] [box-shadow:#3c40434d_0_1px_2px_0,#3c404326_0_2px_6px_2px,#0000004d_0_30px_60px_-30px,#34343459_0_-2px_6px_0_inset]"
                 >
                   <svg
                     className="animate-pulse absolute z-10 overflow-visible transition-all duration-300 text-[#ffea50] group-hover:text-white top-[calc(var(--sz-text)/7)] left-[calc(var(--sz-text)/7)] h-[var(--gen-sz)] w-[var(--gen-sz)] group-hover:h-[var(--sz-text)] group-hover:w-[var(--sz-text)] group-hover:left-[calc(var(--sz-text)/4)] group-hover:top-[calc(calc(var(--gen-sz))/2)]"
@@ -315,8 +335,51 @@ export default function Home() {
 
 
             <div className="relative mx-auto mt-8 max-w-md w-full flex justify-center">
-              <SearchBar />
+              <button
+                onClick={() => {
+                  localStorage.removeItem("resetMobile");
+                  window.location.href = "/verification";
+                }}
+                className="group relative text-white px-8 py-3 rounded-lg font-semibold overflow-hidden z-10 transition-transform duration-300 transform hover:scale-105"
+              >
+                {/* Glowy background */}
+                <span className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-400 rounded-lg blur-xl opacity-70 group-hover:opacity-100 transition duration-500"></span>
+
+                {/* Stylish glowing gradient text */}
+                <span
+                  className="relative z-10 text-[20px] font-thin gradient-text"
+                  style={{
+                    background: 'linear-gradient(90deg, #f8e7f8, #b6a9b7)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    textShadow: '0 0 4px rgba(255,255,255,0.2)',
+                  }}
+                >
+                  Register Now
+                </span>
+
+                <style jsx>{`
+      button::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 0.5rem;
+        padding: 2px;
+        background: linear-gradient(45deg, #cf30aa, #402fb5, #dfa2da);
+        -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        z-index: 0;
+        transition: opacity 0.4s ease;
+      }
+    `}</style>
+              </button>
             </div>
+
+
+
 
             <div className="relative w-full overflow-hidden mt-12">
               <div className="photo-marquee whitespace-nowrap flex items-center gap-6 px-4">
@@ -400,15 +463,15 @@ export default function Home() {
               {/* Left Large Video */}
               <div className="w-full">
                 <div className="rounded-2xl overflow-hidden shadow-lg">
-                <div className="w-full aspect-video">
-  <VideoPlayer
-    key={mainVideo.src}
-    src={mainVideo.src}
-    title={mainVideo.title}
-    variant="main"
-    autoPlay={shouldAutoPlay}
-  />
-</div>
+                  <div className="w-full aspect-video">
+                    <VideoPlayer
+                      key={mainVideo.src}
+                      src={mainVideo.src}
+                      title={mainVideo.title}
+                      variant="main"
+                      autoPlay={shouldAutoPlay}
+                    />
+                  </div>
 
                 </div>
               </div>
@@ -441,9 +504,15 @@ export default function Home() {
           {/* Chief Minister Section */}
           <section className="relative py-12 px-4 sm:px-6 md:px-12">
             {/* Background Split */}
-            <div className="absolute inset-0 flex">
-              <div className="w-1/3 bg-white"></div>
-              <div className="w-2/3 bg-[#e9e1fe]"></div>
+            <div className="absolute inset-0 z-0">
+              {/* Desktop view: 1/3 white + 2/3 purple */}
+              <div className="hidden lg:flex h-full">
+                <div className="w-1/3 bg-white"></div>
+                <div className="w-2/3 bg-[#e9e1fe]"></div>
+              </div>
+
+              {/* Mobile view: full purple background */}
+              <div className="lg:hidden h-full w-full bg-[#e9e1fe]"></div>
             </div>
 
             {/* Foreground Content */}
@@ -462,19 +531,19 @@ export default function Home() {
                 <p className=" text-gray-800 text-xl sm:text-2xl md:text-3xl mb-2">
                   {isHindi ? 'आपके ' : 'Know Your '}{' '}
                   <span
-                    className="inline-flex items-center justify-center font-bold text-black text-xl sm:text-2xl md:text-3xl"
+                    className="inline-block font-bold text-black text-xl sm:text-2xl md:text-3xl px-4 py-1"
                     style={{
                       backgroundImage: "url('/bgy.png')",
                       backgroundSize: '100% 100%',
                       backgroundRepeat: 'no-repeat',
                       backgroundPosition: 'center',
-                      width: '8em',
-                      height: '1.6em',
                       lineHeight: 1,
+                      display: 'inline-block',
                     }}
                   >
                     {isHindi ? 'मुख्यमंत्री' : 'Chief Minister'}
                   </span>
+
                 </p>
                 <br></br>
                 <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#170645] mb-4">
@@ -554,7 +623,11 @@ export default function Home() {
                 </ul>
 
                 <button
-                  onClick={() => router.push('/verification')}
+                  onClick={() => {
+                    localStorage.removeItem("resetMobile");
+                    window.location.href = "/verification"; // ✅ correct for signup
+                  }}
+
                   className="mt-8 border border-yellow-400 text-yellow-400 px-14 py-4 rounded-full hover:bg-yellow-400 hover:text-black transition text-[18px] font-semibold"
                 >
                   {isHindi ? 'रजिस्टर करें' : 'Register Now'}
@@ -708,23 +781,6 @@ export default function Home() {
           {/* Footer Section */}
           <footer className="bg-gray-200 text-black py-8 ">
             <div className="max-w-[1621px] mx-auto px-6 md:px-16">
-
-              {/* Districts List */}
-              <div className="border-b border-gray-400 pb-6 mb-6">
-                <h3 className="font-bold text-lg text-gray-800 mb-3">Districts List</h3>
-                <p className="text-sm text-gray-600 leading-relaxed flex flex-wrap gap-2">
-                  {[
-                    "Bijapur", "Sukma", "Dantewada", "Bastar", "Kondagaon", "Narayanpur", "Kanker", "Kawardha", "Balod",
-                    "Rajnandgaon", "Durg", "Bemetara", "Dhamtari", "Gariaband", "Raipur", "Baloda Bazar", "Mahasamund",
-                    "Bilaspur", "Mungeli", "Korba", "Janjgir-Champa", "Raigarh", "Jashpur", "Korea", "Surajpur", "Surguja", "Balrampur"
-                  ].map((district, index, arr) => (
-                    <span key={index} className="flex items-center whitespace-nowrap">
-                      {district}
-                      {index !== arr.length - 1 && <span className="mx-2">|</span>}
-                    </span>
-                  ))}
-                </p>
-              </div>
 
               {/* Featured Links & Reach Us */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-16">

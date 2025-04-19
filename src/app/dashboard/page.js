@@ -10,6 +10,7 @@ import Navbar from "./components/Navbar";
 import UploadPhotoModal from "./components/UploadPhotoModal";
 import { useSession, signOut } from "next-auth/react";
 import Masonry from 'react-masonry-css';
+import { useSearchParams } from "next/navigation";
 
 const images = [];
 
@@ -40,6 +41,7 @@ export default function Homepage() {
     768: 2,
     500: 1
   };
+  
 
   useEffect(() => {
     const storedUser = localStorage.getItem("otpUser");
@@ -310,15 +312,15 @@ export default function Homepage() {
           </div>
         )}
 
-        
 
-          {selectedAlbum === null
-            ?(<Masonry
-              breakpointCols={breakpointColumnsObj}
-              className="my-masonry-grid"
-              columnClassName="my-masonry-grid_column"
-            >
-    { albums.slice(indexOfFirstImage, indexOfLastImage).map((album, index) => (
+
+        {selectedAlbum === null
+          ? (<Masonry
+            breakpointCols={breakpointColumnsObj}
+            className="my-masonry-grid"
+            columnClassName="my-masonry-grid_column"
+          >
+            {albums.slice(indexOfFirstImage, indexOfLastImage).map((album, index) => (
               <div
                 key={index}
                 onClick={() => fetchPhotos(album)}
@@ -372,15 +374,15 @@ export default function Homepage() {
                   </button>
                 </div>
               </div>
-              ))}
-  </Masonry>)
-            : (
-              <>
+            ))}
+          </Masonry>)
+          : (
+            <>
               <Masonry
-      breakpointCols={breakpointColumnsObj}
-      className="my-masonry-grid"
-      columnClassName="my-masonry-grid_column"
-    >
+                breakpointCols={breakpointColumnsObj}
+                className="my-masonry-grid"
+                columnClassName="my-masonry-grid_column"
+              >
                 {albumPhotos
                   .slice(indexOfFirstImage, indexOfLastImage)
                   .map((photo, index) => (
@@ -400,37 +402,31 @@ export default function Homepage() {
                           src={photo.image}
                           alt={`Photo ${index + 1}`}
                           className="rounded-[20px] mb-4"
-                          // style={{
-                          //   width: '100%',
-                          //   height: 'auto',
-                          //   display: 'block',
-                          //   breakInside: 'avoid',
-                          // }}
                         />
 
                       </div>
                     </div>
                   ))}
-                  </Masonry>
+              </Masonry>
 
-                <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 flex flex-col sm:flex-row gap-3 px-4 py-3 rounded-full">
-                  <button
-                    onClick={handleShareAll}
-                    className="min-w-[150px] px-4 py-2 bg-yellow-400 text-black rounded-full flex items-center justify-center gap-2 text-sm font-semibold shadow hover:shadow-md"
-                  >
-                    <FiShare size={18} /> Share
-                  </button>
-                  <button
-                    onClick={handleDownloadAll}
-                    className="min-w-[150px] px-4 py-2 bg-[#170645] text-yellow-500 rounded-full flex items-center justify-center gap-2 text-sm font-semibold shadow hover:shadow-md"
-                  >
-                    <FiDownload size={18} /> Download
-                  </button>
-                </div>
+              <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 flex flex-col sm:flex-row gap-3 px-4 py-3 rounded-full">
+                <button
+                  onClick={handleShareAll}
+                  className="min-w-[150px] px-4 py-2 bg-yellow-400 text-black rounded-full flex items-center justify-center gap-2 text-sm font-semibold shadow hover:shadow-md"
+                >
+                  <FiShare size={18} /> Share
+                </button>
+                <button
+                  onClick={handleDownloadAll}
+                  className="min-w-[150px] px-4 py-2 bg-[#170645] text-yellow-500 rounded-full flex items-center justify-center gap-2 text-sm font-semibold shadow hover:shadow-md"
+                >
+                  <FiDownload size={18} /> Download
+                </button>
+              </div>
 
-              </>
-            )}
-      
+            </>
+          )}
+
 
         {/* Pagination */}
         {totalPages > 1 && (

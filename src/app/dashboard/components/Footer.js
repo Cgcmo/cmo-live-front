@@ -1,12 +1,17 @@
-
+import React, { useEffect, useState } from 'react';
 const Footer = () => {
     // Dynamic District List
-    const districts = [
-        "Bijapur", "Sukma", "Dantewada", "Bastar", "Kondagaon", "Narayanpur", "Kanker", "Kawardha", "Balod",
-        "Rajnandgaon", "Durg", "Bemetara", "Dhamtari", "Gariaband", "Raipur", "Baloda Bazar", "Mahasamund",
-        "Bilaspur", "Mungeli", "Korba", "Janjgir-Champa", "Raigarh", "Jashpur", "Korea", "Surajpur", "Surguja", "Balrampur"
-    ];
+    const [districts, setDistricts] = useState([]);
 
+    useEffect(() => {
+        fetch("http://localhost:5000/districts") // 🔁 Replace with actual domain (e.g., https://api.choicesay.com)
+            .then((res) => res.json())
+            .then((data) => {
+                const names = data.map(d => d.name);
+                setDistricts(names);
+            })
+            .catch((err) => console.error("Failed to fetch districts", err));
+    }, []);
     // Dynamic Featured Links
     const featuredLinks = [
         { name: "Home", url: "#" },
@@ -36,12 +41,15 @@ const Footer = () => {
                 <div className="border-b border-gray-400 pb-6 mb-6">
                     <h3 className="font-bold text-lg text-gray-800 mb-3">Districts List</h3>
                     <p className="text-sm text-gray-600 leading-relaxed flex flex-wrap gap-2">
-                        {districts.map((district, index) => (
-                            <span key={index} className="flex items-center whitespace-nowrap">
-                                {district}
-                                {index !== districts.length - 1 && <span className="mx-2">|</span>}
-                            </span>
-                        ))}
+                    {districts.map((district, index) => (
+  <span key={index} className="flex items-center whitespace-nowrap">
+    <a href={`/district/${district}`} className="hover:underline text-blue-700">
+      {district}
+    </a>
+    {index !== districts.length - 1 && <span className="mx-2">|</span>}
+  </span>
+))}
+
                     </p>
                 </div>
 
