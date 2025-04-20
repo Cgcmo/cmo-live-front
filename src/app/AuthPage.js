@@ -958,7 +958,7 @@ export default function AuthPage({ setShowLoginPage }) {
                 console.log("🔵 Google Sign-In button clicked");
                 const result = await signIn("google", { callbackUrl: "/dashboard" }); // ✅ Redirect to Dashboard after login
                 console.log("✅ Sign-in result:", result);
-              }} className="flex items-center h-11 justify-center w-full border p-3 mt-4 rounded-lg hover:bg-gray-200" >
+              }} className="flex items-center h-11 justify-center w-full border p-3 mt-4 rounded-full hover:bg-gray-200" >
                 <img src="/google pic.png" alt="Google" className="w-5 mr-2" />
                 <p className="text-[#170645] font-normal">Sign Up With Google</p>
               </button>
@@ -969,13 +969,13 @@ export default function AuthPage({ setShowLoginPage }) {
               </div>
               <div className="flex gap-2">
                 <input type="text" placeholder="Full Name" value={fullName}
-                  onChange={(e) => setFullName(e.target.value)} className="border w-1/2 p-3 h-11 rounded-lg placeholder-[#170645] text-[#170645]" />
+                  onChange={(e) => setFullName(e.target.value)} className="border w-1/2 p-3 h-11 rounded-full placeholder-[#170645] text-[#170645]" />
                 <input
                   type="text"
                   value={verifiedMobile}
                   readOnly
                   placeholder="Mobile No."
-                  className={`border w-1/2 p-3 h-11 rounded-lg text-[#170645] bg-white ${verifiedMobile ? "opacity-60 cursor-not-allowed" : ""}`}
+                  className={`border w-1/2 p-3 h-11 rounded-full text-[#170645] bg-white ${verifiedMobile ? "opacity-60 cursor-not-allowed" : ""}`}
                 />
 
 
@@ -983,11 +983,12 @@ export default function AuthPage({ setShowLoginPage }) {
 
               </div>
               <input type="email" value={email}
-                onChange={(e) => setEmail(e.target.value)} placeholder="Email Id" className="border w-full p-3 h-11 rounded-lg mt-3 placeholder-[#170645] text-[#170645]" />
+                onChange={(e) => setEmail(e.target.value)} placeholder="Email Id" className="border w-full p-3 h-11 rounded-full mt-3 placeholder-[#170645] text-[#170645]" />
+             <div className="relative w-full">
               <select
                 value={selectedDistrict}
                 onChange={(e) => setSelectedDistrict(e.target.value)}
-                className="border w-full p-3 h-11 rounded-lg mt-3 text-[#170645]"
+                className="border w-full p-3 h-11 rounded-full mt-3 text-[#170645] appearance-none bg-white "
               >
                 <option value="">Select District</option>
                 {districts.map((d, index) => (
@@ -996,7 +997,18 @@ export default function AuthPage({ setShowLoginPage }) {
                   </option>
                 ))}
               </select>
-
+              <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+    <svg
+      className="w-4 h-4 mt-3 text-[#170645]"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
+  </div>
+</div>
               {/* <input type="password" placeholder="Create Your Password" value={password}
                 onChange={(e) => setPassword(e.target.value)} className="border h-11 w-full p-3 rounded-lg mt-3 placeholder-[#170645] text-[#170645]" /> */}
               <div className="relative mt-3">
@@ -1005,7 +1017,7 @@ export default function AuthPage({ setShowLoginPage }) {
     placeholder="Create Your Password"
     value={password}
     onChange={(e) => setPassword(e.target.value)}
-    className="border h-11 w-full p-3 rounded-lg placeholder-[#170645] text-[#170645] pr-10"
+    className="border h-11 w-full p-3 rounded-full placeholder-[#170645] text-[#170645] pr-10"
   />
   <button
     type="button"
@@ -1099,7 +1111,7 @@ export default function AuthPage({ setShowLoginPage }) {
                   alert("Something went wrong. Try again.");
                 }
               }}
-                className="w-full h-11 bg-[#170645] text-[#FFE100] px-3 rounded-lg mt-4 text-lg font-bold">
+                className="w-full h-11 bg-[#170645] text-[#FFE100] px-3 rounded-full mt-4 text-lg font-bold">
                 Sign Up
               </button>
               <div className="flex justify-center gap-6 mt-4">

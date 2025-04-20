@@ -358,14 +358,30 @@ export default function UploadPhoto() {
                 <span className="absolute right-4 top-4 text-gray-400"></span>
               </div>
               
-<select className="w-full p-3 border border-gray-300 rounded-full appearance-none text-[#170645] bg-white focus:outline-none">
-                  <option value="">Select Event By Category --</option>
+              <div className="relative w-full">
+  <select
+    className="w-full p-3 border border-gray-300 rounded-full appearance-none text-[#170645] bg-white focus:outline-none"
+  >
+                  <option value="">Select Event By Category </option>
                   {events.map((event, index) => (
                     <option key={index} value={event}>
                       {event}
                     </option>
                   ))}
                 </select>
+
+                <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+    <svg
+      className="w-4 h-4 text-[#170645]"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
+  </div>
+</div>
               <div className="flex items-center w-full max-w-md mt-7 mb-6">
                 <hr className="flex-grow border-gray-300" />
                 <p className="mx-4 text-gray-500">Upload Photo</p>
