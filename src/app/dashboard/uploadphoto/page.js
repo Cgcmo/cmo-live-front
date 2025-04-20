@@ -348,16 +348,6 @@ export default function UploadPhoto() {
           <div className="w-full max-w-md mt-6">
             <div className="p-4  bg-white">
               <div className="relative w-full mb-4">
-                <select className="w-full p-3 border border-gray-300 rounded-full appearance-none text-[#170645] bg-white focus:outline-none">
-                  <option value="">-- Select an Event --</option>
-                  {events.map((event, index) => (
-                    <option key={index} value={event}>
-                      {event}
-                    </option>
-                  ))}
-                </select>
-                <span className="absolute right-4 top-4 text-gray-400"></span>
-              </div>
               <p className="text-sm font-medium ml-2 text-gray-600 mb-2">Select Date</p>
               <input
                 type="date"
@@ -365,7 +355,17 @@ export default function UploadPhoto() {
                 onChange={(e) => setSelectedDate(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-full text-[#170645] bg-white focus:outline-none"
               />
-
+                <span className="absolute right-4 top-4 text-gray-400"></span>
+              </div>
+              
+<select className="w-full p-3 border border-gray-300 rounded-full appearance-none text-[#170645] bg-white focus:outline-none">
+                  <option value="">Select Event By Category --</option>
+                  {events.map((event, index) => (
+                    <option key={index} value={event}>
+                      {event}
+                    </option>
+                  ))}
+                </select>
               <div className="flex items-center w-full max-w-md mt-7 mb-6">
                 <hr className="flex-grow border-gray-300" />
                 <p className="mx-4 text-gray-500">Upload Photo</p>
