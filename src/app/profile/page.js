@@ -280,9 +280,12 @@ function App() {
         {/* ✅ Back Button inside Hero */}
         <button
           onClick={() => router.push("/dashboard")}
-          className="absolute top-4 left-4 text-[white] px-4 py-1.5  text-md font-semibold"
+          className="absolute top-4 left-4 text-[white] px-4 py-1.5  text-md font-semibold flex items-center gap-2"
         >
-          ← Back
+           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
+        viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+      </svg> <span>Back</span>
         </button>
         <div className="text-center md:text-left mb-8 md:mb-0">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold">Welcome To CMO Gallery</h1>

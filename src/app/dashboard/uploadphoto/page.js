@@ -326,9 +326,13 @@ export default function UploadPhoto() {
          <div className="w-full flex justify-start px-4 py-3">
            <button
              onClick={() => window.history.back()} // or setShowGallery(false)
-             className="text-[#170645] font-semibold text-base"
+             className="flex items-center gap-2 text-[#170645] font-semibold text-base"
            >
-             ← Back
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
+        viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+      </svg>
+      <span>Back</span>
            </button>
          </div>
         <div className="flex flex-col items-center min-h-screen bg-white font-sans">
@@ -443,9 +447,13 @@ export default function UploadPhoto() {
       setSelectedImages([]);
       setSelectAll(false);
     }}
-    className="text-[#170645] rounded-lg px-4 py-1 font-semibold text-base"
+    className="flex items-center gap-2 text-[#170645] rounded-lg px-4 py-1 font-semibold text-base"
   >
-    ← Back
+     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
+        viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+      </svg>
+      <span>Back</span>
   </button>
     {/* Title: Centered */}
     <h1 className="text-3xl font-extrabold text-[#170645] absolute left-1/2 transform -translate-x-1/2">
