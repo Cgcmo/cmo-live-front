@@ -20,7 +20,7 @@ export default function DistrictGalleryPage() {
     if (!districtName) return;
     const fetchDistrictAlbums = async () => {
       try {
-        const res = await fetch(`https://3211-2409-4043-400-c70d-b58e-5c61-b8a5-dfdc.ngrok-free.app/albums-by-district?name=${districtName}`);
+        const res = await fetch(`https://1bea-2409-4043-400-c70d-dcc4-e91f-4bc8-8d9b.ngrok-free.app/albums-by-district?name=${districtName}`);
         const data = await res.json();
         setAlbums(data);
       } catch (err) {

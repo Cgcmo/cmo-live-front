@@ -30,7 +30,7 @@ const GalleryModal = ({ isOpen, setIsOpen, albumId, fetchPhotos, fetchAllStats }
     setLoading(true); 
 
     try {
-      const response = await fetch(`https://3211-2409-4043-400-c70d-b58e-5c61-b8a5-dfdc.ngrok-free.app/upload-gallery/${albumId}`, {
+      const response = await fetch(`https://1bea-2409-4043-400-c70d-dcc4-e91f-4bc8-8d9b.ngrok-free.app/upload-gallery/${albumId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ images: uploadedImages }),

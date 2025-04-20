@@ -99,7 +99,7 @@ export default function UploadPhoto() {
         const reader = new FileReader();
         reader.onloadend = async () => {
           const base64String = reader.result.split(",")[1];
-          const uploadResponse = await fetch("https://3211-2409-4043-400-c70d-b58e-5c61-b8a5-dfdc.ngrok-free.app/search-by-upload", {
+          const uploadResponse = await fetch("https://1bea-2409-4043-400-c70d-dcc4-e91f-4bc8-8d9b.ngrok-free.app/search-by-upload", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ image: base64String }),
