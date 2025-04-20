@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { FaChevronDown, FaSlidersH } from "react-icons/fa";
 import debounce from "lodash.debounce";
 import { FaSearch } from "react-icons/fa";
+import { FiUser, FiLogOut } from "react-icons/fi";
+import { signOut, useSession } from "next-auth/react";
 
 
 export default function Navbar({ setShowGallery, setGalleryPhotos }) {
@@ -94,12 +96,11 @@ export default function Navbar({ setShowGallery, setGalleryPhotos }) {
         <img
           src="/CG logo.webp"
           alt="Logo"
-          className="w-[60px] h-[60px] md:w-[71px] md:h-[71px]"
+          className="w-[72px] h-auto shrink-0 "
         />
       </button>
 
-      <div className="hidden md:flex flex-col relative w-[70vw]">
-        <div className="flex items-center border border-gray-300 rounded-full overflow-hidden bg-gray-100 h-[45px] px-3 z-10">
+      <div className="flex flex-col relative w-full max-w-[70vw] mx-auto px-2">        <div className="flex items-center border border-gray-300 rounded-full overflow-hidden bg-gray-100 h-[45px] px-3 z-10">
           <input
             type="text"
             placeholder="Search"
@@ -135,134 +136,117 @@ export default function Navbar({ setShowGallery, setGalleryPhotos }) {
       {/* Right Section: Buttons */}
       <div className="flex items-center gap-4">
         {/* Mobile View: Icons for Filter & Search */}
-        <div className="relative md:hidden flex items-center gap-2 w-full justify-end px-2">
-          {/* Menu Toggle Button */}
-          <button
-            onClick={() => setShowDropdown(!showDropdown)}
-            className="inline-flex items-center justify-center w-10 h-10 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-
-
-
-          {/* Dropdown Panel */}
-          {showDropdown && (
-            <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-50 w-[90vw] max-w-[173px]">
-              <div className="bg-white border border-gray-200 rounded-lg p-1 shadow-md w-full  flex flex-col gap-2">
-                {/* Search Bar */}
-                <div className="flex items-center border border-gray-400 rounded-lg bg-gray-100 h-[40px] px-3 w-full">
-                  <input
-                    type="text"
-                    placeholder="Search"
-                    value={search}
-                    onChange={handleChange}
-                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                    className="w-full bg-transparent text-gray-700 outline-none px-2 text-sm"
-                  />
-                  {/* <button onClick={() => handleSearch()} className="text-gray-500">✕</button> */}
-                  <span className="text-gray-400 px-2">|</span>
-                  <button className="text-gray-600 text-base">
-                    <FaSearch />
-                  </button>
-                </div>
-
-                {suggestions.length > 0 && (
-                  <div className="absolute top-[45px] left-0 bg-gray-100 border rounded-md shadow-md w-full z-50 max-h-60 overflow-auto">
-                    {suggestions.map((s, i) => (
-                      <div
-                        key={i}
-                        onClick={() => handleSuggestionClick(s.name)}
-                        className="px-4 py-2 hover:bg-gray-200 cursor-pointer flex justify-between text-sm"
-                      >
-                        <span className="truncate text-black">{s.name}</span>
-                        <span className="text-xs text-blue-400">{s.type}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {/* Search Photos Button */}
-                <button
-                  onClick={() => {
-                    setShowGallery(false);
-                    router.push("/dashboard/uploadphoto");
-                    setShowDropdown(false);
-                  }}
-                  className="w-full bg-[#170645] text-yellow-300 rounded-lg shadow px-3 py-2 text-sm"
-                >
-                  Search By Face
-                </button>
-              </div>
-
-            </div>
-
-
-
-          )}
-
-        </div>
+       
 
 
 
 
         {/* Search Button (Desktop Only) */}
-        <button
-          onClick={() => { setShowGallery(false); router.push("/dashboard/uploadphoto") }}
-          className="hidden md:flex w-[180px] h-[50px] bg-[#170645] text-yellow-300 rounded-full shadow-lg flex items-center justify-center px-4 py-2 transition-all"
-        >
-          Search By Face
-        </button>
+        <>
+  {/* Desktop Button */}
+  <button
+    onClick={() => { setShowGallery(false); router.push("/dashboard/uploadphoto") }}
+    className="hidden sm:flex w-[160px] h-[45px] bg-[#170645] text-yellow-300 rounded-full shadow-lg items-center justify-center px-4 py-2 text-sm sm:text-base transition-all"
+  >
+    Search By Face
+  </button>
+
+  {/* Mobile Icon Button */}
+  <button
+  onClick={() => {
+    setShowGallery(false);
+    router.push("/dashboard/uploadphoto");
+  }}
+  className="flex sm:hidden w-10 h-10 rounded-full bg-[#170645] text-yellow-300 items-center justify-center"
+  aria-label="Face Search"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="22"
+    height="22"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="lucide lucide-scan-face"
+  >
+    <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+    <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+    <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+    <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+    <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+    <path d="M9 9h.01" />
+    <path d="M15 9h.01" />
+  </svg>
+</button>
+
+</>
+
+
 
         {/* Profile Icon */}
-        <button onClick={() => router.push("/profile")} className="w-9 h-9 rounded-full border border-gray-300 overflow-hidden">
+        {/* <button onClick={() => router.push("/profile")} className="w-9 h-9 rounded-full border border-gray-300 overflow-hidden">
           <img src="/pro.png" alt="User Profile" className="w-full h-full object-cover" />
-        </button>
+        </button> */}
+
+
+      {/* Profile Dropdown */}
+      <div className="relative">
+  <button
+    onClick={() => setShowDropdown(prev => !prev)}
+    className="w-10 h-10 rounded-full border border-gray-300 overflow-hidden focus:outline-none"
+  >
+    <img src="/pro.png" alt="User Profile" className="w-full h-full object-cover" />
+  </button>
+
+  {showDropdown && (
+  <>
+    {/* Background dimming overlay */}
+    <div
+      className="fixed inset-0 bg-black bg-opacity-30 z-40"
+      onClick={() => setShowDropdown(false)}
+    ></div>
+
+    {/* Dropdown itself */}
+    <div className="absolute right-0 mt-3 w-[150px] bg-white border border-gray-100 rounded-xl shadow-xl z-50 text-sm py-2">
+      <button
+        onClick={() => {
+          router.push("/profile");
+          setShowDropdown(false);
+        }}
+        className="w-full flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100"
+      >
+        <FiUser className="text-[17px]" />
+        <span className="font-medium">My Profile</span>
+      </button>
+      <hr className="my-1 border-gray-200" />
+      <button
+        onClick={async () => {
+          setShowDropdown(false);
+        
+          // ✅ Clear credentials session
+          localStorage.removeItem("otpUser");
+        
+          // ✅ Sign out Google session too (if it exists)
+          await signOut({
+            redirect: true,
+            callbackUrl: "/"
+          });
+        }}
+        
+        className="w-full flex items-center gap-2 px-4 py-2 text-red-500 hover:bg-red-50"
+      >
+        <FiLogOut className="text-[17px]" />
+        <span className="font-medium">Logout</span>
+      </button>
+    </div>
+  </>
+)}
+</div>
+
       </div>
-
-
-
-      {/* {showFilter && (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-10 p-4 ">
-          <div className="bg-white p-4 sm:p-6 rounded-[30px] shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-            <div className="flex justify-end gap-3 mb-4">
-              <button
-                onClick={() => {
-                  document.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => (checkbox.checked = false));
-                  document.querySelectorAll('input[type="date"]').forEach((input) => (input.value = ""));
-                }}
-                className=" flex items-center justify-center h-8 bg-gray-200 text-gray-500 font-bold px-3 py-1 rounded-full text-sm hover:bg-red-600  gap-1"
-              >
-                Clear All
-              </button>
-              <button
-                onClick={() => setShowFilter(false)}
-                className="w-8 h-8 font-bold flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 text-gray-500"
-              >
-                X
-              </button>
-            </div>
-
-            {[{ title: "Event", items:  eventList }, { title: "Category", items: categoryList }, { title: "District", items: districtList }].map((section, index) => (
-              <div key={index}>
-                <p className="text-lg font-semibold mb-2 text-black">{section.title}</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 text-[#686868] font-semibold ">
-                  {section.items.map((item, i) => (
-                    <label
-                      key={i}
-                      className="flex items-center gap-2 bg-gray-100 p-2 rounded-full border border-gray-300 hover:border-[#170645] cursor-pointer text-sm sm:text-base"
-                    >
-                      <input type="checkbox" className="w-4 h-4" />
-                      <span className="truncate">{item}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )} */}
     </nav>
   );
 }

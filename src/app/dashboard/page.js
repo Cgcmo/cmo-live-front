@@ -295,6 +295,7 @@ export default function Homepage() {
               ← Back
             </button>
 
+
             <h2 className="text-center font-extrabold text-xl sm:text-3xl text-[#170645] truncate max-w-[50%]">
               {selectedAlbum.name}
             </h2>
@@ -312,6 +313,23 @@ export default function Homepage() {
           </div>
         )}
 
+
+{/* Show Title on Top When Event Albums Are Showing */}
+{selectedAlbum === null && (
+  <div className="flex items-center justify-between px-6 mb-5 sm:px-12 mt-5">
+    <h2 className="text-center w-full font-extrabold text-2xl sm:text-3xl text-[#170645]">
+      Related Event Search
+    </h2>
+    {/* <button
+  onClick={() => setShowFilter(true)}
+  className="flex items-center gap-2 px-4 py-[6px] border border-gray-300 text-gray-600 rounded-full hover:bg-gray-100 transition-all text-sm sm:text-base"
+>
+  <FaSlidersH size={16} />
+  <span>Filter</span>
+</button> */}
+
+  </div>
+)}
 
 
         {selectedAlbum === null

@@ -148,8 +148,17 @@ export default function Home() {
                 />
               </div>
 
+
+
               {/* Hamburger Icon on Mobile */}
-              <div className="sm:hidden relative z-50">
+              <div className=" flex items-center space-x-3 sm:hidden relative z-50">
+                <button
+                  onClick={() => setShowLoginPage(true)}
+                  className="sm:hidden bg-yellow-400 text-[#170645] px-3 py-2 rounded-full font-semibold text-sm mr-2 flex  space-x-1"
+                >
+                 <img src="/log_icon.png" alt="Login Icon" className="w-4 h-4" />
+                  <span>Login</span>
+                </button>
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
                   className="text-white focus:outline-none"
@@ -198,11 +207,18 @@ export default function Home() {
                   onClick={() => setShowLoginPage(true)}
                   className="bg-yellow-400 text-[#170645] px-4 h-[45px] rounded-full font-medium flex items-center space-x-1"
                 >
-                  <span>👤</span>
+                <img src="/log_icon.png" alt="Login Icon" className="w-4 h-4" />
                   <span>Login</span>
                 </button>
               </div>
             </nav>
+
+            {menuOpen && (
+              <div
+                className="fixed inset-0 bg-black bg-opacity-50 z-30"
+                onClick={() => setMenuOpen(false)}
+              ></div>
+            )}
 
             {/* Mobile Dropdown Menu (positioned below nav) */}
             {menuOpen && (
@@ -221,14 +237,7 @@ export default function Home() {
                   <button onClick={() => setFontSize((prev) => Math.max(prev - 2, 12))}>A-</button>
                 </div>
 
-                {/* Login */}
-                <button
-                  onClick={() => setShowLoginPage(true)}
-                  className="bg-yellow-400 text-[#170645] w-full max-w-[260px] py-2 rounded-full font-semibold flex items-center justify-center space-x-2"
-                >
-                  <span>👤</span>
-                  <span>Login</span>
-                </button>
+               
               </div>
             )}
           </div>

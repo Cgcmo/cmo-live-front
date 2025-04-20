@@ -41,14 +41,20 @@ const Footer = () => {
                 <div className="border-b border-gray-400 pb-6 mb-6">
                     <h3 className="font-bold text-lg text-gray-800 mb-3">Districts List</h3>
                     <p className="text-sm text-gray-600 leading-relaxed flex flex-wrap gap-2">
-                    {districts.map((district, index) => (
-  <span key={index} className="flex items-center whitespace-nowrap">
-    <a href={`/district/${district}`} className="hover:underline text-gray-600">
-      {district}
-    </a>
-    {index !== districts.length - 1 && <span className="mx-2">|</span>}
-  </span>
-))}
+                        {districts.map((district, index) => (
+                            <span key={index} className="flex items-center whitespace-nowrap">
+                                <a
+                                    href={`/district/${district}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="hover:underline text-gray-600"
+                                >
+                                    {district}
+                                </a>
+
+                                {index !== districts.length - 1 && <span className="mx-2">|</span>}
+                            </span>
+                        ))}
 
                     </p>
                 </div>

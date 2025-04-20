@@ -66,26 +66,35 @@ export default function DistrictsTab() {
   return (
     <div className="overflow-x-auto ">
       {/* District Name Input and Add Button */}
-      <div className="flex flex-col mt-3 sm:flex-row sm:items-center justify-center w-full gap-4">
-        <input
-          type="text"
-          placeholder="Type District To Add"
-          className="w-full placeholder:font-bold text-center sm:w-auto p-3 border border-gray-300 rounded-full text-[#170645] focus:outline-[#170645] placeholder-[#170645]"
-          value={districtName}
-          onChange={(e) => setDistrictName(e.target.value)}
-        />
-        <button
-          className="w-full sm:w-auto bg-[#170645] text-[#FFE100] px-6 py-3 rounded-full font-semibold shadow-lg"
-          onClick={handleAddDistrict}
-        >
-          Add
-        </button>
-      </div>
+      <div className="flex flex-col w-full mt-3 gap-2 sm:flex-row sm:items-start sm:justify-between">
+  {/* Left: Label + Input + Button (inline) */}
+  <div className="w-full sm:flex-1">
+    <label className="block text-sm sm:text-base font-semibold text-[#170645] ml-3 my-1">
+      Districts Name
+    </label>
+    <div className="flex flex-col sm:flex-row items-center gap-3">
+      <input
+        type="text"
+        placeholder="Enter District Name"
+        className="w-full min-w-[25vw] sm:w-[300px] placeholder:font-medium text-center sm:text-left p-3 border border-gray-300 rounded-full text-[#170645] focus:outline-[#170645] placeholder-[#170645]"
+        value={districtName}
+        onChange={(e) => setDistrictName(e.target.value)}
+      />
+      <button
+        className="w-full min-w-[10vw] sm:w-auto bg-[#170645] text-[#FFE100] px-6 py-3 rounded-full font-semibold shadow-xl hover:shadow-lg transition"
+        onClick={handleAddDistrict}
+      >
+        Add
+      </button>
+      <div className=" ml-auto text-right text-sm sm:text-base font-semibold text-[#170645] sm:mt-0 mt-2 sm:w-auto">
+    Total Districts | <span className="font-bold">{districts.length}</span>
+  </div>
+    </div>
+  </div>
 
-      {/* Total Districts Count */}
-      <div className="mt-1 font-semibold text-[#170645]">
-        Total Tags | <span className="font-bold">{districts.length}</span>
-      </div>
+  {/* Right: Total Count */}
+  
+</div>
 
       {/* Table of Districts */}
       <div className="mt-4 overflow-x-auto">

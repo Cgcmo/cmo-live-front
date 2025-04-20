@@ -11,6 +11,8 @@ import AllPhotos from "./AllPhotos";
 import Navbar from '@/app/dashboard/components/Navbar';
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Footer from "@/app/dashboard/components/Footer";
+
 
 function App() {
   const [search, setSearch] = useState("");
@@ -92,10 +94,10 @@ function App() {
   );
 
   const [stats, setStats] = useState([
-    { label: "Total User", count: "0", image: "/tuser.png", bg: "#A889FC80" },
-    { label: "Total Download", count: "0", image: "/tdownload.png", bg: "#A1C181" },
+    // { label: "Total User", count: "0", image: "/tuser.png", bg: "#A889FC80" },
     { label: "Total Image", count: "0", image: "/timage.png", bg: "#90C0F6" },
-    { label: "Total Event", count: "0", image: "/tevent.png", bg: "#F6CB90" },
+    { label: "Total Download", count: "0", image: "/tdownload.png", bg: "#A1C181" },
+    // { label: "Total Event", count: "0", image: "/tevent.png", bg: "#F6CB90" },
   ]);
 
 
@@ -122,10 +124,10 @@ function App() {
       const totalDownloads = (await downloadRes.json()).count || 0;
 
       setStats([
-        { label: "Total User", count: totalUsers.toString(), image: "/tuser.png", bg: "#A889FC80" },
-        { label: "Total Download", count: totalDownloads.toString(), image: "/tdownload.png", bg: "#A1C181" },
+        // { label: "Total User", count: totalUsers.toString(), image: "/tuser.png", bg: "#A889FC80" },
         { label: "Total Image", count: totalPhotos.toString(), image: "/timage.png", bg: "#90C0F6" },
-        { label: "Total Event", count: totalAlbums.toString(), image: "/tevent.png", bg: "#F6CB90" },
+        { label: "Total Download", count: totalDownloads.toString(), image: "/tdownload.png", bg: "#A1C181" },
+        // { label: "Total Event", count: totalAlbums.toString(), image: "/tevent.png", bg: "#F6CB90" },
       ]);
     } catch (error) {
       console.error("Failed to fetch stats:", error);
@@ -306,7 +308,7 @@ function App() {
         {/* Stats Section */}
         <div className="flex flex-col flex-1">
           <h2 className="text-2xl font-semibold text-[#170645] mb-4 text-center lg:text-left">Overview</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mx-auto mt-[50px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mx-auto my-auto">
             {stats.map((item, index) => (
               <div
                 key={index}
@@ -387,15 +389,12 @@ function App() {
           <EventCard />
         )}
 
-
         {/* Profile Update Tab Content */}
         {currentTab === "Profile Update" && <Profile />}
 
 
-
-
-
       </div>
+      <Footer />
     </div>
   );
 }

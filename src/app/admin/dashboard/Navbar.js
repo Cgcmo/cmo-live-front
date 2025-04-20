@@ -6,11 +6,11 @@ import debounce from "lodash.debounce";
 import { FaSearch } from "react-icons/fa";
 import ModalPopup from "./ModalPopup";
 
-export default function Navbar({ setShowGallery, setGalleryPhotos,fetchAlbums: fetchAlbumsProp,
-    fetchAllStats: fetchAllStatsProp }) {
+export default function Navbar({ setShowGallery, setGalleryPhotos, fetchAlbums: fetchAlbumsProp,
+  fetchAllStats: fetchAllStatsProp }) {
   const [showFilter, setShowFilter] = useState(false);
   const router = useRouter();
-  const [eventList, setEventList] = useState([]); 
+  const [eventList, setEventList] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
   const [districtList, setDistrictList] = useState([]);
   const [search, setSearch] = useState("");
@@ -23,7 +23,7 @@ export default function Navbar({ setShowGallery, setGalleryPhotos,fetchAlbums: f
     setShowFilter(!showFilter);
   };
 
-  
+
   const fetchAlbums = async () => {
     try {
       const response = await fetch("https://cmo-back-livee.onrender.com/albums");
@@ -36,27 +36,27 @@ export default function Navbar({ setShowGallery, setGalleryPhotos,fetchAlbums: f
       console.error("Error fetching albums:", error);
     }
   };
-  
+
   useEffect(() => {
     // Fetch Events
     fetch("https://cmo-back-livee.onrender.com/get-events")
       .then(res => res.json())
       .then(data => setEventList(data))
       .catch(err => console.error("Failed to fetch events:", err));
-  
+
     // Fetch Categories (Departments)
     fetch("https://cmo-back-livee.onrender.com/departments")
       .then(res => res.json())
       .then(data => setCategoryList(data.map(d => d.name)))  // extract only names
       .catch(err => console.error("Failed to fetch departments:", err));
-  
+
     // Fetch Districts
     fetch("https://cmo-back-livee.onrender.com/districts")
       .then(res => res.json())
       .then(data => setDistrictList(data.map(d => d.name)))
       .catch(err => console.error("Failed to fetch districts:", err));
   }, []);
-  
+
 
   useEffect(() => {
     fetch("https://cmo-back-livee.onrender.com/search-suggestions")
@@ -82,18 +82,18 @@ export default function Navbar({ setShowGallery, setGalleryPhotos,fetchAlbums: f
     );
     setSuggestions(filtered.slice(0, 10));
   }, 300);
-  
+
 
   const handleChange = (e) => {
     const value = e.target.value;
     setSearch(value); // update immediately so input doesn't lag
     debouncedSuggest(value); // debounce only the suggestion logic
   };
-  
+
   const handleSearch = (queryText = search) => {
-  if (!queryText) return;
-  router.push(`/search-results?q=${encodeURIComponent(queryText)}`);
-};
+    if (!queryText) return;
+    router.push(`/search-results?q=${encodeURIComponent(queryText)}`);
+  };
 
   const handleSuggestionClick = (name) => {
     setSearch(name);
@@ -104,142 +104,103 @@ export default function Navbar({ setShowGallery, setGalleryPhotos,fetchAlbums: f
     <nav className="w-full h-[80px] bg-white flex items-center px-4 md:px-6 justify-between">
       {/* Left Section: Logo */}
       <div className="flex items-center gap-4">
-        <img src="/CG logo.webp" alt="Logo" className="w-[60px] h-[60px] md:w-[71px] md:h-[71px]" />
+        <img src="/CG logo.webp" alt="Logo" className="w-[72px] h-auto" />
       </div>
 
-        <div className="hidden md:flex flex-col relative w-[65vw]">
-  <div className="flex items-center border border-gray-300 rounded-full overflow-hidden bg-gray-100 h-[45px] px-3 z-10">
-    <input
-      type="text"
-      placeholder="Search"
-      value={search}
-      onChange={handleChange}
-      onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-      className="w-full bg-transparent text-gray-700 outline-none px-2"
-    />
-    <button onClick={() => handleSearch()} className="text-gray-500">✕</button>
-    <span className="text-gray-400 px-3">|</span>
-    <button className="text-gray-600 text-base">
-  <FaSearch />
-</button>
-  </div>
-
-  {suggestions.length > 0 && (
-    <div className="absolute top-[48px] left-0  bg-gray-100 border rounded-md shadow-md w-full z-20 max-h-60 overflow-auto">
-      {suggestions.map((s, i) => (
-        <div
-          key={i}
-          onClick={() => handleSuggestionClick(s.name)}
-          className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between text-sm"
-        >
-          <span className="truncate text-black">{s.name}</span>
-          <span className="text-xs text-blue-400">{s.type}</span>
+      <div className="flex flex-col relative w-[70vw] px-2 ">
+        <div className="flex items-center border border-gray-300 rounded-full overflow-hidden bg-gray-100 h-[45px] px-3 z-10">
+          <input
+            type="text"
+            placeholder="Search"
+            value={search}
+            onChange={handleChange}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            className="w-full bg-transparent text-gray-700 outline-none px-2"
+          />
+          <button onClick={() => handleSearch()} className="text-gray-500">✕</button>
+          <span className="text-gray-400 px-3">|</span>
+          <button className="text-gray-600 text-base">
+            <FaSearch />
+          </button>
         </div>
-      ))}
-    </div>
-  )}
-</div>
+
+        {suggestions.length > 0 && (
+          <div className="absolute top-[48px] left-0  bg-gray-100 border rounded-md shadow-md w-full z-20 max-h-60 overflow-auto">
+            {suggestions.map((s, i) => (
+              <div
+                key={i}
+                onClick={() => handleSuggestionClick(s.name)}
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between text-sm"
+              >
+                <span className="truncate text-black">{s.name}</span>
+                <span className="text-xs text-blue-400">{s.type}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
 
       {/* Right Section: Buttons */}
       <div className="flex items-center gap-4">
         {/* Mobile View: Icons for Filter & Search */}
-        <div className="relative md:hidden flex items-center gap-2 w-full justify-end px-2">
-  {/* Menu Toggle Button */}
-  <button
-    onClick={() => setShowDropdown(!showDropdown)}
-    className="inline-flex items-center justify-center w-10 h-10 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
-  >
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-    </svg>
-  </button>
+        
 
- 
 
-  {/* Dropdown Panel */}
-  {showDropdown && (
-  <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-50 w-[90vw] max-w-[173px]">
-    <div className="bg-white border border-gray-200 rounded-lg p-1 shadow-md w-full  flex flex-col gap-2">
-      {/* Search Bar */}
-      <div className="flex items-center border border-gray-400 rounded-lg bg-gray-100 h-[40px] px-3 w-full">
-        <input
-          type="text"
-          placeholder="Search"
-          value={search}
-          onChange={handleChange}
-          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          className="w-full bg-transparent text-gray-700 outline-none px-2 text-sm"
-        />
-        {/* <button onClick={() => handleSearch()} className="text-gray-500">✕</button> */}
-        <span className="text-gray-400 px-2">|</span>
-        <button className="text-gray-600 text-base">
-  <FaSearch />
-</button>
-      </div>
-
-      {suggestions.length > 0 && (
-    <div className="absolute top-[45px] left-0 bg-gray-100 border rounded-md shadow-md w-full z-50 max-h-60 overflow-auto">
-      {suggestions.map((s, i) => (
-        <div
-          key={i}
-          onClick={() => handleSuggestionClick(s.name)}
-          className="px-4 py-2 hover:bg-gray-200 cursor-pointer flex justify-between text-sm"
-        >
-          <span className="truncate text-black">{s.name}</span>
-          <span className="text-xs text-blue-400">{s.type}</span>
-        </div>
-      ))}
-    </div>
-  )}
-      {/* Search Photos Button */}
-      <button
-        onClick={() => {
-          setShowGallery(false);
-          router.push("/dashboard/uploadphoto");
-          setShowDropdown(false);
-        }}
-        className="w-full bg-[#170645] text-yellow-300 rounded-lg shadow px-3 py-2 text-sm"
-      >
-        Search By Face
-      </button>
-    </div>
-    
-  </div>
-  
-
-  
-)}
-
-</div>
-
+         
 
 
 
         {/* Search Button (Desktop Only) */}
         <button
-          onClick={() => { setShowGallery(false); router.push("/dashboard/uploadphoto") }}
-          className="hidden md:flex  bg-[#170645] text-yellow-300 rounded-full shadow-lg flex items-center justify-center px-7 py-3 transition-all"
-        >
-          Search By Face
-        </button>
+  onClick={() => {
+    setShowGallery(false);
+    router.push("/dashboard/uploadphoto");
+  }}
+  className="bg-[#170645] text-yellow-300 rounded-full shadow-lg flex items-center justify-center px-4 py-2 md:px-7 md:py-3 text-sm md:text-base whitespace-nowrap transition"
+>
+  {/* Icon for small screens */}
+  <span className="block md:hidden">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-scan-face">
+      <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+      <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+      <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+      <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+      <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+      <path d="M9 9h.01" />
+      <path d="M15 9h.01" />
+    </svg>
+  </span>
+  {/* Text for md+ screens */}
+  <span className="hidden md:inline">Search By Face</span>
+</button>
+
 
         {/* Create Event Button */}
-<button
-   onClick={() => setIsFolderModalOpen(true)}
-  className="bg-[#170645] text-yellow-300 rounded-full px-7 py-3 shadow-md hover:shadow-lg transition text-sm md:text-base"
+        <button
+  onClick={() => setIsFolderModalOpen(true)}
+  className="bg-[#170645] text-yellow-300 rounded-full px-4 py-2 md:px-7 md:py-3 shadow-md hover:shadow-lg transition text-sm md:text-base  whitespace-nowrap flex items-center justify-center"
 >
-  Create Event
+  <span className="block md:hidden">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-image-plus">
+      <path d="M16 5h6" />
+      <path d="M19 2v6" />
+      <path d="M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5" />
+      <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+      <circle cx="9" cy="9" r="2" />
+    </svg>
+  </span>
+  <span className="hidden md:inline">Create Event</span>
 </button>
 
       </div>
 
-      <ModalPopup 
-  isOpen={isFolderModalOpen}
-  setIsOpen={setIsFolderModalOpen}
-  fetchAlbums={fetchAlbumsProp}
-  fetchAllStats={fetchAllStatsProp}
-/>
+      <ModalPopup
+        isOpen={isFolderModalOpen}
+        setIsOpen={setIsFolderModalOpen}
+        fetchAlbums={fetchAlbumsProp}
+        fetchAllStats={fetchAllStatsProp}
+      />
 
 
 

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Navbar from "../../dashboard/components/Navbar";
 import Footer from "../../dashboard/components/Footer";
-import { FiDownload } from "react-icons/fi";
+import { FiShare, FiLink, FiDownload } from "react-icons/fi";
 import JSZip from "jszip";
 
 export default function AlbumViewer() {
@@ -69,8 +69,35 @@ export default function AlbumViewer() {
     link.download = `${albumName || "album"}.zip`;
     link.click();
   };
+  const handleShareAll = async () => {
+    if (selectedPhotos.length === 0) return alert("No images selected!");
+  
+    const files = selectedPhotos.map((photo, index) => {
+      const byteString = atob(photo.image.split(",")[1]);
+      const mimeString = photo.image.split(",")[0].split(":")[1].split(";")[0];
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
+      return new File([ab], `image_${index + 1}.jpg`, { type: mimeString });
+    });
+  
+    if (navigator.canShare && navigator.canShare({ files })) {
+      try {
+        await navigator.share({
+          title: "Shared Images",
+          files,
+        });
+      } catch (err) {
+        console.error("Sharing failed:", err);
+        alert("Sharing failed");
+      }
+    } else {
+      alert("Sharing not supported on this browser/device.");
+    }
+  };
+  
 
-  if (loading) return <div className="text-center mt-10">Loading...</div>;
+  if (loading) return <div className="text-center text-black mt-10">Loading...</div>;
 
   return (
     <div className="min-h-screen bg-white relative pb-24">
@@ -115,14 +142,21 @@ export default function AlbumViewer() {
         </div>
 
         {/* Floating Download Button */}
-        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
-          <button
-            onClick={handleDownloadAll}
-            className="min-w-[150px] px-4 py-2 bg-[#170645] text-yellow-500 rounded-full flex items-center justify-center gap-2 text-sm font-semibold shadow hover:shadow-md"
-          >
-            <FiDownload size={18} /> Download
-          </button>
-        </div>
+        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 flex flex-col sm:flex-row gap-3 px-4 py-3 rounded-full">
+  <button
+    onClick={handleShareAll}
+    className="min-w-[150px] px-4 py-2 bg-yellow-400 text-black rounded-full flex items-center justify-center gap-2 text-sm font-semibold shadow hover:shadow-md"
+  >
+    <FiShare size={18} /> Share
+  </button>
+  <button
+    onClick={handleDownloadAll}
+    className="min-w-[150px] px-4 py-2 bg-[#170645] text-yellow-500 rounded-full flex items-center justify-center gap-2 text-sm font-semibold shadow hover:shadow-md"
+  >
+    <FiDownload size={18} /> Download
+  </button>
+</div>
+
       </div>
       <Footer />
     </div>

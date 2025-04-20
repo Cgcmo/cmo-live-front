@@ -63,25 +63,28 @@ export default function DepartmentsTab() {
   return (
     <div className="overflow-x-auto">
       {/* Department Name Input and Add Button */}
-      <div className="flex flex-col mt-3 sm:flex-row sm:items-center justify-center w-full gap-4">
+      <div className="w-full mt-3">
+      <label className="block text-sm sm:text-base font-semibold text-[#170645] ml-3 my-1">
+    Department Name
+  </label>
+      <div className="flex flex-col sm:flex-row items-center gap-3 w-full">
         <input
           type="text"
           placeholder="Type Department To Add"
-          className="w-full placeholder:font-bold text-center sm:w-auto p-3 border border-gray-300 rounded-full text-[#170645] focus:outline-[#170645] placeholder-[#170645]"
+          className="w-full min-w-[25vw] sm:w-[300px] placeholder:font-medium text-center sm:text-left p-3 border border-gray-300 rounded-full text-[#170645] focus:outline-[#170645] placeholder-[#170645]"
           value={departmentName}
           onChange={(e) => setDepartmentName(e.target.value)}
         />
         <button
-          className="w-full sm:w-auto bg-[#170645] text-[#FFE100] px-6 py-3 rounded-full font-semibold shadow-lg"
+          className="w-full min-w-[10vw] sm:w-auto bg-[#170645] text-[#FFE100] px-6 py-3 rounded-full font-semibold shadow-xl hover:shadow-lg transition"
           onClick={handleAddDepartment}
         >
           Add
         </button>
+        <div className=" ml-auto text-right text-sm sm:text-base font-semibold text-[#170645] sm:mt-0 mt-2 sm:w-auto">
+      Total Tags | <span className="font-bold">{departments.length}</span>
+    </div>
       </div>
-
-      {/* Total Departments Count */}
-      <div className="mt-1 font-semibold text-[#170645]">
-        Total Tags | <span className="font-bold">{departments.length}</span>
       </div>
 
       {/* Table of Departments */}

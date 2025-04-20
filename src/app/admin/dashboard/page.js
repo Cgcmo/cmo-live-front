@@ -15,6 +15,8 @@ import Cookies from "js-cookie";
 import axios from "axios"
 import { ArrowUpRight, ArrowDownRight } from "lucide-react";
 import BannerTab from "./BannerTab"
+import Footer from "./Footer";
+
 
 function App() {
   const [search, setSearch] = useState("");
@@ -390,7 +392,7 @@ function App() {
         {/* Tab Navigation */}
         <div className="flex flex-col sm:flex-row sm:items-center border-b pb-2 gap-4">
           <div className="flex space-x-4 sm:space-x-8 overflow-x-auto pb-2 sm:pb-0">
-            {["All Events", "All Users", "Profile Update", "Districts", "Department", , "Banner"].map((tab) => (
+            {["All Events", "All Users", "Profile Update", "Districts", "Department", ].map((tab) => (
               <button
                 key={tab}
                 className={`px-3 sm:px-4 py-2 font-semibold text-[#170645] whitespace-nowrap ${currentTab === tab ? "border-b-2 border-[#170645] font-bold" : "font-light"
@@ -435,6 +437,7 @@ function App() {
         {currentTab === "Banner" && <BannerTab />}
 
       </div>
+      <Footer />
     </div>
   );
 }
