@@ -277,7 +277,7 @@ const handleDownloadAlbum = async (album) => {
   {/* Back button on left (only in photo gallery section) */}
   {selectedAlbum && (
     <button 
-      className="px-4 py-2 bg-[#170645] text-[#FFE100] rounded-lg" 
+      className="px-4 py-2 bg-[#170645] text-[#FFE100] rounded-lg flex items-center gap-2" 
       onClick={() => setSelectedAlbum(null)}
     >
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"

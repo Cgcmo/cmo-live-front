@@ -26,9 +26,8 @@ export default function VideoPlayer({
 
   return (
     <div
-  className={`relative group rounded-2xl overflow-hidden shadow-lg w-full ${
-    variant === 'main' ? 'h-full' : aspect
-  } ${variant !== 'main' ? 'cursor-pointer' : ''}`}
+      className={`relative group rounded-2xl overflow-hidden shadow-lg w-full ${variant === 'main' ? 'h-full' : aspect
+        } ${variant !== 'main' ? 'cursor-pointer' : ''}`}
 
       onClick={variant !== 'main' ? onClick : undefined}
     >
