@@ -12,7 +12,7 @@ export default function DistrictsTab() {
   // Function to handle adding a district
 
   useEffect(() => {
-    fetch("https://b364-49-35-193-75.ngrok-free.app/districts")
+    fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/districts")
       .then((res) => res.json())
       .then((data) => setDistricts(data));
   }, []);
@@ -20,7 +20,7 @@ export default function DistrictsTab() {
   // Function to enable editing mode
   const handleAddDistrict = () => {
     if (districtName.trim() !== "") {
-      fetch("https://b364-49-35-193-75.ngrok-free.app/districts", {
+      fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/districts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: districtName })
@@ -40,7 +40,7 @@ export default function DistrictsTab() {
   };
   const handleSaveEdit = (index) => {
     if (editedName.trim() !== "" && index >= 0 && index < districts.length) {
-      fetch(`https://b364-49-35-193-75.ngrok-free.app/districts/${districts[index].name}`, {
+      fetch(`https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/districts/${districts[index].name}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: editedName }),
@@ -59,7 +59,7 @@ export default function DistrictsTab() {
   };
 
   const handleDelete = (name) => {
-    fetch(`https://b364-49-35-193-75.ngrok-free.app/districts/${name}`, { method: "DELETE" })
+    fetch(`https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/districts/${name}`, { method: "DELETE" })
       .then(() => setDistricts(districts.filter(d => d.name !== name)));
   };
 

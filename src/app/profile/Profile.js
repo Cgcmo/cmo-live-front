@@ -42,7 +42,7 @@ const Profile = () => {
             setProfileImage("/pro.png");
           }
         } else if (session?.user?.email) {
-          const res = await fetch(`https://b364-49-35-193-75.ngrok-free.app/get-user-by-email/${session.user.email}`);
+          const res = await fetch(`https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/get-user-by-email/${session.user.email}`);
           const userData = await res.json();
           setUser({ email: session.user.email });
           setName(userData.name || session.user.name || "");
@@ -50,7 +50,7 @@ const Profile = () => {
           setDistrict(userData.district || "");
         }
   
-        const districtRes = await fetch("https://b364-49-35-193-75.ngrok-free.app/districts");
+        const districtRes = await fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/districts");
         const districtData = await districtRes.json();
         setDistricts(districtData);
       } catch (err) {
@@ -75,7 +75,7 @@ const Profile = () => {
     if (session?.user?.email) {
       // ✅ Save Google user to DB
       try {
-        const res = await fetch("https://b364-49-35-193-75.ngrok-free.app/save-google-user", {
+        const res = await fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/save-google-user", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -99,7 +99,7 @@ const Profile = () => {
       }
     } else {
       try {
-        const res = await fetch(`https://b364-49-35-193-75.ngrok-free.app/update-client/${user.userId}`, {
+        const res = await fetch(`https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/update-client/${user.userId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, mobile, district }),

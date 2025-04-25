@@ -18,11 +18,11 @@ export default function AlbumViewer() {
   useEffect(() => {
     const fetchPhotos = async () => {
       try {
-        const res = await fetch(`https://b364-49-35-193-75.ngrok-free.app/photos/${albumId}`);
+        const res = await fetch(`https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${albumId}`);
         const photoData = await res.json();
         setPhotos(photoData);
 
-        const albumRes = await fetch("https://b364-49-35-193-75.ngrok-free.app/albums");
+        const albumRes = await fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/albums");
         const albumList = await albumRes.json();
         const album = albumList.find((a) => a._id === albumId);
         if (album) setAlbumName(album.name);

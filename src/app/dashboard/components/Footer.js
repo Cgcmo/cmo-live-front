@@ -5,7 +5,7 @@ const Footer = () => {
     const [districts, setDistricts] = useState([]);
 
     useEffect(() => {
-        fetch("https://b364-49-35-193-75.ngrok-free.app/districts") // 🔁 Replace with actual domain (e.g., https://api.choicesay.com)
+        fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/districts") // 🔁 Replace with actual domain (e.g., https://api.choicesay.com)
             .then((res) => res.json())
             .then((data) => {
                 const names = data.map(d => d.name);

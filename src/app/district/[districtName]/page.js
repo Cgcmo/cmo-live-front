@@ -33,7 +33,7 @@ export default function DistrictGalleryPage() {
     const fetchDistrictAlbums = async () => {
       try {
         const res = await fetch(
-          `https://b364-49-35-193-75.ngrok-free.app/albums-by-district?name=${districtName}&page=${currentPage}&limit=${imagesPerPage}`
+          `https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/albums-by-district?name=${districtName}&page=${currentPage}&limit=${imagesPerPage}`
         );
         const data = await res.json();
         setAlbums(data.albums || []);
@@ -48,7 +48,7 @@ export default function DistrictGalleryPage() {
 
   const fetchPhotos = async (album) => {
     try {
-      const res = await fetch(`https://b364-49-35-193-75.ngrok-free.app/photos/${album._id}`);
+      const res = await fetch(`https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${album._id}`);
       const data = await res.json();
       if (data.length === 0) return alert("This album is empty");
       setSelectedAlbum(album);
@@ -90,7 +90,7 @@ export default function DistrictGalleryPage() {
 
   const handleDownloadAlbum = async (album) => {
     try {
-      const response = await fetch(`https://b364-49-35-193-75.ngrok-free.app/photos/${album._id}`);
+      const response = await fetch(`https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${album._id}`);
       const photos = await response.json();
       if (photos.length === 0) return alert("No photos to download in this album.");
 

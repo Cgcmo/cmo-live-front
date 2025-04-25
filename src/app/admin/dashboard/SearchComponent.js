@@ -34,7 +34,7 @@ const SearchComponent = () => {
                     {results.map((match, index) => (
                         <div key={index}>
                             <p>{match.event_name} - {match.event_date}</p>
-                            <img src={`https://b364-49-35-193-75.ngrok-free.app/${match.image_path}`} alt="Match" />
+                            <img src={`https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/${match.image_path}`} alt="Match" />
                         </div>
                     ))}
                 </div>
