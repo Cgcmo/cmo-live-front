@@ -189,7 +189,7 @@ export default function UsersTable({fetchAllStats}) {
 
   const toggleStatus = async (id, currentStatus) => {
     try {
-      const response = await fetch(`https://c07c-49-35-193-75.ngrok-free.app/update-user/${id}`, {
+      const response = await fetch(`https://b364-49-35-193-75.ngrok-free.app/update-user/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: !currentStatus }),
@@ -244,7 +244,7 @@ export default function UsersTable({fetchAllStats}) {
   // Fetch Users from Backend
   const fetchUsers = async () => {
     try {
-      const response = await fetch("https://c07c-49-35-193-75.ngrok-free.app/users");
+      const response = await fetch("https://b364-49-35-193-75.ngrok-free.app/users");
       const data = await response.json();
       setUsers(data);
     } catch (error) {
@@ -311,7 +311,7 @@ export default function UsersTable({fetchAllStats}) {
     }
   }
     try {
-      const response = await fetch(`https://c07c-49-35-193-75.ngrok-free.app/update-user/${editedUser._id}`, {
+      const response = await fetch(`https://b364-49-35-193-75.ngrok-free.app/update-user/${editedUser._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editedUser),
@@ -359,7 +359,7 @@ export default function UsersTable({fetchAllStats}) {
       return;
     }
     try {
-      const response = await fetch("https://c07c-49-35-193-75.ngrok-free.app/add-staff", {
+      const response = await fetch("https://b364-49-35-193-75.ngrok-free.app/add-staff", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newStaff),

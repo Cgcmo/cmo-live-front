@@ -58,7 +58,7 @@
 
 //   const fetchAlbums = async () => {
 //     try {
-//       const res = await fetch("https://c07c-49-35-193-75.ngrok-free.app/albums");
+//       const res = await fetch("https://b364-49-35-193-75.ngrok-free.app/albums");
 //       const data = await res.json();
 //       setAlbums(data);
 //     } catch (err) {
@@ -69,7 +69,7 @@
 
 //   const fetchPhotos = async (album) => {
 //     try {
-//       const res = await fetch(`https://c07c-49-35-193-75.ngrok-free.app/photos/${album._id}`);
+//       const res = await fetch(`https://b364-49-35-193-75.ngrok-free.app/photos/${album._id}`);
 //       const data = await res.json();
 
 //       if (data.length === 0) {
@@ -163,7 +163,7 @@
 //     if (!album || !album._id) return;
 
 //     try {
-//       const response = await fetch(`https://c07c-49-35-193-75.ngrok-free.app/photos/${album._id}`);
+//       const response = await fetch(`https://b364-49-35-193-75.ngrok-free.app/photos/${album._id}`);
 //       if (!response.ok) throw new Error("Failed to fetch photos");
 //       const photos = await response.json();
 
@@ -677,7 +677,7 @@ export default function Homepage() {
 
   const fetchAlbums = async (page = 1) => {
     try {
-      const res = await fetch(`https://c07c-49-35-193-75.ngrok-free.app/albums?page=${page}&limit=${imagesPerPage}`);
+      const res = await fetch(`https://b364-49-35-193-75.ngrok-free.app/albums?page=${page}&limit=${imagesPerPage}`);
       const data = await res.json();
       setAlbums(data.albums);
       setTotalPages(Math.ceil(data.total / imagesPerPage));
@@ -693,7 +693,7 @@ export default function Homepage() {
   const fetchPhotos = async (album, page = 1) => {
     try {
       setIsLoading(true);
-      const res = await fetch(`https://c07c-49-35-193-75.ngrok-free.app/photos/${album._id}?page=${page}&limit=${imagesPerPage}`);
+      const res = await fetch(`https://b364-49-35-193-75.ngrok-free.app/photos/${album._id}?page=${page}&limit=${imagesPerPage}`);
       const data = await res.json();
 
       if (data.photos.length === 0) {
@@ -814,7 +814,7 @@ export default function Homepage() {
 
     try {
       setIsLoading(true);
-      const response = await fetch(`https://c07c-49-35-193-75.ngrok-free.app/photos/${album._id}`);
+      const response = await fetch(`https://b364-49-35-193-75.ngrok-free.app/photos/${album._id}`);
       if (!response.ok) throw new Error("Failed to fetch photos");
       const photos = await response.json();
 

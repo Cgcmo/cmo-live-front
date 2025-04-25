@@ -10,7 +10,7 @@ function CustomBarChart({ onPercentageChange }) {
   useEffect(() => {
     const fetchVisitorStats = async () => {
       try {
-        const response = await fetch("https://c07c-49-35-193-75.ngrok-free.app/visitor-stats");
+        const response = await fetch("https://b364-49-35-193-75.ngrok-free.app/visitor-stats");
         const data = await response.json();
 
         // Format data for recharts (x as day number or short name)

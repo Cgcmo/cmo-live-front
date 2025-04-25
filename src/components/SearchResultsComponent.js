@@ -22,7 +22,7 @@ export default function SearchResults() {
   
     setLoading(true); // already present
   
-    fetch("https://c07c-49-35-193-75.ngrok-free.app/master-search", {
+    fetch("https://b364-49-35-193-75.ngrok-free.app/master-search", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query }),

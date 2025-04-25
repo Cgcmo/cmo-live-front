@@ -45,12 +45,13 @@ function App() {
 
   const fetchAlbums = async () => {
     try {
-      const response = await fetch("https://c07c-49-35-193-75.ngrok-free.app/albums");
+      const response = await fetch("https://b364-49-35-193-75.ngrok-free.app/albums");
       if (!response.ok) {
         throw new Error("Failed to fetch albums");
       }
       const data = await response.json();
-      setAlbums(data);
+      setAlbums(data.albums || []); // fallback to empty array if undefined
+
     } catch (error) {
       console.error("Error fetching albums:", error);
     }
@@ -60,10 +61,10 @@ function App() {
   const fetchAllStats = async () => {
     try {
       const [userRes, albumRes, photoRes, downloadRes] = await Promise.all([
-        axios.get("https://c07c-49-35-193-75.ngrok-free.app/count-users"),
-        axios.get("https://c07c-49-35-193-75.ngrok-free.app/count-albums"),
-        axios.get("https://c07c-49-35-193-75.ngrok-free.app/count-photos"),
-        axios.get("https://c07c-49-35-193-75.ngrok-free.app/get-download-count"),
+        axios.get("https://b364-49-35-193-75.ngrok-free.app/count-users"),
+        axios.get("https://b364-49-35-193-75.ngrok-free.app/count-albums"),
+        axios.get("https://b364-49-35-193-75.ngrok-free.app/count-photos"),
+        axios.get("https://b364-49-35-193-75.ngrok-free.app/get-download-count"),
       ]);
 
       const totalUsers = userRes.data.total_users;
@@ -88,7 +89,7 @@ function App() {
   useEffect(() => {
     const fetchDownloadCount = async () => {
       try {
-        const res = await fetch("https://c07c-49-35-193-75.ngrok-free.app/get-download-count");
+        const res = await fetch("https://b364-49-35-193-75.ngrok-free.app/get-download-count");
         const data = await res.json();
         const downloadCount = data.count || 0;
 
@@ -122,7 +123,7 @@ function App() {
   useEffect(() => {
     const fetchDownloadCount = async () => {
       try {
-        const res = await fetch("https://c07c-49-35-193-75.ngrok-free.app/get-download-count");
+        const res = await fetch("https://b364-49-35-193-75.ngrok-free.app/get-download-count");
         const data = await res.json();
         const downloadCount = data.count || 0;
 

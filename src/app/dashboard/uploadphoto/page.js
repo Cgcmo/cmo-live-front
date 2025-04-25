@@ -68,7 +68,7 @@ export default function UploadPhoto() {
       let uploadPhotos = [];
 
       if (eventSelect && eventSelect !== "Select Event") {
-        const eventResponse = await fetch("https://c07c-49-35-193-75.ngrok-free.app/fetch-album-photos", {
+        const eventResponse = await fetch("https://b364-49-35-193-75.ngrok-free.app/fetch-album-photos", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           mode: "cors",
@@ -83,7 +83,7 @@ export default function UploadPhoto() {
       }
 
       if (selectedDate) {
-        const dateResponse = await fetch("https://c07c-49-35-193-75.ngrok-free.app/fetch-photos-by-date", {
+        const dateResponse = await fetch("https://b364-49-35-193-75.ngrok-free.app/fetch-photos-by-date", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           mode: "cors",
@@ -101,7 +101,7 @@ export default function UploadPhoto() {
         const reader = new FileReader();
         reader.onloadend = async () => {
           const base64String = reader.result.split(",")[1];
-          const uploadResponse = await fetch("https://c07c-49-35-193-75.ngrok-free.app/search-by-upload", {
+          const uploadResponse = await fetch("https://b364-49-35-193-75.ngrok-free.app/search-by-upload", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ image: base64String }),
@@ -171,7 +171,7 @@ setCurrentPage(1);
 
   const handleDownloadC = async () => {
     try {
-      await fetch("https://c07c-49-35-193-75.ngrok-free.app/increment-download-count", {
+      await fetch("https://b364-49-35-193-75.ngrok-free.app/increment-download-count", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
@@ -348,7 +348,7 @@ setCurrentPage(1);
   useEffect(() => {
   const fetchEvents = async () => {
     try {
-      const response = await fetch("https://c07c-49-35-193-75.ngrok-free.app/get-events");
+      const response = await fetch("https://b364-49-35-193-75.ngrok-free.app/get-events");
       const data = await response.json();
       setEvents(data);
     } catch (error) {

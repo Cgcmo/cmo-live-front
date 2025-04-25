@@ -21,7 +21,7 @@ const AllPhotos = ({ isSelectAll, setSelectedImages: updateSelectedImages }) => 
   
         const startTime = Date.now();
   
-        const response = await fetch(`https://c07c-49-35-193-75.ngrok-free.app/fetch-all-photos?page=${currentPage}&limit=${limit}`);
+        const response = await fetch(`https://b364-49-35-193-75.ngrok-free.app/fetch-all-photos?page=${currentPage}&limit=${limit}`);
         const data = await response.json();
   
         const imageUrls = data.photos.map((item) => {

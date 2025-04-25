@@ -61,7 +61,7 @@ export default function AuthPage() {
     }
   
     try {
-      const response = await fetch("https://c07c-49-35-193-75.ngrok-free.app/login", {
+      const response = await fetch("https://b364-49-35-193-75.ngrok-free.app/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

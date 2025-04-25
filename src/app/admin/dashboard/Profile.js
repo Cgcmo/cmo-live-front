@@ -26,7 +26,7 @@ export default function Profile() {
     // Fetch user details
     const fetchUserDetails = async () => {
       try {
-        const response = await fetch("https://c07c-49-35-193-75.ngrok-free.app/users");
+        const response = await fetch("https://b364-49-35-193-75.ngrok-free.app/users");
         const users = await response.json();
         const loggedUser = users.find((u) => u._id === userId);
 
@@ -47,7 +47,7 @@ export default function Profile() {
     // Fetch list of districts
     const fetchDistricts = async () => {
       try {
-        const response = await fetch("https://c07c-49-35-193-75.ngrok-free.app/districts");
+        const response = await fetch("https://b364-49-35-193-75.ngrok-free.app/districts");
         const data = await response.json();
         setDistricts(data);
       } catch (error) {
@@ -64,7 +64,7 @@ export default function Profile() {
     if (!userId) return;
 
     try {
-      const response = await fetch(`https://c07c-49-35-193-75.ngrok-free.app/update-user/${userId}`, {
+      const response = await fetch(`https://b364-49-35-193-75.ngrok-free.app/update-user/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(user),

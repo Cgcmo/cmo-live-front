@@ -23,39 +23,40 @@ const AllPhotos = ({  albums, setAlbums, currentTab, fetchAllStats } ) => {
 
   const fetchAlbums = async () => {
     try {
-      const response = await fetch("https://c07c-49-35-193-75.ngrok-free.app/albums");
+      const response = await fetch("https://b364-49-35-193-75.ngrok-free.app/albums");
       if (!response.ok) {
         throw new Error("Failed to fetch albums");
       }
       const data = await response.json();
-      setAlbums(data);
+      const safeArray = Array.isArray(data) ? data : data.albums || [];
+      setAlbums(safeArray);
     } catch (error) {
       console.error("Error fetching albums:", error);
     }
   };
+  
 
 
   const fetchPhotos = async (album) => {
-  if (!album || !album._id) return;
-  try {
-    const response = await fetch(`https://c07c-49-35-193-75.ngrok-free.app/photos/${album._id}`);
-    if (!response.ok) throw new Error("Failed to fetch photos");
-    const data = await response.json();
-    console.log("📸 Fetched Photos:", data);
-
-    // Ensure album opens even if there are no photos
-    setSelectedAlbum({ ...album, images: data.length > 0 ? data : [] });
-  } catch (error) {
-    console.error("Error fetching photos:", error);
-
-    // Ensure empty albums still open
-    setSelectedAlbum({ ...album, images: [] });
-  }
-};
-
+    if (!album || !album._id) return;
+    try {
+      const response = await fetch(`https://b364-49-35-193-75.ngrok-free.app/photos/${album._id}`);
+      if (!response.ok) throw new Error("Failed to fetch photos");
+      const data = await response.json();
+      console.log("📸 Fetched Photos:", data);
+  
+      const photos = data.photos || []; // ✅ correctly pick photos array
+  
+      setSelectedAlbum({ ...album, images: photos.length > 0 ? photos : [] });
+    } catch (error) {
+      console.error("Error fetching photos:", error);
+      setSelectedAlbum({ ...album, images: [] });
+    }
+  };
+  
   const handleCreateAlbum = async (newAlbum) => {
     try {
-      const response = await fetch("https://c07c-49-35-193-75.ngrok-free.app/create-album", {
+      const response = await fetch("https://b364-49-35-193-75.ngrok-free.app/create-album", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newAlbum),
@@ -151,7 +152,7 @@ const handleDownloadAlbum = async (album) => {
   if (!album || !album._id) return;
 
   try {
-    const response = await fetch(`https://c07c-49-35-193-75.ngrok-free.app/photos/${album._id}`);
+    const response = await fetch(`https://b364-49-35-193-75.ngrok-free.app/photos/${album._id}`);
     if (!response.ok) throw new Error("Failed to fetch photos");
     const photos = await response.json();
 
@@ -191,7 +192,7 @@ const handleDownloadAlbum = async (album) => {
         } else if (item._id) {
             // ✅ Item is an album
             try {
-                const response = await fetch(`https://c07c-49-35-193-75.ngrok-free.app/photos/${item._id}`);
+                const response = await fetch(`https://b364-49-35-193-75.ngrok-free.app/photos/${item._id}`);
                 if (!response.ok) throw new Error("Failed to fetch photos");
                 const data = await response.json();
 
@@ -232,7 +233,7 @@ const handleDownloadAlbum = async (album) => {
               }
 
               const response = await fetch(
-                `https://c07c-49-35-193-75.ngrok-free.app/photo/${selectedAlbum._id}/${photo.photo_id}`,
+                `https://b364-49-35-193-75.ngrok-free.app/photo/${selectedAlbum._id}/${photo.photo_id}`,
                 { method: "DELETE" }
               );
 
@@ -243,7 +244,7 @@ const handleDownloadAlbum = async (album) => {
             await fetchPhotos(selectedAlbum); // ✅ Refresh album after deletion
           } else {
             // Deleting albums
-            const response = await fetch("https://c07c-49-35-193-75.ngrok-free.app/delete-albums", {
+            const response = await fetch("https://b364-49-35-193-75.ngrok-free.app/delete-albums", {
               method: "DELETE",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ albumIds: selectedItems.map((album) => album._id) }),

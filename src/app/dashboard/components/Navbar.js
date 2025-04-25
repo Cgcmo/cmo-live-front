@@ -30,19 +30,19 @@ export default function Navbar({ setShowGallery, setGalleryPhotos }) {
 
   useEffect(() => {
     // Fetch Events
-    fetch("https://c07c-49-35-193-75.ngrok-free.app/get-events")
+    fetch("https://b364-49-35-193-75.ngrok-free.app/get-events")
       .then(res => res.json())
       .then(data => setEventList(data))
       .catch(err => console.error("Failed to fetch events:", err));
 
     // Fetch Categories (Departments)
-    fetch("https://c07c-49-35-193-75.ngrok-free.app/departments")
+    fetch("https://b364-49-35-193-75.ngrok-free.app/departments")
       .then(res => res.json())
       .then(data => setCategoryList(data.map(d => d.name)))  // extract only names
       .catch(err => console.error("Failed to fetch departments:", err));
 
     // Fetch Districts
-    fetch("https://c07c-49-35-193-75.ngrok-free.app/districts")
+    fetch("https://b364-49-35-193-75.ngrok-free.app/districts")
       .then(res => res.json())
       .then(data => setDistrictList(data.map(d => d.name)))
       .catch(err => console.error("Failed to fetch districts:", err));
@@ -50,7 +50,7 @@ export default function Navbar({ setShowGallery, setGalleryPhotos }) {
 
 
   useEffect(() => {
-    fetch("https://c07c-49-35-193-75.ngrok-free.app/search-suggestions")
+    fetch("https://b364-49-35-193-75.ngrok-free.app/search-suggestions")
       .then(res => res.json())
       .then(data => {
         const combined = [

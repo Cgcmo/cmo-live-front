@@ -19,7 +19,7 @@ const ModalPopup = ({ isOpen, setIsOpen, fetchAlbums, fetchAllStats }) => {
   useEffect(() => {
     const fetchDistricts = async () => {
       try {
-        const response = await fetch("https://c07c-49-35-193-75.ngrok-free.app/districts");
+        const response = await fetch("https://b364-49-35-193-75.ngrok-free.app/districts");
         if (response.ok) {
           const data = await response.json();
           setDistricts(data); // Update state with fetched districts
@@ -40,7 +40,7 @@ const ModalPopup = ({ isOpen, setIsOpen, fetchAlbums, fetchAllStats }) => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await fetch("https://c07c-49-35-193-75.ngrok-free.app/departments");
+        const response = await fetch("https://b364-49-35-193-75.ngrok-free.app/departments");
         if (response.ok) {
           const data = await response.json();
           setDepartments(data); // Update state with fetched departments
@@ -87,7 +87,7 @@ const ModalPopup = ({ isOpen, setIsOpen, fetchAlbums, fetchAllStats }) => {
         cover: base64Cover,
       };
 
-      const response = await fetch("https://c07c-49-35-193-75.ngrok-free.app/create-album", {
+      const response = await fetch("https://b364-49-35-193-75.ngrok-free.app/create-album", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newAlbum),

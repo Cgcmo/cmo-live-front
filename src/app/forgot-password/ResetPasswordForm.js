@@ -19,7 +19,7 @@ export default function ResetPasswordForm({ mobile }) {
     }
 
     try {
-      const res = await fetch("https://1bea-2409-4043-400-c70d-dcc4-e91f-4bc8-8d9b.ngrok-free.app/reset-password", {
+      const res = await fetch("https://b364-49-35-193-75.ngrok-free.app/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mobile, newPassword: password }),
