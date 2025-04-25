@@ -30,7 +30,7 @@
 
 
 //   useEffect(() => {
-//     fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/districts")
+//     fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/districts")
 //       .then((res) => res.json())
 //       .then((data) => setDistricts(data))
 //       .catch((err) => console.error("Failed to fetch districts:", err));
@@ -56,7 +56,7 @@
 //   }, []);
 
 //   useEffect(() => {
-//     fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/record-visit", {
+//     fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/record-visit", {
 //       method: "POST"
 //     }).catch((err) => console.error("Failed to record visit:", err));
 //   }, []);
@@ -94,7 +94,7 @@
 //     if (errors.length > 0) return alert(errors.join("\n"));
 
 //     try {
-//       const res = await fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/complete-signup", {
+//       const res = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/complete-signup", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({
@@ -125,7 +125,7 @@
 //     if (!/^[6-9]\d{9}$/.test(mobile)) return alert("Invalid mobile number.");
 
 //     try {
-//       const res = await fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/client-login", {
+//       const res = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/client-login", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({ mobile, password })
@@ -172,14 +172,14 @@
 //     const enteredOTP = otp.join("");
 
 //     try {
-//       const otpRes = await fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/verify-otp", {
+//       const otpRes = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/verify-otp", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({ mobile, otp: enteredOTP })
 //       });
 
 //       if (otpRes.ok && showSignup) {
-//         const regRes = await fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/complete-signup", {
+//         const regRes = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/complete-signup", {
 //           method: "POST",
 //           headers: { "Content-Type": "application/json" },
 //           body: JSON.stringify({
@@ -416,7 +416,7 @@
 //                 }
 
 //                 try {
-//                   const res = await fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/complete-signup", {
+//                   const res = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/complete-signup", {
 //                     method: "POST",
 //                     headers: { "Content-Type": "application/json" },
 //                     body: JSON.stringify({
@@ -594,7 +594,7 @@ export default function AuthPage({ setShowLoginPage }) {
   const [showSignupPassword, setShowSignupPassword] = useState(false);
 
   useEffect(() => {
-    fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/districts")
+    fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/districts")
       .then((res) => res.json())
       .then((data) => setDistricts(data))
       .catch((err) => console.error("Failed to fetch districts:", err));
@@ -620,7 +620,7 @@ export default function AuthPage({ setShowLoginPage }) {
   }, []);
 
   useEffect(() => {
-    fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/record-visit", {
+    fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/record-visit", {
       method: "POST"
     }).catch((err) => console.error("Failed to record visit:", err));
   }, []);
@@ -658,7 +658,7 @@ export default function AuthPage({ setShowLoginPage }) {
     if (errors.length > 0) return alert(errors.join("\n"));
 
     try {
-      const res = await fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/complete-signup", {
+      const res = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/complete-signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -689,7 +689,7 @@ export default function AuthPage({ setShowLoginPage }) {
     if (!/^[6-9]\d{9}$/.test(mobile)) return alert("Invalid mobile number.");
 
     try {
-      const res = await fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/client-login", {
+      const res = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/client-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mobile, password })
@@ -736,14 +736,14 @@ export default function AuthPage({ setShowLoginPage }) {
     const enteredOTP = otp.join("");
 
     try {
-      const otpRes = await fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/verify-otp", {
+      const otpRes = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mobile, otp: enteredOTP })
       });
 
       if (otpRes.ok && showSignup) {
-        const regRes = await fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/complete-signup", {
+        const regRes = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/complete-signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -1085,7 +1085,7 @@ export default function AuthPage({ setShowLoginPage }) {
                 }
 
                 try {
-                  const res = await fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/complete-signup", {
+                  const res = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/complete-signup", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({

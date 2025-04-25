@@ -22,7 +22,7 @@ const EventCard = () => {
   const startTime = Date.now();
 
     try {
-      const response = await fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/fetch-album-photos", {
+      const response = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/fetch-album-photos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ eventName: title }),

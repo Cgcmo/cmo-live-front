@@ -58,7 +58,7 @@
 
 //   const fetchAlbums = async () => {
 //     try {
-//       const res = await fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/albums");
+//       const res = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/albums");
 //       const data = await res.json();
 //       setAlbums(data);
 //     } catch (err) {
@@ -69,7 +69,7 @@
 
 //   const fetchPhotos = async (album) => {
 //     try {
-//       const res = await fetch(`https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${album._id}`);
+//       const res = await fetch(`https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${album._id}`);
 //       const data = await res.json();
 
 //       if (data.length === 0) {
@@ -163,7 +163,7 @@
 //     if (!album || !album._id) return;
 
 //     try {
-//       const response = await fetch(`https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${album._id}`);
+//       const response = await fetch(`https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${album._id}`);
 //       if (!response.ok) throw new Error("Failed to fetch photos");
 //       const photos = await response.json();
 
@@ -677,7 +677,7 @@ export default function Homepage() {
 
   const fetchAlbums = async (page = 1) => {
     try {
-      const res = await fetch(`https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/albums?page=${page}&limit=${imagesPerPage}`);
+      const res = await fetch(`https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/albums?page=${page}&limit=${imagesPerPage}`);
       const data = await res.json();
       setAlbums(data.albums);
       setTotalPages(Math.ceil(data.total / imagesPerPage));
@@ -693,7 +693,7 @@ export default function Homepage() {
   const fetchPhotos = async (album, page = 1) => {
     try {
       setIsLoading(true);
-      const res = await fetch(`https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${album._id}?page=${page}&limit=${imagesPerPage}`);
+      const res = await fetch(`https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${album._id}?page=${page}&limit=${imagesPerPage}`);
       const data = await res.json();
 
       if (data.photos.length === 0) {
@@ -814,7 +814,7 @@ export default function Homepage() {
 
     try {
       setIsLoading(true);
-      const response = await fetch(`https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${album._id}`);
+      const response = await fetch(`https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${album._id}`);
       if (!response.ok) throw new Error("Failed to fetch photos");
       const photos = await response.json();
 

@@ -120,9 +120,9 @@ function App() {
   const fetchAllStats = async () => {
     try {
       const [userRes, albumRes, photoRes] = await Promise.all([
-        fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/count-users"),
-        fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/count-albums"),
-        fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/count-photos"),
+        fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/count-users"),
+        fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/count-albums"),
+        fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/count-photos"),
       ]);
   
       const totalUsers = (await userRes.json()).total_users;

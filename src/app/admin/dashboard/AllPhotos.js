@@ -23,7 +23,7 @@ const AllPhotos = ({  albums, setAlbums, currentTab, fetchAllStats } ) => {
 
   const fetchAlbums = async () => {
     try {
-      const response = await fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/albums");
+      const response = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/albums");
       if (!response.ok) {
         throw new Error("Failed to fetch albums");
       }
@@ -40,7 +40,7 @@ const AllPhotos = ({  albums, setAlbums, currentTab, fetchAllStats } ) => {
   const fetchPhotos = async (album) => {
     if (!album || !album._id) return;
     try {
-      const response = await fetch(`https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${album._id}`);
+      const response = await fetch(`https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${album._id}`);
       if (!response.ok) throw new Error("Failed to fetch photos");
       const data = await response.json();
       console.log("📸 Fetched Photos:", data);
@@ -56,7 +56,7 @@ const AllPhotos = ({  albums, setAlbums, currentTab, fetchAllStats } ) => {
   
   const handleCreateAlbum = async (newAlbum) => {
     try {
-      const response = await fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/create-album", {
+      const response = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/create-album", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newAlbum),
@@ -152,7 +152,7 @@ const handleDownloadAlbum = async (album) => {
   if (!album || !album._id) return;
 
   try {
-    const response = await fetch(`https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${album._id}`);
+    const response = await fetch(`https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${album._id}`);
     if (!response.ok) throw new Error("Failed to fetch photos");
     const photos = await response.json();
 
@@ -192,7 +192,7 @@ const handleDownloadAlbum = async (album) => {
         } else if (item._id) {
             // ✅ Item is an album
             try {
-                const response = await fetch(`https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${item._id}`);
+                const response = await fetch(`https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${item._id}`);
                 if (!response.ok) throw new Error("Failed to fetch photos");
                 const data = await response.json();
 
@@ -233,7 +233,7 @@ const handleDownloadAlbum = async (album) => {
               }
 
               const response = await fetch(
-                `https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photo/${selectedAlbum._id}/${photo.photo_id}`,
+                `https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photo/${selectedAlbum._id}/${photo.photo_id}`,
                 { method: "DELETE" }
               );
 
@@ -244,7 +244,7 @@ const handleDownloadAlbum = async (album) => {
             await fetchPhotos(selectedAlbum); // ✅ Refresh album after deletion
           } else {
             // Deleting albums
-            const response = await fetch("https://0258-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/delete-albums", {
+            const response = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/delete-albums", {
               method: "DELETE",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ albumIds: selectedItems.map((album) => album._id) }),
