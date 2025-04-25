@@ -32,6 +32,17 @@ export default function Home() {
     { src: '/videos/clip3.mp4', title: isHindi ? 'युवा पैनल' : 'Youth Panel' },
     { src: '/videos/clip4.mp4', title: isHindi ? 'स्मार्ट सिटी लॉन्च' : 'Smart City Launch' },
   ];
+  const featuredLinks = [
+    { name: "Home", url: "/" },
+    { name: "Copyright Policy", url: "/info/copyright-policy" },
+    { name: "Disclaimer", url: "/info/disclaimer" },
+    { name: "Site Map", url: "/info/site-map" },
+    { name: "Hyperlink Policy", url: "/info/hyperlink-policy" }, // optional - if exists
+    { name: "Privacy Policy", url: "/info/privacy-policy" },     // optional - if exists
+    { name: "Terms And Conditions", url: "/info/terms-and-conditions" },
+    { name: "Terms Of Use", url: "/info/terms-of-use" },
+  ];
+  
 
 
   // Now this will work correctly
@@ -796,19 +807,24 @@ export default function Home() {
 
                 {/* Featured Links */}
                 <div>
-                  <h3 className="font-bold text-lg text-gray-800 mb-3">Featured Links</h3>
-                  <div className="text-sm text-gray-600 flex flex-wrap gap-x-2 gap-y-2">
-                    {[
-                      "Home", "Copyright Policy", "Disclaimer", "Site Map",
-                      "Hyperlink Policy", "Privacy Policy", "Terms And Conditions", "Terms Of Use"
-                    ].map((name, index, arr) => (
-                      <span key={index} className="flex items-center">
-                        <a href="#" className="hover:underline">{name}</a>
-                        {index !== arr.length - 1 && <span className="mx-2">|</span>}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+  <h3 className="font-bold text-lg text-gray-800 mb-3">Featured Links</h3>
+  <div className="text-sm text-gray-600 flex flex-wrap gap-x-2 gap-y-2">
+    {featuredLinks.map((link, index) => (
+      <span key={index} className="flex items-center">
+        <a
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:underline"
+        >
+          {link.name}
+        </a>
+        {index !== featuredLinks.length - 1 && <span className="mx-2">|</span>}
+      </span>
+    ))}
+  </div>
+</div>
+
 
                 {/* Reach Us */}
                 <div>

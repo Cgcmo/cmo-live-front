@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from 'react';
 const Footer = () => {
     // Dynamic District List
@@ -15,13 +16,13 @@ const Footer = () => {
     // Dynamic Featured Links
     const featuredLinks = [
         { name: "Home", url: "#" },
-        { name: "Copyright Policy", url: "#" },
-        { name: "Disclaimer", url: "#" },
-        { name: "Site Map", url: "#" },
+        { name: "Copyright Policy", url: "/info/copyright-policy" },
+    { name: "Disclaimer", url: "/info/disclaimer" },
+    { name: "Site Map", url: "/info/site-map" },
         { name: "Hyperlink Policy", url: "#" },
         { name: "Privacy Policy", url: "#" },
-        { name: "Terms And Conditions", url: "#" },
-        { name: "Terms Of Use", url: "#" }
+        { name: "Terms And Conditions", url: "/info/terms-and-conditions" },
+        { name: "Terms Of Use", url: "/info/terms-of-use" }
     ];
 
     // Dynamic Social Media Links
@@ -60,12 +61,20 @@ const Footer = () => {
                     <div>
                         <h3 className="font-bold text-lg text-gray-800 mb-3">Featured Links</h3>
                         <div className="text-sm text-gray-600 flex flex-wrap gap-x-2 gap-y-2">
-                            {featuredLinks.map((link, index) => (
-                                <span key={index} className="flex items-center">
-                                    <a href={link.url} className="hover:underline">{link.name}</a>
-                                    {index !== featuredLinks.length - 1 && <span className="mx-2">|</span>}
-                                </span>
-                            ))}
+                        {featuredLinks.map((link, index) => (
+  <span key={index} className="flex items-center">
+    <a
+      href={link.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="hover:underline"
+    >
+      {link.name}
+    </a>
+    {index !== featuredLinks.length - 1 && <span className="mx-2">|</span>}
+  </span>
+))}
+
                         </div>
                     </div>
 
