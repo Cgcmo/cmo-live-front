@@ -29,7 +29,8 @@ function App() {
   const { data: session, status } = useSession();
   const [otpUser, setOtpUser] = useState(null);
   const userName = session?.user?.name || otpUser?.name || "";
-
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [isPageLoading, setIsPageLoading] = useState(true);
 
   const [users, setUsers] = useState([]);
   useEffect(() => {
@@ -59,6 +60,8 @@ function App() {
       alert("No images selected for download.");
       return;
     }
+    setIsDownloading(true); // Show loader
+    const startTime = Date.now();
 
     selectedImages.forEach((image) => {
       const link = document.createElement("a");
@@ -69,7 +72,12 @@ function App() {
       document.body.removeChild(link);
     });
 
-    alert(`Downloading ${selectedImages.length} images.`);
+    const elapsed = Date.now() - startTime;
+    const delay = Math.max(1000 - elapsed, 0); // At least 1 sec
+  
+    setTimeout(() => {
+      setIsDownloading(false); // Hide loader after delay
+    }, delay);
   };
 
   const Switch = ({ checked, onChange }) => {
@@ -111,39 +119,79 @@ function App() {
 
   const fetchAllStats = async () => {
     try {
-      const [userRes, albumRes, photoRes, downloadRes] = await Promise.all([
-        fetch("https://cmo-back-livee.onrender.com/count-users"),
-        fetch("https://cmo-back-livee.onrender.com/count-albums"),
-        fetch("https://cmo-back-livee.onrender.com/count-photos"),
-        fetch("https://cmo-back-livee.onrender.com/get-download-count"),
+      const [userRes, albumRes, photoRes] = await Promise.all([
+        fetch("https://c07c-49-35-193-75.ngrok-free.app/count-users"),
+        fetch("https://c07c-49-35-193-75.ngrok-free.app/count-albums"),
+        fetch("https://c07c-49-35-193-75.ngrok-free.app/count-photos"),
       ]);
-
+  
       const totalUsers = (await userRes.json()).total_users;
       const totalAlbums = (await albumRes.json()).total_albums;
       const totalPhotos = (await photoRes.json()).total_photos;
-      const totalDownloads = (await downloadRes.json()).count || 0;
-
+      const localDownloads = JSON.parse(localStorage.getItem("downloadHistory") || "[]").length;
+  
       setStats([
         // { label: "Total User", count: totalUsers.toString(), image: "/tuser.png", bg: "#A889FC80" },
         { label: "Total Image", count: totalPhotos.toString(), image: "/timage.png", bg: "#90C0F6" },
-        { label: "Total Download", count: totalDownloads.toString(), image: "/tdownload.png", bg: "#A1C181" },
+        { label: "Total Download", count: localDownloads.toString(), image: "/tdownload.png", bg: "#A1C181" },
         // { label: "Total Event", count: totalAlbums.toString(), image: "/tevent.png", bg: "#F6CB90" },
       ]);
     } catch (error) {
       console.error("Failed to fetch stats:", error);
     }
   };
+  
 
 
 
   useEffect(() => {
-    fetchAllStats();
+    const loadPageData = async () => {
+      await fetchAllStats(); // load stats
+      setIsPageLoading(false); // ✅ end page loader
+    };
+    loadPageData();
   }, []);
+  
 
-  useEffect(() => {
-    fetchAllStats();
-  }, []);
+  // useEffect(() => {
+  //   fetchAllStats();
+  // }, []);
 
+  if (isPageLoading) {
+    return (
+      <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-white z-50">
+                    <div className="flex flex-col items-center">
+                      <div className="relative w-20 h-20">
+                        {/* Circular Loading Spinner */}
+                        <svg
+                          aria-hidden="true"
+                          className="absolute inset-0 w-20 h-20 animate-spin text-gray-300"
+                          viewBox="0 0 100 101"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                            fill="currentColor"
+                          />
+                          <path
+                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                            fill="#170645"
+                          />
+                        </svg>
+                      </div>
+                      {/* Loading Text */}
+                      <p className="mt-4 text-lg font-semibold text-gray-700">Search Your Photos With AI...</p>
+                    </div>
+                    <div className="absolute bottom-10 text-center">
+                      <p className="text-lg font-bold text-gray-700">
+                        The latest <span className="text-black font-bold">AI</span> image search.
+                      </p>
+                    </div>
+
+                  </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -291,7 +339,7 @@ function App() {
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold">Welcome To CMO Gallery</h1>
           <p className="text-2xl sm:text-3xl md:text-4xl font-thin mt-2 mb-4">Here's Everything You Need To Know To Get Started.</p>
           {userName && (
-            <p className="text-xl sm:text-2xl font-semibold mt-16">Hello , <span style={{ color: '#FFE100' }}>{userName}</span> Welcome To CMO Gallery</p>
+            <p className="text-xl sm:text-2xl font-semibold mt-16">Hello , <span style={{ color: '#FFE100' }}>{userName}</span></p>
           )}
 
         </div>
@@ -397,6 +445,38 @@ function App() {
 
 
       </div>
+      {isDownloading && (
+          <div className="fixed top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-black bg-opacity-30 z-[9999] backdrop-blur-sm">
+            <div className="flex flex-col items-center p-6 rounded-2xl">
+              {/* Spinner */}
+              <div className="relative w-20 h-20">
+                <svg
+                  aria-hidden="true"
+                  className="absolute inset-0 w-20 h-20 animate-spin text-gray-300"
+                  viewBox="0 0 100 101"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                    fill="#170645"
+                  />
+                </svg>
+              </div>
+
+              {/* Loading Text */}
+              
+              <p className="mt-6 text-lg font-bold text-white">
+                The latest <span className="text-[#170645] font-bold">AI</span> Based Photo Gallery App.
+              </p>
+            </div>
+          </div>
+        )}
+
       <Footer />
     </div>
   );

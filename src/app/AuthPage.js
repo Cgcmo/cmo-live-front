@@ -30,7 +30,7 @@
 
 
 //   useEffect(() => {
-//     fetch("https://cmo-back-livee.onrender.com/districts")
+//     fetch("https://c07c-49-35-193-75.ngrok-free.app/districts")
 //       .then((res) => res.json())
 //       .then((data) => setDistricts(data))
 //       .catch((err) => console.error("Failed to fetch districts:", err));
@@ -56,7 +56,7 @@
 //   }, []);
 
 //   useEffect(() => {
-//     fetch("https://cmo-back-livee.onrender.com/record-visit", {
+//     fetch("https://c07c-49-35-193-75.ngrok-free.app/record-visit", {
 //       method: "POST"
 //     }).catch((err) => console.error("Failed to record visit:", err));
 //   }, []);
@@ -94,7 +94,7 @@
 //     if (errors.length > 0) return alert(errors.join("\n"));
 
 //     try {
-//       const res = await fetch("https://cmo-back-livee.onrender.com/complete-signup", {
+//       const res = await fetch("https://c07c-49-35-193-75.ngrok-free.app/complete-signup", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({
@@ -125,7 +125,7 @@
 //     if (!/^[6-9]\d{9}$/.test(mobile)) return alert("Invalid mobile number.");
 
 //     try {
-//       const res = await fetch("https://cmo-back-livee.onrender.com/client-login", {
+//       const res = await fetch("https://c07c-49-35-193-75.ngrok-free.app/client-login", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({ mobile, password })
@@ -172,14 +172,14 @@
 //     const enteredOTP = otp.join("");
 
 //     try {
-//       const otpRes = await fetch("https://cmo-back-livee.onrender.com/verify-otp", {
+//       const otpRes = await fetch("https://c07c-49-35-193-75.ngrok-free.app/verify-otp", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({ mobile, otp: enteredOTP })
 //       });
 
 //       if (otpRes.ok && showSignup) {
-//         const regRes = await fetch("https://cmo-back-livee.onrender.com/complete-signup", {
+//         const regRes = await fetch("https://c07c-49-35-193-75.ngrok-free.app/complete-signup", {
 //           method: "POST",
 //           headers: { "Content-Type": "application/json" },
 //           body: JSON.stringify({
@@ -416,7 +416,7 @@
 //                 }
 
 //                 try {
-//                   const res = await fetch("https://cmo-back-livee.onrender.com/complete-signup", {
+//                   const res = await fetch("https://c07c-49-35-193-75.ngrok-free.app/complete-signup", {
 //                     method: "POST",
 //                     headers: { "Content-Type": "application/json" },
 //                     body: JSON.stringify({
@@ -594,7 +594,7 @@ export default function AuthPage({ setShowLoginPage }) {
   const [showSignupPassword, setShowSignupPassword] = useState(false);
 
   useEffect(() => {
-    fetch("https://cmo-back-livee.onrender.com/districts")
+    fetch("https://c07c-49-35-193-75.ngrok-free.app/districts")
       .then((res) => res.json())
       .then((data) => setDistricts(data))
       .catch((err) => console.error("Failed to fetch districts:", err));
@@ -620,7 +620,7 @@ export default function AuthPage({ setShowLoginPage }) {
   }, []);
 
   useEffect(() => {
-    fetch("https://cmo-back-livee.onrender.com/record-visit", {
+    fetch("https://c07c-49-35-193-75.ngrok-free.app/record-visit", {
       method: "POST"
     }).catch((err) => console.error("Failed to record visit:", err));
   }, []);
@@ -658,7 +658,7 @@ export default function AuthPage({ setShowLoginPage }) {
     if (errors.length > 0) return alert(errors.join("\n"));
 
     try {
-      const res = await fetch("https://cmo-back-livee.onrender.com/complete-signup", {
+      const res = await fetch("https://c07c-49-35-193-75.ngrok-free.app/complete-signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -689,7 +689,7 @@ export default function AuthPage({ setShowLoginPage }) {
     if (!/^[6-9]\d{9}$/.test(mobile)) return alert("Invalid mobile number.");
 
     try {
-      const res = await fetch("https://cmo-back-livee.onrender.com/client-login", {
+      const res = await fetch("https://c07c-49-35-193-75.ngrok-free.app/client-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mobile, password })
@@ -736,14 +736,14 @@ export default function AuthPage({ setShowLoginPage }) {
     const enteredOTP = otp.join("");
 
     try {
-      const otpRes = await fetch("https://cmo-back-livee.onrender.com/verify-otp", {
+      const otpRes = await fetch("https://c07c-49-35-193-75.ngrok-free.app/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mobile, otp: enteredOTP })
       });
 
       if (otpRes.ok && showSignup) {
-        const regRes = await fetch("https://cmo-back-livee.onrender.com/complete-signup", {
+        const regRes = await fetch("https://c07c-49-35-193-75.ngrok-free.app/complete-signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -1085,7 +1085,7 @@ export default function AuthPage({ setShowLoginPage }) {
                 }
 
                 try {
-                  const res = await fetch("https://cmo-back-livee.onrender.com/complete-signup", {
+                  const res = await fetch("https://c07c-49-35-193-75.ngrok-free.app/complete-signup", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -1138,9 +1138,16 @@ export default function AuthPage({ setShowLoginPage }) {
               </div>
               <input
                 type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 placeholder="Mobile No."
                 value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
+                onChange={(e) => {
+                  const input = e.target.value;
+                  if (/^\d*$/.test(input)) {
+                    setMobile(input);
+                  }
+                }}
                 className="border w-full p-2 rounded-full mb-4 text-[#170645]"
               />
               <div className="relative mb-4">

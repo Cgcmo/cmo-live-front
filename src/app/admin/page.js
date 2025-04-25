@@ -61,7 +61,7 @@ export default function AuthPage() {
     }
   
     try {
-      const response = await fetch("https://cmo-back-livee.onrender.com/login", {
+      const response = await fetch("https://c07c-49-35-193-75.ngrok-free.app/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -182,11 +182,11 @@ export default function AuthPage() {
                 />
               </svg>
               {/* Profile Image Inside Spinner */}
-              <img
+              {/* <img
                 src="/CM.png"
                 className="w-20 h-20 rounded-full border-4 border-white shadow-lg"
                 alt="User"
-              />
+              /> */}
             </div>
             {/* Loading Text */}
             <p className="mt-4 text-lg font-semibold text-gray-700">
@@ -228,12 +228,18 @@ export default function AuthPage() {
                 <hr className="flex-grow border-gray-300" />
               </div>
               <input
-                type="text"
-                placeholder="Mobile No."
-                value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
-                className="border pl-5 placeholder-[#170645] w-full p-2 rounded-full mb-4 text-[#170645]"
-              />
+  type="text"
+  placeholder="Mobile No."
+  value={mobile}
+  onChange={(e) => {
+    const input = e.target.value;
+    if (/^\d*$/.test(input)) {
+      setMobile(input);
+    }
+  }}
+  className="border pl-5 placeholder-[#170645] w-full p-2 rounded-full mb-4 text-[#170645]"
+/>
+
               <button onClick={handleLogin} className="w-full bg-[#170645] text-[#FFE100] p-2 rounded-full">
                 Proceed
               </button>

@@ -45,7 +45,7 @@ function App() {
 
   const fetchAlbums = async () => {
     try {
-      const response = await fetch("https://cmo-back-livee.onrender.com/albums");
+      const response = await fetch("https://c07c-49-35-193-75.ngrok-free.app/albums");
       if (!response.ok) {
         throw new Error("Failed to fetch albums");
       }
@@ -60,10 +60,10 @@ function App() {
   const fetchAllStats = async () => {
     try {
       const [userRes, albumRes, photoRes, downloadRes] = await Promise.all([
-        axios.get("https://cmo-back-livee.onrender.com/count-users"),
-        axios.get("https://cmo-back-livee.onrender.com/count-albums"),
-        axios.get("https://cmo-back-livee.onrender.com/count-photos"),
-        axios.get("https://cmo-back-livee.onrender.com/get-download-count"),
+        axios.get("https://c07c-49-35-193-75.ngrok-free.app/count-users"),
+        axios.get("https://c07c-49-35-193-75.ngrok-free.app/count-albums"),
+        axios.get("https://c07c-49-35-193-75.ngrok-free.app/count-photos"),
+        axios.get("https://c07c-49-35-193-75.ngrok-free.app/get-download-count"),
       ]);
 
       const totalUsers = userRes.data.total_users;
@@ -88,7 +88,7 @@ function App() {
   useEffect(() => {
     const fetchDownloadCount = async () => {
       try {
-        const res = await fetch("https://cmo-back-livee.onrender.com/get-download-count");
+        const res = await fetch("https://c07c-49-35-193-75.ngrok-free.app/get-download-count");
         const data = await res.json();
         const downloadCount = data.count || 0;
 
@@ -122,7 +122,7 @@ function App() {
   useEffect(() => {
     const fetchDownloadCount = async () => {
       try {
-        const res = await fetch("https://cmo-back-livee.onrender.com/get-download-count");
+        const res = await fetch("https://c07c-49-35-193-75.ngrok-free.app/get-download-count");
         const data = await res.json();
         const downloadCount = data.count || 0;
 
@@ -339,8 +339,7 @@ function App() {
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold">Welcome To CMO Gallery</h1>
           <p className="text-2xl sm:text-3xl md:text-4xl font-thin mt-2 mb-4">Here's Everything You Need To Know To Get Started.</p>
           <p className="text-xl sm:text-2xl font-semibold mt-16">
-            Hello, <span style={{ color: '#FFE100' }}>{userName} </span>Welcome to CMO Gallery
-          </p>
+            Hello, <span style={{ color: '#FFE100' }}>{userName} </span></p>
 
         </div>
         <img

@@ -15,28 +15,46 @@ export default function DistrictGalleryPage() {
   const [albumPhotos, setAlbumPhotos] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const imagesPerPage = 16;
+
 
   useEffect(() => {
-    if (!districtName) return;
+    if (districtName) {
+      setCurrentPage(1);
+    }
+  }, [districtName]);
+  
+  // Second: only fetch albums when districtName is valid AND currentPage is set
+  useEffect(() => {
+    if (!districtName || !currentPage) return; // prevent empty fetch
+  
     const fetchDistrictAlbums = async () => {
       try {
-        const res = await fetch(`https://cmo-back-livee.onrender.com/albums-by-district?name=${districtName}`);
+        const res = await fetch(
+          `https://c07c-49-35-193-75.ngrok-free.app/albums-by-district?name=${districtName}&page=${currentPage}&limit=${imagesPerPage}`
+        );
         const data = await res.json();
-        setAlbums(data);
+        setAlbums(data.albums || []);
+        setTotalPages(Math.ceil((data.total || 0) / imagesPerPage));
       } catch (err) {
         console.error("Failed to fetch district albums", err);
       }
     };
+  
     fetchDistrictAlbums();
-  }, [districtName]);
+  }, [districtName, currentPage]);
 
   const fetchPhotos = async (album) => {
     try {
-      const res = await fetch(`https://cmo-back-livee.onrender.com/photos/${album._id}`);
+      const res = await fetch(`https://c07c-49-35-193-75.ngrok-free.app/photos/${album._id}`);
       const data = await res.json();
       if (data.length === 0) return alert("This album is empty");
       setSelectedAlbum(album);
-      setAlbumPhotos(data);
+      setAlbumPhotos(data.photos);
+      setTotalPages(Math.ceil((data.total || 0) / imagesPerPage));
+      
     } catch (err) {
       console.error("Failed to fetch album photos", err);
     }
@@ -72,7 +90,7 @@ export default function DistrictGalleryPage() {
 
   const handleDownloadAlbum = async (album) => {
     try {
-      const response = await fetch(`https://cmo-back-livee.onrender.com/photos/${album._id}`);
+      const response = await fetch(`https://c07c-49-35-193-75.ngrok-free.app/photos/${album._id}`);
       const photos = await response.json();
       if (photos.length === 0) return alert("No photos to download in this album.");
 
@@ -149,6 +167,9 @@ export default function DistrictGalleryPage() {
     500: 1,
   };
 
+
+  
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -163,11 +184,11 @@ export default function DistrictGalleryPage() {
               }}
               className="text-[#170645] px-4 py-1 font-normal rounded-lg text-sm sm:text-base flex items-center gap-2"
             >
-               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
-        viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-      </svg>
-      <span>Back</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+              <span>Back</span>
             </button>
 
             <h2 className="text-center font-extrabold text-xl sm:text-3xl text-[#170645] truncate max-w-[50%]">
@@ -190,20 +211,20 @@ export default function DistrictGalleryPage() {
           </h2>
         )}
 
-{!selectedAlbum && albums.length === 0 ? (
-  <div className="flex justify-center items-center h-[60vh] w-full">
-    <p className="text-3xl sm:text-5xl font-extrabold text-gray-400 text-center">
-      No Album Found
-    </p>
-  </div>
-) :(
-        <Masonry
-          breakpointCols={breakpointColumnsObj}
-          className="my-masonry-grid mt-4"
-          columnClassName="my-masonry-grid_column"
-        >
-          {selectedAlbum
-            ? albumPhotos.map((photo, index) => (
+        {!selectedAlbum && albums.length === 0 ? (
+          <div className="flex justify-center items-center h-[60vh] w-full">
+            <p className="text-3xl sm:text-5xl font-extrabold text-gray-400 text-center">
+              No Album Found
+            </p>
+          </div>
+        ) : (
+          <Masonry
+            breakpointCols={breakpointColumnsObj}
+            className="my-masonry-grid mt-4"
+            columnClassName="my-masonry-grid_column"
+          >
+            {selectedAlbum
+              ? albumPhotos.map((photo, index) => (
                 <div
                   key={index}
                   className="break-inside-avoid p-2 bg-white rounded-xl group transition-all duration-300 relative"
@@ -221,7 +242,7 @@ export default function DistrictGalleryPage() {
                   />
                 </div>
               ))
-            : albums.map((album, index) => (
+              : albums.map((album, index) => (
                 <div
                   key={index}
                   onClick={() => fetchPhotos(album)}
@@ -257,8 +278,9 @@ export default function DistrictGalleryPage() {
                   </div>
                 </div>
               ))}
-        </Masonry>
-)}
+
+          </Masonry>
+        )}
 
         {selectedAlbum && (
           <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 flex flex-col sm:flex-row gap-3 px-4 py-3 rounded-full">
@@ -271,6 +293,32 @@ export default function DistrictGalleryPage() {
           </div>
         )}
       </div>
+
+      {totalPages > 1 && (
+  <div className="w-full text-center mt-6 mb-4">
+  <div className="inline-flex space-x-4">
+    <button
+      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+      disabled={currentPage === 1}
+      className="px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500"
+    >
+      {"<<"}
+    </button>
+    <span className="px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500">
+      Page {currentPage} of {totalPages}
+    </span>
+    <button
+      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+      disabled={currentPage === totalPages}
+      className="px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500"
+    >
+      {">>"}
+    </button>
+  </div>
+</div>
+
+)}
+
       <Footer />
     </div>
   );

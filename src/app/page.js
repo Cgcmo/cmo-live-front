@@ -300,7 +300,7 @@ export default function Home() {
           </div>
 
           {/* Hero Section */}
-          <div className="relative text-center px-1 pt-60  z-10">
+          <div className="relative text-center px-1 pt-24 sm:pt-32 md:pt-48 lg:pt-60 z-10">
             <h1
               className="max-w-5xl mx-auto font-bold leading-snug text-white text-center flex flex-wrap justify-center items-center gap-2"
               style={{ fontSize: '57.28px', fontWeight: 700 }}
@@ -337,7 +337,7 @@ export default function Home() {
                   display: 'inline-block',
                 }}
               >
-                {isHindi ? 'आधारित सीएमओ चित्र खोज मंच' : 'Based CMO Image Search Platform'}
+                {isHindi ? 'आधारित फोटो गैलरी ऐप' : 'Based Photo Gallery App'}
               </span>
             </h1>
 

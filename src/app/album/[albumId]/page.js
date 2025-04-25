@@ -18,11 +18,11 @@ export default function AlbumViewer() {
   useEffect(() => {
     const fetchPhotos = async () => {
       try {
-        const res = await fetch(`https://cmo-back-livee.onrender.com/photos/${albumId}`);
+        const res = await fetch(`https://c07c-49-35-193-75.ngrok-free.app/photos/${albumId}`);
         const photoData = await res.json();
         setPhotos(photoData);
 
-        const albumRes = await fetch("https://cmo-back-livee.onrender.com/albums");
+        const albumRes = await fetch("https://c07c-49-35-193-75.ngrok-free.app/albums");
         const albumList = await albumRes.json();
         const album = albumList.find((a) => a._id === albumId);
         if (album) setAlbumName(album.name);
