@@ -3,13 +3,14 @@
 // import { useState, useEffect, useRef } from "react";
 // import { useRouter } from "next/navigation";
 // import { signIn, signOut, useSession } from "next-auth/react";
+// import { useSearchParams } from "next/navigation";
 
 // const poppins = Poppins({
 //   subsets: ["latin"],
 //   weight: ["300", "400", "500", "600", "700"],
 //   variable: "--font-poppins", // CSS Variable for Tailwind
 // });
-// export default function AuthPage() {
+// export default function AuthPage({ setShowLoginPage }) {
 //   const [showVideoThumbnail, setShowVideoThumbnail] = useState(false);
 //   const [mobile, setMobile] = useState("");
 //   const [showOTP, setShowOTP] = useState(false);
@@ -27,10 +28,44 @@
 //   const [signupData, setSignupData] = useState({});
 //   const [showOtpless, setShowOtpless] = useState(false);
 //   const [verifiedMobile, setVerifiedMobile] = useState("");
+//   const searchParams = useSearchParams();
+//   const [showLoginPassword, setShowLoginPassword] = useState(false);
+//   const [showSignupPassword, setShowSignupPassword] = useState(false);
+//   const [OTPlessSignin, setOTPlessSignin] = useState(null);
+//   const [token, setToken] = useState(null);
+//   const [otpSessionMobile, setOtpSessionMobile] = useState("");
 
-
+  
 //   useEffect(() => {
-//     fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/districts")
+//     const callback = (eventCallback) => {
+//       if (eventCallback.responseType === "ONETAP") {
+//         const { response } = eventCallback;
+//         console.log("✅ OTP verified successfully:", response.token);
+//         setToken(response.token);
+//         // handleSignupAfterOtp();
+//       } else if (eventCallback.responseType === "FAILED") {
+//         console.error("❌ OTP verification failed", eventCallback.response);
+//         alert("OTP Verification Failed. Try again.");
+//       }
+//     };
+  
+//     const tryInitializeOTPless = () => {
+//       if (typeof window !== "undefined" && window.OTPless) {
+//         console.log("✅ OTPless SDK is now available");
+//         const signin = new window.OTPless(callback);
+//         setOTPlessSignin(signin);
+//       } else {
+//         console.log("⏳ Waiting for OTPless SDK...");
+//         setTimeout(tryInitializeOTPless, 300); // try again in 300ms
+//       }
+//     };
+  
+//     tryInitializeOTPless();
+//   }, []);
+  
+  
+//   useEffect(() => {
+//     fetch("http://147.93.106.153:5000/districts")
 //       .then((res) => res.json())
 //       .then((data) => setDistricts(data))
 //       .catch((err) => console.error("Failed to fetch districts:", err));
@@ -47,16 +82,23 @@
 
 //   useEffect(() => {
 //     const handleBackButton = () => {
-//       setShowOTP(false);
-//       setShowSignup(false);
+//       if (showOTP) {
+//         setShowOTP(false);      // ✅ Hide OTP input
+//         setShowSignup(true);    // ✅ Show Signup form again
+//       } else if (showSignup) {
+//         setShowSignup(false);   // ✅ Go back to login form
+//       } else {
+//         setShowLoginPage(false); // ✅ If already in login, go back to homepage
+//       }
 //     };
-
+  
 //     window.addEventListener("popstate", handleBackButton);
 //     return () => window.removeEventListener("popstate", handleBackButton);
-//   }, []);
+//   }, [showOTP, showSignup, setShowLoginPage]);
+  
 
 //   useEffect(() => {
-//     fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/record-visit", {
+//     fetch("http://147.93.106.153:5000/record-visit", {
 //       method: "POST"
 //     }).catch((err) => console.error("Failed to record visit:", err));
 //   }, []);
@@ -94,7 +136,7 @@
 //     if (errors.length > 0) return alert(errors.join("\n"));
 
 //     try {
-//       const res = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/complete-signup", {
+//       const res = await fetch("http://147.93.106.153:5000/complete-signup", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({
@@ -120,31 +162,69 @@
 //     }
 //   };
 
+//   // const handleSignIn = async () => {
+//   //   if (!mobile || !password) return alert("Mobile number and password are required.");
+//   //   if (!/^[6-9]\d{9}$/.test(mobile)) return alert("Invalid mobile number.");
+
+//   //   try {
+//   //     const res = await fetch("http://147.93.106.153:5000/client-login", {
+//   //       method: "POST",
+//   //       headers: { "Content-Type": "application/json" },
+//   //       body: JSON.stringify({ mobile, password })
+//   //     });
+
+//   //     const result = await res.json();
+
+//   //     if (res.ok) {
+//   //       localStorage.setItem("otpUser", JSON.stringify(result));
+//   //       router.push("/dashboard");
+//   //     } else {
+//   //       alert(result.error || "Login failed.");
+//   //     }
+//   //   } catch (err) {
+//   //     console.error("Login error:", err);
+//   //     alert("Something went wrong during login.");
+//   //   }
+//   // };
+
+
 //   const handleSignIn = async () => {
 //     if (!mobile || !password) return alert("Mobile number and password are required.");
 //     if (!/^[6-9]\d{9}$/.test(mobile)) return alert("Invalid mobile number.");
-
+  
 //     try {
-//       const res = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/client-login", {
+//       const res = await fetch("http://147.93.106.153:5000/client-login", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({ mobile, password })
 //       });
-
-//       const result = await res.json();
-
-//       if (res.ok) {
-//         localStorage.setItem("otpUser", JSON.stringify(result));
-//         router.push("/dashboard");
-//       } else {
-//         alert(result.error || "Login failed.");
+  
+//       const contentType = res.headers.get("content-type");
+  
+//       if (!res.ok) {
+//         if (contentType && contentType.includes("application/json")) {
+//           const error = await res.json();
+//           alert(error.error || "Login failed.");
+//         } else {
+//           const errorText = await res.text();
+//           console.error("Server responded with:", errorText);
+//           alert("Server error. Try again later.");
+//         }
+//         return; // ❌ stop here if not OK
 //       }
+  
+//       const result = await res.json();  // ✅ Now safe
+  
+//       // ✅ Now process successful login
+//       localStorage.setItem("otpUser", JSON.stringify(result));
+//       router.push("/dashboard");
 //     } catch (err) {
 //       console.error("Login error:", err);
 //       alert("Something went wrong during login.");
 //     }
 //   };
 
+  
 //   const handleOTPChange = (index, value) => {
 //     if (/^\d?$/.test(value)) {
 //       const newOtp = [...otp];
@@ -168,45 +248,31 @@
 //     if (!otp.every((digit) => digit !== "")) {
 //       return alert("Please enter the complete OTP.");
 //     }
-
+  
 //     const enteredOTP = otp.join("");
-
+  
 //     try {
-//       const otpRes = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/verify-otp", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ mobile, otp: enteredOTP })
+//       console.log("🔵 Verifying OTP...");
+//       await OTPlessSignin.verify({
+//         channel: "PHONE",
+//         phone: verifiedMobile || otpSessionMobile,
+//         otp: enteredOTP,
+//         countryCode: "+91",
 //       });
-
-//       if (otpRes.ok && showSignup) {
-//         const regRes = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/complete-signup", {
-//           method: "POST",
-//           headers: { "Content-Type": "application/json" },
-//           body: JSON.stringify({
-//             name: signupData.name,
-//             email: signupData.email,
-//             password: signupData.password,
-//             district: signupData.district,
-//             mobile
-//           })
-//         });
-
-//         const result = await regRes.json();
-
-//         if (regRes.ok) {
-//           localStorage.setItem("otpUser", JSON.stringify(result));
-//           router.push("/dashboard");
-//         } else {
-//           alert(result.error || "Signup failed.");
-//         }
-//       } else {
-//         alert("OTP verification failed.");
-//       }
+  
+//       console.log("✅ OTP verified. Now completing signup...");
+  
+//       // ✅ instead of calling /complete-signup again here,
+//       // directly call the correct function
+//       await handleSignupAfterOtp();
+  
 //     } catch (err) {
-//       alert("Something went wrong while verifying OTP.");
-//       console.error(err);
+//       console.error("❌ Error during OTP verification or signup:", err);
+//       alert("Something went wrong. Try again.");
 //     }
 //   };
+  
+  
 
 
 //   useEffect(() => {
@@ -304,10 +370,135 @@
 //   }, []);
 
 
+//   useEffect(() => {
+//     const showSignup = searchParams.get("showSignup");
+  
+//     if (showSignup === "true") {
+//       setShowSignup(true); // ✅ AuthPage will now render Signup form
+//     }
+//   }, [searchParams]);
 
+  
+  
+//   useEffect(() => {
+//     const url = new URL(window.location.href);
+//     const hasLoginOrSignup = url.searchParams.get("showSignup") || url.searchParams.get("showLogin");
+  
+//     if (hasLoginOrSignup) {
+//       url.searchParams.delete("showSignup");
+//       url.searchParams.delete("showLogin");
+//       window.history.replaceState({}, "", url.pathname); // ✅ Removes query from address bar
+//     }
+//   }, []);
+  
+//   const sendOtpBeforeSignup = async () => {
+//     if (!fullName.trim() || !email.trim() || !selectedDistrict || !password.trim() || !/^[6-9]\d{9}$/.test(mobile)) {
+//       alert("Please fill all fields properly.");
+//       return;
+//     }
+  
+//     if (!OTPlessSignin) {
+//       alert("OTP Service not ready. Please wait 2 seconds and try again.");
+//       return;
+//     }
+  
+//     try {
+
+//       const checkRes = await fetch("http://147.93.106.153:5000/check-user-exists", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({
+//           mobile,
+//           email,
+//         }),
+//       });
+  
+//       const checkResult = await checkRes.json();
+  
+//       if (!checkRes.ok) {
+//         alert(checkResult.error || "Something went wrong. Try again.");
+//         return; // ❌ stop further if mobile/email already exists
+//       }
+      
+//       // 📩 Send OTP to user's mobile
+//       await OTPlessSignin.initiate({
+//         channel: "PHONE",
+//         phone: mobile,
+//         countryCode: "+91",
+//       });
+//       console.log("📩 OTP Sent to", mobile);
+//       setOtpSessionMobile(mobile); // Save mobile during OTP session
+//       setShowOTP(true); // Now show OTP input box
+//     } catch (err) {
+//       console.error("❌ Error sending OTP", err);
+//       alert("Failed to send OTP. Try again.");
+//     }
+//   };
+  
+
+//   const handleSignupAfterOtp = async () => {
+//     const mobileNumber = verifiedMobile || otpSessionMobile;
+  
+  
+//     try {
+//       const res = await fetch("http://147.93.106.153:5000/complete-signup", {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//           "X-Otpless-Mobile": mobileNumber,
+//           "X-Otpless-Token": token,
+//         },
+//         body: JSON.stringify({
+//           name: fullName,
+//           email,
+//           password,
+//           district: selectedDistrict,
+//         }),
+//       });
+  
+//       const result = await res.json();
+  
+//       if (res.ok) {
+//         alert("✅ Signup successful!");
+//         setShowSignup(false);     // ✅ Switch to Signin Form
+//         setShowOTP(false);        // ✅ Hide OTP Form
+//         setOtp(["", "", "", "", "", ""]);  // ✅ Clear OTP Inputs
+//         setMobile(mobileNumber);  // ✅ Fill mobile field automatically
+//         setPassword("");          // ✅ Clear password field
+//       } else {
+//         alert(result.error || "Signup failed.");
+//       }
+//     } catch (err) {
+//       console.error("❌ Signup error:", err);
+//       alert("Something went wrong. Try again.");
+//     }
+//   };
+  
 
 //   return (
 //     <div className="flex flex-col md:flex-row w-full h-screen bg-gray-100">
+//       {(showSignup || !session) && (
+//   <button
+//     onClick={() => {
+//       if (showOTP) {
+//         setShowOTP(false);    // ✅ Hide OTP
+//         setShowSignup(true);  // ✅ Show Signup again
+//       } else if (showSignup) {
+//         setShowSignup(false); // ✅ Hide Signup, go to Login
+//       } else {
+//         setShowLoginPage(false); // ✅ If already in login, go back to homepage
+//       }
+//     }}
+//     className="absolute top-6 left-4 text-[#170645] hover:text-black font-semibold flex items-center gap-2 z-50"
+//   >
+//     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
+//       viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+//       <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+//     </svg>
+//     <span>Back</span>
+//   </button>
+// )}
+
 //       {/* Left Side: Login Box */}
 
 //       <div className="w-full md:w-1/3 flex flex-col items-center justify-center p-6 md:p-12">
@@ -354,40 +545,36 @@
 //             <div>
 //               <h2 className="text-3xl font-bold text-center text-[#170645]">AI Based CMO Gallery</h2>
 //               <p className="text-center text-[#170645] text-lg mt-1">One Click Download</p>
-//               <button onClick={async () => {
-//                 console.log("🔵 Google Sign-In button clicked");
-//                 const result = await signIn("google", { callbackUrl: "/dashboard" }); // ✅ Redirect to Dashboard after login
-//                 console.log("✅ Sign-in result:", result);
-//               }} className="flex items-center h-11 justify-center w-full border p-3 mt-4 rounded-lg hover:bg-gray-200" >
-//                 <img src="/google pic.png" alt="Google" className="w-5 mr-2" />
-//                 <p className="text-[#170645] font-normal">Sign Up With Google</p>
-//               </button>
 //               <div className="flex items-center my-4">
 //                 <hr className="flex-grow border-gray-300" />
-//                 <span className="px-3 text-[#908AA0] text-sm">Or, Sign Up With Your Email</span>
+//                 {/* <span className="px-3 text-[#908AA0] text-sm">Or, Sign Up With Your Email</span> */}
 //                 <hr className="flex-grow border-gray-300" />
 //               </div>
 //               <div className="flex gap-2">
 //                 <input type="text" placeholder="Full Name" value={fullName}
-//                   onChange={(e) => setFullName(e.target.value)} className="border w-1/2 p-3 h-11 rounded-lg placeholder-[#170645] text-[#170645]" />
+//                   onChange={(e) => setFullName(e.target.value)} className="border w-1/2 p-3 h-11 rounded-full placeholder-[#170645] text-[#170645]" />
 //                 <input
-//                   type="text"
-//                   value={verifiedMobile}
-//                   readOnly
-//                   placeholder="Mobile No."
-//                   className={`border w-1/2 p-3 h-11 rounded-lg text-[#170645] bg-white ${verifiedMobile ? "opacity-60 cursor-not-allowed" : ""}`}
-//                 />
+//   type="text"
+//   value={verifiedMobile || mobile}
+//   onChange={(e) => {
+//     if (!verifiedMobile) setMobile(e.target.value); // allow edit only if not verified
+//   }}
+//   readOnly={!!verifiedMobile}
+//   placeholder="Mobile No."
+//   className={`border w-1/2 p-3 h-11 rounded-full text-[#170645] bg-white ${verifiedMobile ? "opacity-60 cursor-not-allowed" : ""}`}
+// />
 
 
 
 
 //               </div>
 //               <input type="email" value={email}
-//                 onChange={(e) => setEmail(e.target.value)} placeholder="Email Id" className="border w-full p-3 h-11 rounded-lg mt-3 placeholder-[#170645] text-[#170645]" />
+//                 onChange={(e) => setEmail(e.target.value)} placeholder="Email Id" className="border w-full p-3 h-11 rounded-full mt-3 placeholder-[#170645] text-[#170645]" />
+//              <div className="relative w-full">
 //               <select
 //                 value={selectedDistrict}
 //                 onChange={(e) => setSelectedDistrict(e.target.value)}
-//                 className="border w-full p-3 h-11 rounded-lg mt-3 text-[#170645]"
+//                 className="border w-full p-3 h-11 rounded-full mt-3 text-[#170645] appearance-none bg-white "
 //               >
 //                 <option value="">Select District</option>
 //                 {districts.map((d, index) => (
@@ -396,53 +583,79 @@
 //                   </option>
 //                 ))}
 //               </select>
+//               <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+//     <svg
+//       className="w-4 h-4 mt-3 text-[#170645]"
+//       fill="none"
+//       stroke="currentColor"
+//       strokeWidth="2"
+//       viewBox="0 0 24 24"
+//     >
+//       <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+//     </svg>
+//   </div>
+// </div>
+//               {/* <input type="password" placeholder="Create Your Password" value={password}
+//                 onChange={(e) => setPassword(e.target.value)} className="border h-11 w-full p-3 rounded-lg mt-3 placeholder-[#170645] text-[#170645]" /> */}
+//               <div className="relative mt-3">
+//   <input
+//     type={showSignupPassword ? "text" : "password"}
+//     placeholder="Create Your Password"
+//     value={password}
+//     onChange={(e) => setPassword(e.target.value)}
+//     className="border h-11 w-full p-3 rounded-full placeholder-[#170645] text-[#170645] pr-10"
+//   />
+//   <button
+//     type="button"
+//     onClick={() => setShowSignupPassword(!showSignupPassword)}
+//     className="absolute right-3 top-3 text-[#170645] hover:text-black"
+//   >
+//     <svg
+//       xmlns="http://www.w3.org/2000/svg"
+//       fill="none"
+//       viewBox="0 0 24 24"
+//       strokeWidth={1.5}
+//       stroke="currentColor"
+//       className="h-5 w-5"
+//     >
+//       {showSignupPassword ? (
+//         <>
+//           <path
+//             strokeLinecap="round"
+//             strokeLinejoin="round"
+//             d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+//           />
+//           <path
+//             strokeLinecap="round"
+//             strokeLinejoin="round"
+//             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+//           />
+//         </>
+//       ) : (
+//         <>
+//           <path
+//             strokeLinecap="round"
+//             strokeLinejoin="round"
+//             d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.977 9.977 0 013.008-4.525m3.224-1.885A9.956 9.956 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.973 9.973 0 01-4.117 5.225"
+//           />
+//           <path
+//             strokeLinecap="round"
+//             strokeLinejoin="round"
+//             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+//           />
+//           <path
+//             strokeLinecap="round"
+//             strokeLinejoin="round"
+//             d="M3 3l18 18"
+//           />
+//         </>
+//       )}
+//     </svg>
+//   </button>
+// </div>
 
-//               <input type="password" placeholder="Create Your Password" value={password}
-//                 onChange={(e) => setPassword(e.target.value)} className="border h-11 w-full p-3 rounded-lg mt-3 placeholder-[#170645] text-[#170645]" />
-//               <button onClick={async () => {
-//                 const errors = [];
-
-//                 if (!fullName.trim()) errors.push("Full Name is required.");
-//                 if (!email.trim()) errors.push("Email is required.");
-//                 if (!selectedDistrict) errors.push("District is required.");
-//                 if (!password.trim()) errors.push("Password is required.");
-//                 if (!/^[6-9]\d{9}$/.test(verifiedMobile)) {
-//                   errors.push("Verified mobile number is invalid or missing.");
-//                 }
-
-//                 if (errors.length > 0) {
-//                   alert(errors.join("\n"));
-//                   return;
-//                 }
-
-//                 try {
-//                   const res = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/complete-signup", {
-//                     method: "POST",
-//                     headers: { "Content-Type": "application/json" },
-//                     body: JSON.stringify({
-//                       name: fullName,
-//                       email,
-//                       password,
-//                       district: selectedDistrict,
-//                       mobile: verifiedMobile  // ✅ only verified mobile sent
-//                     })
-//                   });
-
-//                   const result = await res.json();
-
-//                   if (res.ok) {
-//                     alert("✅ Signup successful!");
-//                     localStorage.removeItem("otplessUser");
-//                     setShowSignup(false);
-//                   } else {
-//                     alert(result.error || "Signup failed.");
-//                   }
-//                 } catch (err) {
-//                   console.error("Signup error:", err);
-//                   alert("Something went wrong. Try again.");
-//                 }
-//               }}
-//                 className="w-full h-11 bg-[#170645] text-[#FFE100] px-3 rounded-lg mt-4 text-lg font-bold">
+//               <button onClick={sendOtpBeforeSignup} 
+//                 className="w-full h-11 bg-[#170645] text-[#FFE100] px-3 rounded-full mt-4 text-lg font-bold">
 //                 Sign Up
 //               </button>
 //               <div className="flex justify-center gap-6 mt-4">
@@ -469,27 +682,95 @@
 //               </div>
 //               <input
 //                 type="text"
+//                 inputMode="numeric"
+//                 pattern="[0-9]*"
 //                 placeholder="Mobile No."
 //                 value={mobile}
-//                 onChange={(e) => setMobile(e.target.value)}
+//                 onChange={(e) => {
+//                   const input = e.target.value;
+//                   if (/^\d*$/.test(input)) {
+//                     setMobile(input);
+//                   }
+//                 }}
 //                 className="border w-full p-2 rounded-full mb-4 text-[#170645]"
 //               />
-//               <input
-//                 type="password"
-//                 placeholder="Password"
-//                 value={password}
-//                 onChange={(e) => setPassword(e.target.value)}
-//                 className="border w-full p-2 rounded-full mb-4 text-[#170645]"
-//               />
+//               <div className="relative mb-4">
+//   <input
+//     type={showLoginPassword ? "text" : "password"}
+//     placeholder="Password"
+//     value={password}
+//     onChange={(e) => setPassword(e.target.value)}
+//     className="border w-full p-2 rounded-full text-[#170645] pr-10"
+//   />
+//   <button
+//     type="button"
+//     onClick={() => setShowLoginPassword(!showLoginPassword)}
+//     className="absolute right-3 top-2 text-[#170645] hover:text-black"
+//   >
+//     <svg
+//       xmlns="http://www.w3.org/2000/svg"
+//       fill="none"
+//       viewBox="0 0 24 24"
+//       strokeWidth={1.5}
+//       stroke="currentColor"
+//       className="h-5 w-5"
+//     >
+//       {showLoginPassword ? (
+//         <>
+//           <path
+//             strokeLinecap="round"
+//             strokeLinejoin="round"
+//             d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+//           />
+//           <path
+//             strokeLinecap="round"
+//             strokeLinejoin="round"
+//             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+//           />
+//         </>
+//       ) : (
+//         <>
+//           <path
+//             strokeLinecap="round"
+//             strokeLinejoin="round"
+//             d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.977 9.977 0 013.008-4.525m3.224-1.885A9.956 9.956 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.973 9.973 0 01-4.117 5.225"
+//           />
+//           <path
+//             strokeLinecap="round"
+//             strokeLinejoin="round"
+//             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+//           />
+//           <path
+//             strokeLinecap="round"
+//             strokeLinejoin="round"
+//             d="M3 3l18 18"
+//           />
+//         </>
+//       )}
+//     </svg>
+//   </button>
+// </div>
+
 
 //               <button onClick={handleSignIn} className="w-full bg-[#170645] text-yellow-400 p-2 rounded-full">
 //                 Sign In
 //               </button>
 //               <p className="text-center text-[#170645] text-sm mt-3">
-//                 Forgot Password?
-//               </p>
+//   <span
+//     className="cursor-pointer font-semibold"
+//     onClick={() => {
+//       localStorage.removeItem("resetMobile"); // optional: reset any previous state
+//       window.location.href = "/verification?mode=reset"; // 🔁 force full reload
+//     }}
+//       >
+//     Forgot Password?
+//   </span>
+// </p>
+
 //               <p className="text-center text-[#170645] text-sm mt-3">
-//                 Not Registered Yet? <span className="text-[#170645] font-bold cursor-pointer" onClick={() => router.push("/verification")}>Register Now</span>
+//                 Not Registered Yet? <span className="text-[#170645] font-bold cursor-pointer"  onClick={() => {
+//     setShowSignup(true);  // ✅ Open Signup form
+//   }}>Register Now</span>
 //               </p>
 //               <div className="flex justify-center gap-4 mt-4">
 //                 <button className="text-[#170645] hover:underline">Customer Support</button>
@@ -592,9 +873,46 @@ export default function AuthPage({ setShowLoginPage }) {
   const searchParams = useSearchParams();
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showSignupPassword, setShowSignupPassword] = useState(false);
-
+  const [OTPlessSignin, setOTPlessSignin] = useState(null);
+  const [token, setToken] = useState(null);
+  const [otpSessionMobile, setOtpSessionMobile] = useState("");
+  const [forgotPasswordMode, setForgotPasswordMode] = useState(false);
+  const [forgotPasswordStep, setForgotPasswordStep] = useState(1); // 1 = mobile, 2 = OTP, 3 = new password
+  const [forgotOtpSessionMobile, setForgotOtpSessionMobile] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  
+  
   useEffect(() => {
-    fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/districts")
+    const callback = (eventCallback) => {
+      if (eventCallback.responseType === "ONETAP") {
+        const { response } = eventCallback;
+        console.log("✅ OTP verified successfully:", response.token);
+        setToken(response.token);
+        // handleSignupAfterOtp();
+      } else if (eventCallback.responseType === "FAILED") {
+        console.error("❌ OTP verification failed", eventCallback.response);
+        alert("OTP Verification Failed. Try again.");
+      }
+    };
+  
+    const tryInitializeOTPless = () => {
+      if (typeof window !== "undefined" && window.OTPless) {
+        console.log("✅ OTPless SDK is now available");
+        const signin = new window.OTPless(callback);
+        setOTPlessSignin(signin);
+      } else {
+        console.log("⏳ Waiting for OTPless SDK...");
+        setTimeout(tryInitializeOTPless, 300); // try again in 300ms
+      }
+    };
+  
+    tryInitializeOTPless();
+  }, []);
+  
+  
+  useEffect(() => {
+    fetch("http://147.93.106.153:5000/districts")
       .then((res) => res.json())
       .then((data) => setDistricts(data))
       .catch((err) => console.error("Failed to fetch districts:", err));
@@ -611,16 +929,23 @@ export default function AuthPage({ setShowLoginPage }) {
 
   useEffect(() => {
     const handleBackButton = () => {
-      setShowOTP(false);
-      setShowSignup(false);
+      if (showOTP) {
+        setShowOTP(false);      // ✅ Hide OTP input
+        setShowSignup(true);    // ✅ Show Signup form again
+      } else if (showSignup) {
+        setShowSignup(false);   // ✅ Go back to login form
+      } else {
+        setShowLoginPage(false); // ✅ If already in login, go back to homepage
+      }
     };
-
+  
     window.addEventListener("popstate", handleBackButton);
     return () => window.removeEventListener("popstate", handleBackButton);
-  }, []);
+  }, [showOTP, showSignup, setShowLoginPage]);
+  
 
   useEffect(() => {
-    fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/record-visit", {
+    fetch("http://147.93.106.153:5000/record-visit", {
       method: "POST"
     }).catch((err) => console.error("Failed to record visit:", err));
   }, []);
@@ -658,7 +983,7 @@ export default function AuthPage({ setShowLoginPage }) {
     if (errors.length > 0) return alert(errors.join("\n"));
 
     try {
-      const res = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/complete-signup", {
+      const res = await fetch("http://147.93.106.153:5000/complete-signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -684,31 +1009,69 @@ export default function AuthPage({ setShowLoginPage }) {
     }
   };
 
+  // const handleSignIn = async () => {
+  //   if (!mobile || !password) return alert("Mobile number and password are required.");
+  //   if (!/^[6-9]\d{9}$/.test(mobile)) return alert("Invalid mobile number.");
+
+  //   try {
+  //     const res = await fetch("http://147.93.106.153:5000/client-login", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ mobile, password })
+  //     });
+
+  //     const result = await res.json();
+
+  //     if (res.ok) {
+  //       localStorage.setItem("otpUser", JSON.stringify(result));
+  //       router.push("/dashboard");
+  //     } else {
+  //       alert(result.error || "Login failed.");
+  //     }
+  //   } catch (err) {
+  //     console.error("Login error:", err);
+  //     alert("Something went wrong during login.");
+  //   }
+  // };
+
+
   const handleSignIn = async () => {
     if (!mobile || !password) return alert("Mobile number and password are required.");
     if (!/^[6-9]\d{9}$/.test(mobile)) return alert("Invalid mobile number.");
-
+  
     try {
-      const res = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/client-login", {
+      const res = await fetch("http://147.93.106.153:5000/client-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mobile, password })
       });
-
-      const result = await res.json();
-
-      if (res.ok) {
-        localStorage.setItem("otpUser", JSON.stringify(result));
-        router.push("/dashboard");
-      } else {
-        alert(result.error || "Login failed.");
+  
+      const contentType = res.headers.get("content-type");
+  
+      if (!res.ok) {
+        if (contentType && contentType.includes("application/json")) {
+          const error = await res.json();
+          alert(error.error || "Login failed.");
+        } else {
+          const errorText = await res.text();
+          console.error("Server responded with:", errorText);
+          alert("Server error. Try again later.");
+        }
+        return; // ❌ stop here if not OK
       }
+  
+      const result = await res.json();  // ✅ Now safe
+  
+      // ✅ Now process successful login
+      localStorage.setItem("otpUser", JSON.stringify(result));
+      router.push("/dashboard");
     } catch (err) {
       console.error("Login error:", err);
       alert("Something went wrong during login.");
     }
   };
 
+  
   const handleOTPChange = (index, value) => {
     if (/^\d?$/.test(value)) {
       const newOtp = [...otp];
@@ -732,45 +1095,31 @@ export default function AuthPage({ setShowLoginPage }) {
     if (!otp.every((digit) => digit !== "")) {
       return alert("Please enter the complete OTP.");
     }
-
+  
     const enteredOTP = otp.join("");
-
+  
     try {
-      const otpRes = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/verify-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mobile, otp: enteredOTP })
+      console.log("🔵 Verifying OTP...");
+      await OTPlessSignin.verify({
+        channel: "PHONE",
+        phone: verifiedMobile || otpSessionMobile,
+        otp: enteredOTP,
+        countryCode: "+91",
       });
-
-      if (otpRes.ok && showSignup) {
-        const regRes = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/complete-signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: signupData.name,
-            email: signupData.email,
-            password: signupData.password,
-            district: signupData.district,
-            mobile
-          })
-        });
-
-        const result = await regRes.json();
-
-        if (regRes.ok) {
-          localStorage.setItem("otpUser", JSON.stringify(result));
-          router.push("/dashboard");
-        } else {
-          alert(result.error || "Signup failed.");
-        }
-      } else {
-        alert("OTP verification failed.");
-      }
+  
+      console.log("✅ OTP verified. Now completing signup...");
+  
+      // ✅ instead of calling /complete-signup again here,
+      // directly call the correct function
+      await handleSignupAfterOtp();
+  
     } catch (err) {
-      alert("Something went wrong while verifying OTP.");
-      console.error(err);
+      console.error("❌ Error during OTP verification or signup:", err);
+      alert("Something went wrong. Try again.");
     }
   };
+  
+  
 
 
   useEffect(() => {
@@ -876,6 +1225,16 @@ export default function AuthPage({ setShowLoginPage }) {
     }
   }, [searchParams]);
 
+  
+  useEffect(() => {
+    const signupFromLocal = localStorage.getItem("showSignup");
+    if (signupFromLocal === "true") {
+      setShowSignup(true);
+      localStorage.removeItem("showSignup"); // 🧹 Clean after using
+    }
+  }, []);
+  
+  
   useEffect(() => {
     const url = new URL(window.location.href);
     const hasLoginOrSignup = url.searchParams.get("showSignup") || url.searchParams.get("showLogin");
@@ -887,17 +1246,218 @@ export default function AuthPage({ setShowLoginPage }) {
     }
   }, []);
   
+  const sendOtpBeforeSignup = async () => {
+    if (!fullName.trim() || !email.trim() || !selectedDistrict || !password.trim() || !/^[6-9]\d{9}$/.test(mobile)) {
+      alert("Please fill all fields properly.");
+      return;
+    }
+  
+    if (!OTPlessSignin) {
+      alert("OTP Service not ready. Please wait 2 seconds and try again.");
+      return;
+    }
+  
+    try {
+
+      const checkRes = await fetch("http://147.93.106.153:5000/check-user-exists", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mobile,
+          email,
+        }),
+      });
+  
+      const checkResult = await checkRes.json();
+  
+      if (!checkRes.ok) {
+        alert(checkResult.error || "Something went wrong. Try again.");
+        return; // ❌ stop further if mobile/email already exists
+      }
+      
+      // 📩 Send OTP to user's mobile
+      await OTPlessSignin.initiate({
+        channel: "PHONE",
+        phone: mobile,
+        countryCode: "+91",
+      });
+      console.log("📩 OTP Sent to", mobile);
+      setOtpSessionMobile(mobile); // Save mobile during OTP session
+      setShowOTP(true); // Now show OTP input box
+    } catch (err) {
+      console.error("❌ Error sending OTP", err);
+      alert("Failed to send OTP. Try again.");
+    }
+  };
+  
+
+  const handleSignupAfterOtp = async () => {
+    const mobileNumber = verifiedMobile || otpSessionMobile;
+  
+  
+    try {
+      const res = await fetch("http://147.93.106.153:5000/complete-signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Otpless-Mobile": mobileNumber,
+          "X-Otpless-Token": token,
+        },
+        body: JSON.stringify({
+          name: fullName,
+          email,
+          password,
+          district: selectedDistrict,
+        }),
+      });
+  
+      const result = await res.json();
+  
+      if (res.ok) {
+        alert("✅ Signup successful!");
+        setShowSignup(false);     // ✅ Switch to Signin Form
+        setShowOTP(false);        // ✅ Hide OTP Form
+        setOtp(["", "", "", "", "", ""]);  // ✅ Clear OTP Inputs
+        setMobile(mobileNumber);  // ✅ Fill mobile field automatically
+        setPassword("");          // ✅ Clear password field
+      } else {
+        alert(result.error || "Signup failed.");
+      }
+    } catch (err) {
+      console.error("❌ Signup error:", err);
+      alert("Something went wrong. Try again.");
+    }
+  };
+  
+
+  const handleForgotPasswordSendOtp = async () => {
+    if (!/^[6-9]\d{9}$/.test(mobile)) {
+      return alert("Please enter a valid 10-digit mobile number.");
+    }
+  
+    if (!OTPlessSignin) {
+      return alert("OTP Service not ready. Please wait a moment.");
+    }
+  
+    try {
+      // 🔥 CHECK mobile existence properly BEFORE sending OTP
+      const checkRes = await fetch("http://147.93.106.153:5000/check-user-exists", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mobile: mobile, email: "dummy@email.com" }),
+      });
+  
+      const checkResult = await checkRes.json();
+  
+      if (checkRes.status === 409) {
+        // ✅ 409 means mobile exists (already registered) --> GOOD
+        console.log("✅ Mobile exists, sending OTP...");
+      } else {
+        alert("This mobile number is not registered.");
+        return;
+      }
+  
+      // 🟰 Now safe to send OTP using Otpless
+      await OTPlessSignin.initiate({
+        channel: "PHONE",
+        phone: mobile,
+        countryCode: "+91",
+      });
+  
+      console.log("📩 OTP Sent to", mobile);
+      setForgotOtpSessionMobile(mobile);
+      setForgotPasswordStep(2); // Move to OTP step
+    } catch (err) {
+      console.error("❌ Error during mobile check or sending OTP:", err);
+      alert("Something went wrong. Try again.");
+    }
+  };
+  
+
+  const handleForgotPasswordVerifyOtp = async () => {
+    if (!otp.every((digit) => digit !== "")) {
+      return alert("Please enter the complete OTP.");
+    }
+  
+    const enteredOTP = otp.join("");
+  
+    try {
+      await OTPlessSignin.verify({
+        channel: "PHONE",
+        phone: forgotOtpSessionMobile,
+        otp: enteredOTP,
+        countryCode: "+91",
+      });
+  
+      console.log("✅ OTP Verified Successfully");
+      setForgotPasswordStep(3); // Move to New Password Step
+    } catch (err) {
+      console.error("❌ Error verifying OTP:", err);
+      alert("OTP verification failed. Please try again.");
+    }
+  };
+  
+  const handleResetPasswordSubmit = async () => {
+    if (!newPassword.trim() || !confirmPassword.trim()) {
+      return alert("Please fill all fields.");
+    }
+  
+    if (newPassword !== confirmPassword) {
+      return alert("Passwords do not match.");
+    }
+  
+    if (newPassword.length < 8) {
+      return alert("Password must be at least 8 characters long.");
+    }
+  
+    try {
+      const res = await fetch("http://147.93.106.153:5000/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mobile: forgotOtpSessionMobile,
+          newPassword: newPassword,
+        }),
+      });
+  
+      const result = await res.json();
+  
+      if (res.ok) {
+        alert("✅ Password changed successfully! Please login.");
+        setForgotPasswordMode(false);
+        setForgotPasswordStep(1);
+        setOtp(["", "", "", "", "", ""]);
+        setMobile("");
+        setNewPassword("");
+        setConfirmPassword("");
+      } else {
+        alert(result.error || "Password reset failed.");
+      }
+    } catch (err) {
+      console.error("❌ Error resetting password:", err);
+      alert("Something went wrong. Try again.");
+    }
+  };
+  
+
   return (
     <div className="flex flex-col md:flex-row w-full h-screen bg-gray-100">
       {(showSignup || !session) && (
   <button
-    onClick={() => {
-      if (showSignup) {
-        setShowSignup(false); // back to login form
-      } else {
-        setShowLoginPage(false); // back to page.js homepage
-      }
-    }}
+  onClick={() => {
+    if (forgotPasswordMode) {
+      setForgotPasswordMode(false); // ✅ Exit Forgot Password mode
+      setForgotPasswordStep(1); // ✅ Reset to Step 1
+    } else if (showOTP) {
+      setShowOTP(false);    // ✅ Hide OTP
+      setShowSignup(true);  // ✅ Show Signup again
+    } else if (showSignup) {
+      setShowSignup(false); // ✅ Hide Signup, go to Login
+    } else {
+      setShowLoginPage(false); // ✅ If already in login, go back to homepage
+    }
+  }}
+  
     className="absolute top-6 left-4 text-[#170645] hover:text-black font-semibold flex items-center gap-2 z-50"
   >
     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
@@ -913,7 +1473,81 @@ export default function AuthPage({ setShowLoginPage }) {
       <div className="w-full md:w-1/3 flex flex-col items-center justify-center p-6 md:p-12">
         <img src="/CG logo.webp" alt="Logo" className="w-24 h-24 mb-4" />
         <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-[516px]">
-          {session ? (
+        {forgotPasswordMode ? (
+  <>
+    {forgotPasswordStep === 1 && (
+      <div className="text-center">
+        <h2 className="text-2xl pt-2 font-bold text-[#170645]">Reset Your Password</h2>
+        <p className="text-[#170645] pt-2 mt-2">Enter your registered mobile number</p>
+        <input
+          type="text"
+          placeholder="Mobile No."
+          value={mobile}
+          onChange={(e) => setMobile(e.target.value)}
+          className="border w-full p-3 rounded-full mt-4 text-[#170645]"
+        />
+        <button
+          onClick={handleForgotPasswordSendOtp}
+          className="w-full bg-[#170645] text-yellow-400 p-3 mt-4 rounded-full text-lg font-bold"
+        >
+          Proceed
+        </button>
+      </div>
+    )}
+    {forgotPasswordStep === 2 && (
+      <div className="text-center">
+        <h2 className="text-2xl pt-2 font-bold text-[#170645]">Enter OTP</h2>
+        <p className="text-[#170645] pt-2 mt-2">OTP sent to {forgotOtpSessionMobile}</p>
+        <div className="flex justify-center gap-3 flex-wrap py-2 mt-4">
+          {otp.map((digit, index) => (
+            <input
+              key={index}
+              ref={otpRefs[index]}
+              type="text"
+              maxLength="1"
+              value={digit}
+              onChange={(e) => handleOTPChange(index, e.target.value)}
+              onKeyDown={(e) => handleOTPKeyDown(index, e)}
+              className="w-12 h-12 text-center border-[#908AA0] text-[#170645] text-xl border rounded"
+            />
+          ))}
+        </div>
+        <button
+          onClick={handleForgotPasswordVerifyOtp}
+          className="w-full bg-[#170645] text-yellow-400 p-3 mt-4 rounded-full text-lg font-bold"
+        >
+          Verify
+        </button>
+      </div>
+    )}
+    {forgotPasswordStep === 3 && (
+      <div className="text-center">
+        <h2 className="text-2xl pt-2 font-bold text-[#170645]">Set New Password</h2>
+        <p className="text-[#170645] pt-2 mt-2">Mobile: {forgotOtpSessionMobile}</p>
+        <input
+          type="password"
+          placeholder="New Password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          className="border w-full p-3 rounded-full mt-4 text-[#170645]"
+        />
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          className="border w-full p-3 rounded-full mt-4 text-[#170645]"
+        />
+        <button
+          onClick={handleResetPasswordSubmit}
+          className="w-full bg-[#170645] text-yellow-400 p-3 mt-4 rounded-full text-lg font-bold"
+        >
+          Change Password
+        </button>
+      </div>
+    )}
+  </>
+) :session ? (
             <div className="text-center">
               <p className="text-xl font-bold text-[#170645]">Welcome, {session.user.name}</p>
               <img
@@ -954,29 +1588,24 @@ export default function AuthPage({ setShowLoginPage }) {
             <div>
               <h2 className="text-3xl font-bold text-center text-[#170645]">AI Based CMO Gallery</h2>
               <p className="text-center text-[#170645] text-lg mt-1">One Click Download</p>
-              <button onClick={async () => {
-                console.log("🔵 Google Sign-In button clicked");
-                const result = await signIn("google", { callbackUrl: "/dashboard" }); // ✅ Redirect to Dashboard after login
-                console.log("✅ Sign-in result:", result);
-              }} className="flex items-center h-11 justify-center w-full border p-3 mt-4 rounded-full hover:bg-gray-200" >
-                <img src="/google pic.png" alt="Google" className="w-5 mr-2" />
-                <p className="text-[#170645] font-normal">Sign Up With Google</p>
-              </button>
               <div className="flex items-center my-4">
                 <hr className="flex-grow border-gray-300" />
-                <span className="px-3 text-[#908AA0] text-sm">Or, Sign Up With Your Email</span>
+                {/* <span className="px-3 text-[#908AA0] text-sm">Or, Sign Up With Your Email</span> */}
                 <hr className="flex-grow border-gray-300" />
               </div>
               <div className="flex gap-2">
                 <input type="text" placeholder="Full Name" value={fullName}
                   onChange={(e) => setFullName(e.target.value)} className="border w-1/2 p-3 h-11 rounded-full placeholder-[#170645] text-[#170645]" />
                 <input
-                  type="text"
-                  value={verifiedMobile}
-                  readOnly
-                  placeholder="Mobile No."
-                  className={`border w-1/2 p-3 h-11 rounded-full text-[#170645] bg-white ${verifiedMobile ? "opacity-60 cursor-not-allowed" : ""}`}
-                />
+  type="text"
+  value={verifiedMobile || mobile}
+  onChange={(e) => {
+    if (!verifiedMobile) setMobile(e.target.value); // allow edit only if not verified
+  }}
+  readOnly={!!verifiedMobile}
+  placeholder="Mobile No."
+  className={`border w-1/2 p-3 h-11 rounded-full text-[#170645] bg-white ${verifiedMobile ? "opacity-60 cursor-not-allowed" : ""}`}
+/>
 
 
 
@@ -1068,49 +1697,7 @@ export default function AuthPage({ setShowLoginPage }) {
   </button>
 </div>
 
-              <button onClick={async () => {
-                const errors = [];
-
-                if (!fullName.trim()) errors.push("Full Name is required.");
-                if (!email.trim()) errors.push("Email is required.");
-                if (!selectedDistrict) errors.push("District is required.");
-                if (!password.trim()) errors.push("Password is required.");
-                if (!/^[6-9]\d{9}$/.test(verifiedMobile)) {
-                  errors.push("Verified mobile number is invalid or missing.");
-                }
-
-                if (errors.length > 0) {
-                  alert(errors.join("\n"));
-                  return;
-                }
-
-                try {
-                  const res = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/complete-signup", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      name: fullName,
-                      email,
-                      password,
-                      district: selectedDistrict,
-                      mobile: verifiedMobile  // ✅ only verified mobile sent
-                    })
-                  });
-
-                  const result = await res.json();
-
-                  if (res.ok) {
-                    alert("✅ Signup successful!");
-                    localStorage.removeItem("otplessUser");
-                    setShowSignup(false);
-                  } else {
-                    alert(result.error || "Signup failed.");
-                  }
-                } catch (err) {
-                  console.error("Signup error:", err);
-                  alert("Something went wrong. Try again.");
-                }
-              }}
+              <button onClick={sendOtpBeforeSignup} 
                 className="w-full h-11 bg-[#170645] text-[#FFE100] px-3 rounded-full mt-4 text-lg font-bold">
                 Sign Up
               </button>
@@ -1212,23 +1799,21 @@ export default function AuthPage({ setShowLoginPage }) {
                 Sign In
               </button>
               <p className="text-center text-[#170645] text-sm mt-3">
-  <span
+              <span
     className="cursor-pointer font-semibold"
     onClick={() => {
-      localStorage.removeItem("resetMobile"); // optional: reset any previous state
-      window.location.href = "/verification?mode=reset"; // 🔁 force full reload
+      setForgotPasswordMode(true);
+      setForgotPasswordStep(1);
     }}
-      >
+  >
     Forgot Password?
   </span>
 </p>
 
               <p className="text-center text-[#170645] text-sm mt-3">
-                Not Registered Yet? <span className="text-[#170645] font-bold cursor-pointer" onClick={() => {
-  localStorage.removeItem("resetMobile"); // optional: reset any previous state
-  window.location.href = "/verification"; // 🔁 force full reload
-}}
->Register Now</span>
+                Not Registered Yet? <span className="text-[#170645] font-bold cursor-pointer"  onClick={() => {
+    setShowSignup(true);  // ✅ Open Signup form
+  }}>Register Now</span>
               </p>
               <div className="flex justify-center gap-4 mt-4">
                 <button className="text-[#170645] hover:underline">Customer Support</button>

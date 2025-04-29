@@ -30,7 +30,7 @@ export default function VerificationPage() {
 
         if (m === "reset") {
           // check user existence
-          fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/check-user-exists", {
+          fetch("http://147.93.106.153:5000/check-user-exists", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ mobile }),

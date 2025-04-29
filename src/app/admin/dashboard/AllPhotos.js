@@ -5,6 +5,16 @@ import ModalPopup from "./ModalPopup"; // Importing Modal for 'Create Folder' fu
 import GalleryModal from "./GalleryModal";
 import { FiShare, FiLink, FiDownload } from "react-icons/fi";
 import JSZip from "jszip";
+import { saveAs } from "file-saver";
+
+
+const fetchImageAsBlob = async (url) => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch image: ${response.statusText}`);
+  }
+  return await response.blob();
+};
 
 const AllPhotos = ({  albums, setAlbums, currentTab, fetchAllStats } ) => {
   const [selectedAlbum, setSelectedAlbum] = useState(null);
@@ -23,7 +33,7 @@ const AllPhotos = ({  albums, setAlbums, currentTab, fetchAllStats } ) => {
 
   const fetchAlbums = async () => {
     try {
-      const response = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/albums");
+      const response = await fetch("http://147.93.106.153:5000/albums");
       if (!response.ok) {
         throw new Error("Failed to fetch albums");
       }
@@ -40,7 +50,7 @@ const AllPhotos = ({  albums, setAlbums, currentTab, fetchAllStats } ) => {
   const fetchPhotos = async (album) => {
     if (!album || !album._id) return;
     try {
-      const response = await fetch(`https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${album._id}`);
+      const response = await fetch(`http://147.93.106.153:5000/photos/${album._id}`);
       if (!response.ok) throw new Error("Failed to fetch photos");
       const data = await response.json();
       console.log("📸 Fetched Photos:", data);
@@ -56,7 +66,7 @@ const AllPhotos = ({  albums, setAlbums, currentTab, fetchAllStats } ) => {
   
   const handleCreateAlbum = async (newAlbum) => {
     try {
-      const response = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/create-album", {
+      const response = await fetch("http://147.93.106.153:5000/create-album", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newAlbum),
@@ -152,9 +162,10 @@ const handleDownloadAlbum = async (album) => {
   if (!album || !album._id) return;
 
   try {
-    const response = await fetch(`https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${album._id}`);
+    const response = await fetch(`http://147.93.106.153:5000/photos/${album._id}`);
     if (!response.ok) throw new Error("Failed to fetch photos");
-    const photos = await response.json();
+    const data = await response.json();
+    const photos = data.photos || [];
 
     if (photos.length === 0) {
       alert("No photos to download in this album.");
@@ -162,10 +173,12 @@ const handleDownloadAlbum = async (album) => {
     }
 
     const zip = new JSZip();
-    photos.forEach((photo, index) => {
-      const base64Data = photo.image.split(",")[1];
-      zip.file(`${album.name}_photo_${index + 1}.jpg`, base64Data, { base64: true });
-    });
+
+    for (let i = 0; i < photos.length; i++) {
+      const photo = photos[i];
+      const blob = await fetchImageAsBlob(photo.image);
+      zip.file(`${album.name}_photo_${i + 1}.jpg`, blob);
+    }
 
     zip.generateAsync({ type: "blob" }).then((content) => {
       const link = document.createElement("a");
@@ -179,44 +192,40 @@ const handleDownloadAlbum = async (album) => {
 };
 
   
-  const handleDownload = async () => {
-    if (selectedItems.length === 0) return;
+const handleDownload = async () => {
+  if (selectedItems.length === 0) return;
 
-    const zip = new JSZip();
+  const zip = new JSZip();
 
-    for (const item of selectedItems) {
-        if (item.photo_id) {
-            // ✅ Item is a selected photo
-            const base64Data = item.image.split(",")[1]; // Extract base64 part
-            zip.file(`photo_${item.photo_id}.jpg`, base64Data, { base64: true });
-        } else if (item._id) {
-            // ✅ Item is an album
-            try {
-                const response = await fetch(`https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${item._id}`);
-                if (!response.ok) throw new Error("Failed to fetch photos");
-                const data = await response.json();
+  for (const item of selectedItems) {
+    if (item.photo_id) {
+      const blob = await fetchImageAsBlob(item.image);
+      zip.file(`photo_${item.photo_id}.jpg`, blob);
+    } else if (item._id) {
+      try {
+        const response = await fetch(`http://147.93.106.153:5000/photos/${item._id}`);
+        if (!response.ok) throw new Error("Failed to fetch photos");
+        const data = await response.json();
+        const photos = data.photos || [];
 
-                // Ensure album cover is added
-                zip.file(`${item.name}_cover.jpg`, item.cover.split(",")[1], { base64: true });
-
-                // Add photos from album
-                data.forEach((photo, index) => {
-                    zip.file(`${item.name}_photo_${index + 1}.jpg`, photo.image.split(",")[1], { base64: true });
-                });
-
-            } catch (error) {
-                console.error("Error fetching photos for download:", error);
-            }
+        for (let i = 0; i < photos.length; i++) {
+          const photo = photos[i];
+          const blob = await fetchImageAsBlob(photo.image);
+          zip.file(`${item.name}_photo_${i + 1}.jpg`, blob);
         }
-    }
 
-    // Generate and download ZIP
-    zip.generateAsync({ type: "blob" }).then((content) => {
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(content);
-        link.download = "download.zip";
-        link.click();
-    });
+      } catch (error) {
+        console.error("Error fetching photos for download:", error);
+      }
+    }
+  }
+
+  zip.generateAsync({ type: "blob" }).then((content) => {
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(content);
+    link.download = "download.zip";
+    link.click();
+  });
 };
 
 
@@ -233,7 +242,7 @@ const handleDownloadAlbum = async (album) => {
               }
 
               const response = await fetch(
-                `https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photo/${selectedAlbum._id}/${photo.photo_id}`,
+                `http://147.93.106.153:5000/photo/${selectedAlbum._id}/${photo.photo_id}`,
                 { method: "DELETE" }
               );
 
@@ -244,7 +253,7 @@ const handleDownloadAlbum = async (album) => {
             await fetchPhotos(selectedAlbum); // ✅ Refresh album after deletion
           } else {
             // Deleting albums
-            const response = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/delete-albums", {
+            const response = await fetch("http://147.93.106.153:5000/delete-albums", {
               method: "DELETE",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ albumIds: selectedItems.map((album) => album._id) }),
@@ -374,7 +383,7 @@ const handleDownloadAlbum = async (album) => {
             <div key={i} className="p-4 rounded-lg cursor-pointer"  onClick={() => fetchPhotos(album)}>
               <div className="relative border border-[#686868] rounded-[32px] w-full h-[250px] sm:h-[300px] md:h-[350px] lg:h-[404px] rounded-[25px] overflow-hidden">
               
-              <img src={`data:image/jpeg;base64,${album.cover}`} alt={album.name} className="w-full h-full object-fill rounded-[32px]" />
+              <img src={album.cover} alt={album.name} className="w-full h-full object-fill rounded-[32px]" />
               </div>
               <div className="flex items-center gap-4 ml-1">
               <input type="checkbox" className=" accent-[#170645] w-4 h-4 mt-2 border-2 border-gray-400 rounded-[25px] " onChange={() => toggleSelection(album)} onClick={(e) => e.stopPropagation()}  checked={selectedItems.some(item => item._id === album._id)}  />

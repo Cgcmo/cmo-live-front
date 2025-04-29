@@ -22,7 +22,7 @@ export default function SearchResults() {
   
     setLoading(true); // already present
   
-    fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/master-search", {
+    fetch("http://147.93.106.153:5000/master-search", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query }),
@@ -63,32 +63,41 @@ export default function SearchResults() {
   };
 
   const handleShareAll = async () => {
-    if (selectedPhotos.length === 0) return alert("No images selected!");
+    if (selectedPhotos.length === 0) {
+      alert("No images selected!");
+      return;
+    }
   
-    const files = selectedPhotos.map((photo, index) => {
-      const byteString = atob(photo.image);
-      const mimeString = "image/jpeg";
-      const ab = new ArrayBuffer(byteString.length);
-      const ia = new Uint8Array(ab);
-      for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-      }
-      return new File([ab], `image_${index + 1}.jpg`, { type: mimeString });
-    });
+    if (selectedPhotos.length > 10) {
+      alert("You can only share up to 10 images at once.");
+      return;
+    }
   
-    if (navigator.canShare && navigator.canShare({ files })) {
-      try {
+    setIsDownloading(true); // optional spinner while preparing
+  
+    try {
+      const files = await Promise.all(
+        selectedPhotos.map(async (photo, index) => {
+          const response = await fetch(photo.image);
+          const blob = await response.blob();
+          return new File([blob], `image_${index + 1}.jpg`, { type: blob.type });
+        })
+      );
+  
+      if (navigator.canShare && navigator.canShare({ files })) {
         await navigator.share({
           title: "Check out these images!",
           text: "Shared via Choicesay!",
           files,
         });
-      } catch (err) {
-        console.error("Error sharing files:", err);
-        alert("Error sharing images.");
+      } else {
+        alert("Sharing files is not supported on your device or browser.");
       }
-    } else {
-      alert("Sharing files is not supported on your device or browser.");
+    } catch (err) {
+      console.error("Error sharing files:", err);
+      alert("Error sharing images.");
+    } finally {
+      setIsDownloading(false);
     }
   };
   
@@ -106,16 +115,15 @@ export default function SearchResults() {
       const JSZip = (await import("jszip")).default;
       const zip = new JSZip();
   
-      selectedPhotos.forEach((photo, index) => {
-        const base64 = photo.image;
-        if (!base64) {
-          throw new Error(`Photo at index ${index} is missing image data.`);
-        }
-        zip.file(`image_${index + 1}.jpg`, base64, { base64: true });
-      });
+      // Instead of treating photo.image as base64, fetch it properly
+      await Promise.all(selectedPhotos.map(async (photo, index) => {
+        const response = await fetch(photo.image);
+        const blob = await response.blob();
+        zip.file(`image_${index + 1}.jpg`, blob);
+      }));
   
-      const blob = await zip.generateAsync({ type: "blob" });
-      const url = URL.createObjectURL(blob);
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      const url = URL.createObjectURL(zipBlob);
   
       const link = document.createElement("a");
       link.href = url;
@@ -128,7 +136,6 @@ export default function SearchResults() {
       console.error("Download failed:", error);
       alert("Failed to prepare download. Please try again.");
     } finally {
-      // Ensure at least 1 sec display time
       const elapsed = Date.now() - start;
       const delay = Math.max(0, 1000 - elapsed);
       setTimeout(() => setIsDownloading(false), delay);
@@ -234,7 +241,7 @@ export default function SearchResults() {
                     onChange={() => handleSelect(photo)}
                   />
                   <img
-                    src={`data:image/jpeg;base64,${photo.image}`}
+                    src={photo.image}
                     alt={`Photo ${i + 1}`}
                     className="w-full rounded-[30px]"
                   />
@@ -251,7 +258,13 @@ export default function SearchResults() {
             onClick={handleShareAll}
             className="min-w-[150px] px-4 py-2 bg-yellow-400 text-black rounded-full flex items-center justify-center gap-2 text-sm font-semibold shadow hover:shadow-md"
           >
-            <FiShare size={18} /> Share
+            <FiShare size={18} /> Share <span
+    className={`${
+      selectedPhotos.length > 10 ? "text-red-600 font-bold" : "text-black font-semibold"
+    }`}
+  >
+    ({selectedPhotos.length}/10)
+  </span>
           </button>
                       <button
               onClick={handleDownloadAll}

@@ -30,10 +30,10 @@ export default function RootLayout({ children }) {
         <Script
   id="otpless-sdk"
   strategy="afterInteractive"
-  src="https://otpless.com/v4/auth.js"
-  data-appid="936N5Z8BP088IVS1951D"
-  
+  src="https://otpless.com/v4/headless.js"
+  data-appid="936N5Z8BP088IVS1951D" 
 />
+
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SessionWrapper> {/* ✅ Wrap children with SessionProvider */}

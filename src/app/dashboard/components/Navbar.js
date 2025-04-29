@@ -30,19 +30,19 @@ export default function Navbar({ setShowGallery, setGalleryPhotos }) {
 
   useEffect(() => {
     // Fetch Events
-    fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/get-events")
+    fetch("http://147.93.106.153:5000/get-events")
       .then(res => res.json())
       .then(data => setEventList(data))
       .catch(err => console.error("Failed to fetch events:", err));
 
     // Fetch Categories (Departments)
-    fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/departments")
+    fetch("http://147.93.106.153:5000/departments")
       .then(res => res.json())
       .then(data => setCategoryList(data.map(d => d.name)))  // extract only names
       .catch(err => console.error("Failed to fetch departments:", err));
 
     // Fetch Districts
-    fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/districts")
+    fetch("http://147.93.106.153:5000/districts")
       .then(res => res.json())
       .then(data => setDistrictList(data.map(d => d.name)))
       .catch(err => console.error("Failed to fetch districts:", err));
@@ -50,7 +50,7 @@ export default function Navbar({ setShowGallery, setGalleryPhotos }) {
 
 
   useEffect(() => {
-    fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/search-suggestions")
+    fetch("http://147.93.106.153:5000/search-suggestions")
       .then(res => res.json())
       .then(data => {
         const combined = [

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import GalleryModal from "./GalleryModal";
+
 
 const AllPhotos = ({ isSelectAll, setSelectedImages: updateSelectedImages }) => {
   const [selected, setSelected] = useState([]);
@@ -21,14 +21,11 @@ const AllPhotos = ({ isSelectAll, setSelectedImages: updateSelectedImages }) => 
   
         const startTime = Date.now();
   
-        const response = await fetch(`https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/fetch-all-photos?page=${currentPage}&limit=${limit}`);
+        const response = await fetch(`http://147.93.106.153:5000/fetch-all-photos?page=${currentPage}&limit=${limit}`);
         const data = await response.json();
   
-        const imageUrls = data.photos.map((item) => {
-          const img = item.image;
-          return img.startsWith("data:image") ? img : `data:image/jpeg;base64,${img}`;
-        });
-  
+        
+        const imageUrls = data.photos.map((item) => item.image);
         setAlbums([{ images: imageUrls }]);
         setTotalPages(Math.ceil(data.total / limit));
   

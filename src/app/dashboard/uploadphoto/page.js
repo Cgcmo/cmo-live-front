@@ -22,34 +22,56 @@ export default function UploadPhoto() {
   const [selectedImages, setSelectedImages] = useState([]);
   const [events, setEvents] = useState([]);
   const [images, setImages] = useState([]);
-  const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
-  };
   const router = useRouter();
   const { data: session, status } = useSession();
   const [otpUser, setOtpUser] = useState(null);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(true);
+  const [isDragging, setIsDragging] = useState(false);
 
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+
+    if (selectedFile) {
+      if (!selectedFile.type.startsWith("image/")) {
+        alert("Please upload a valid image file (jpg, png, jpeg etc.)");
+        event.target.value = ""; // Reset file input
+        setFile(null);
+        return;
+      }
+      setFile(selectedFile);
+    }
+  };
 
   useEffect(() => {
-    const checkAuth = () => {
+    if (typeof window === "undefined") return;
+
+    const checkAccess = () => {
       const storedUser = localStorage.getItem("otpUser");
 
       if (status === "loading") return;
 
-      if (!storedUser && status === "unauthenticated") {
-        router.replace("/"); // 🔐 Redirect to home/login
+      if (status === "authenticated" || storedUser) {
+        if (storedUser) {
+          setOtpUser(JSON.parse(storedUser));
+        }
+        setTimeout(() => {
+          setIsPageLoading(false);
+        }, 500); // 500ms extra delay to let the page UI fully load smoothly
+        
       } else {
-        setOtpUser(JSON.parse(storedUser)); // ✅ Allow access
+        router.replace("/");
+        setTimeout(() => {
+          setIsPageLoading(false);
+        }, 500); // 500ms extra delay to let the page UI fully load smoothly
+        
       }
     };
 
-    checkAuth(); // Run immediately
-    window.addEventListener("storage", checkAuth); // Handle logout from other tabs
-
-    return () => window.removeEventListener("storage", checkAuth);
+    checkAccess();
   }, [status, router]);
+
+
 
   const handleProceed = async () => {
     const eventSelect = document.querySelector("select").value;
@@ -68,7 +90,7 @@ export default function UploadPhoto() {
       let uploadPhotos = [];
 
       if (eventSelect && eventSelect !== "Select Event") {
-        const eventResponse = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/fetch-album-photos", {
+        const eventResponse = await fetch("http://147.93.106.153:5000/fetch-album-photos", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           mode: "cors",
@@ -83,7 +105,7 @@ export default function UploadPhoto() {
       }
 
       if (selectedDate) {
-        const dateResponse = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/fetch-photos-by-date", {
+        const dateResponse = await fetch("http://147.93.106.153:5000/fetch-photos-by-date", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           mode: "cors",
@@ -101,7 +123,7 @@ export default function UploadPhoto() {
         const reader = new FileReader();
         reader.onloadend = async () => {
           const base64String = reader.result.split(",")[1];
-          const uploadResponse = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/search-by-upload", {
+          const uploadResponse = await fetch("http://147.93.106.153:5000/search-by-upload", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ image: base64String }),
@@ -122,8 +144,8 @@ export default function UploadPhoto() {
           if (mergedPhotos.length > 0) {
             setShowGallery(true);
             setImages(mergedPhotos);
-setTotalPages(Math.ceil(mergedPhotos.length / imagesPerPage));
-setCurrentPage(1);
+            setTotalPages(Math.ceil(mergedPhotos.length / imagesPerPage));
+            setCurrentPage(1);
 
           } else {
             alert("No photos found for the selected filters. If Searching with Photo Make sure Face is clear");
@@ -141,8 +163,8 @@ setCurrentPage(1);
         if (mergedPhotos.length > 0) {
           setShowGallery(true);
           setImages(mergedPhotos);
-setTotalPages(Math.ceil(mergedPhotos.length / imagesPerPage));
-setCurrentPage(1);
+          setTotalPages(Math.ceil(mergedPhotos.length / imagesPerPage));
+          setCurrentPage(1);
 
         } else {
           alert("No photos found for the selected filters. If Searching with Photo Make sure Face is clear");
@@ -171,7 +193,7 @@ setCurrentPage(1);
 
   const handleDownloadC = async () => {
     try {
-      await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/increment-download-count", {
+      await fetch("http://147.93.106.153:5000/increment-download-count", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
@@ -207,25 +229,23 @@ setCurrentPage(1);
 
   const handleSelectAll = () => {
     if (selectAll) {
-      setSelectedImages([]); // Unselect all
+      setSelectedImages([]);
     } else {
-      setSelectedImages(images.map((img) => `data:image/jpeg;base64,${img.image}`)); // Select all
+      setSelectedImages(images.map((img) => img.image));  // ✅ Only URLs
     }
     setSelectAll(!selectAll);
   };
 
+
   // Handle Single Select
   const handleImageSelect = (src) => {
     setSelectedImages((prev) => {
-      // If already selected, remove it
       if (prev.includes(src)) {
         return prev.filter((img) => img !== src);
       }
-      // If not selected, add it
       return [...prev, src];
     });
 
-    // Ensure Select All is only checked if all images are selected
     setSelectAll(selectedImages.length + 1 === images.length);
   };
 
@@ -263,39 +283,49 @@ setCurrentPage(1);
       alert("No images selected!");
       return;
     }
-  
-    setIsDownloading(true); // Show loader immediately
-  
-    const zip = new JSZip();
-  
-    selectedImages.forEach((dataUrl, index) => {
-      const base64 = dataUrl.split(",")[1];
-      zip.file(`image_${index + 1}.jpg`, base64, { base64: true });
-    });
-  
-    const startTime = Date.now(); // Track start time
-  
-    const blob = await zip.generateAsync({ type: "blob" });
-    const url = URL.createObjectURL(blob);
-  
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "selected_images.zip";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  
-    URL.revokeObjectURL(url);
-    handleDownloadC();
-  
-    const elapsed = Date.now() - startTime;
-    const delay = Math.max(1000 - elapsed, 0); // Ensure at least 1 sec
-  
-    setTimeout(() => {
-      setIsDownloading(false); // Hide loader after delay
-    }, delay);
+
+    setIsDownloading(true);
+
+    try {
+      const zip = new JSZip();
+
+      await Promise.all(selectedImages.map(async (url, index) => {
+        try {
+          if (!url.startsWith("http")) {
+            console.warn("Skipping invalid URL:", url);
+            return; // Skip non-URLs
+          }
+          const response = await fetch(url);
+          if (!response.ok) {
+            console.warn("Skipping fetch failed:", url);
+            return;
+          }
+          const blob = await response.blob();
+          zip.file(`image_${index + 1}.jpg`, blob);
+        } catch (err) {
+          console.warn("Error fetching single image:", url, err);
+        }
+      }));
+
+      const blob = await zip.generateAsync({ type: "blob" });
+      const zipUrl = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = zipUrl;
+      link.download = "selected_images.zip";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      URL.revokeObjectURL(zipUrl);
+    } catch (error) {
+      console.error("Download error:", error);
+      alert("Failed to download images.");
+    } finally {
+      setIsDownloading(false);
+    }
   };
-  
+
 
   // Copy All Selected Links
   const handleCopyAllLinks = () => {
@@ -311,102 +341,112 @@ setCurrentPage(1);
       return;
     }
 
-    // Convert base64 to File objects
-    const files = selectedImages.map((dataUrl, index) => {
-      const byteString = atob(dataUrl.split(",")[1]);
-      const mimeString = dataUrl.split(",")[0].split(":")[1].split(";")[0];
+    // ✅ Add limit for sharing
+    if (selectedImages.length > 10) {
+      alert("Please select up to 10 images at a time for sharing.");
+      return;
+    }
 
-      const ab = new ArrayBuffer(byteString.length);
-      const ia = new Uint8Array(ab);
-      for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-      }
+    setIsDownloading(true);
 
-      return new File([ab], `image_${index + 1}.jpg`, { type: mimeString });
-    });
+    try {
+      const files = await Promise.all(selectedImages.map(async (url, index) => {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        return new File([blob], `image_${index + 1}.jpg`, { type: blob.type });
+      }));
 
-    if (navigator.canShare && navigator.canShare({ files })) {
-      try {
+      if (navigator.canShare && navigator.canShare({ files })) {
         await navigator.share({
           title: "Check out these images!",
-          text: "Shared via choicesay!",
+          text: "Shared via Your CMO AI app!",
           files,
         });
-      } catch (err) {
-        console.error("Error sharing files:", err);
-        alert("Error sharing images.");
+      } else {
+        alert("Sharing not supported on this device.");
       }
-    } else {
-      alert("Sharing files is not supported on your device or browser.");
+    } catch (err) {
+      console.error("Error sharing images:", err);
+      alert("Error sharing images.");
+    } finally {
+      setIsDownloading(false);
     }
   };
+
 
 
   const [totalPages, setTotalPages] = useState(1);
 
 
-  useEffect(() => {
-  const fetchEvents = async () => {
+  const fetchEventsByDate = async (date) => {
+    if (!date) {
+      setEvents([]); // Clear events if no date
+      return;
+    }
     try {
-      const response = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/get-events");
+      const response = await fetch("http://147.93.106.153:5000/events-by-date", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ date }),
+      });
       const data = await response.json();
-      setEvents(data);
+      if (response.ok) {
+        setEvents(data); // set only the events of that date
+      } else {
+        setEvents([]);
+      }
     } catch (error) {
-      console.error("Error fetching events:", error);
-    } finally {
-      setIsPageLoading(false); // ✅ now this works
+      console.error("Error fetching events by date:", error);
+      setEvents([]);
     }
   };
 
-  fetchEvents();
-}, []);
 
+  // useEffect(() => {
+  //   const otpUser = localStorage.getItem("otpUser");
 
-  useEffect(() => {
-    const otpUser = localStorage.getItem("otpUser");
-
-    if (!otpUser && status !== "authenticated") {
-      router.replace("/"); // ❌ Not logged in
-    }
-  }, [status]);
+  //   if (!otpUser && status !== "authenticated") {
+  //     router.replace("/"); // ❌ Not logged in
+  //   }
+  // }, [status]);
 
 
   if (isPageLoading) {
     return (
       <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-white z-50">
-                    <div className="flex flex-col items-center">
-                      <div className="relative w-20 h-20">
-                        {/* Circular Loading Spinner */}
-                        <svg
-                          aria-hidden="true"
-                          className="absolute inset-0 w-20 h-20 animate-spin text-gray-300"
-                          viewBox="0 0 100 101"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                            fill="currentColor"
-                          />
-                          <path
-                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                            fill="#170645"
-                          />
-                        </svg>
-                      </div>
-                      {/* Loading Text */}
-                      <p className="mt-4 text-lg font-semibold text-gray-700">Search Your Photo With AI...</p>
-                    </div>
-                    <div className="absolute bottom-10 text-center">
-                      <p className="text-lg font-bold text-gray-700">
-                        The latest <span className="text-black font-bold">AI</span> image search.
-                      </p>
-                    </div>
+        <div className="flex flex-col items-center">
+          <div className="relative w-20 h-20">
+            {/* Circular Loading Spinner */}
+            <svg
+              aria-hidden="true"
+              className="absolute inset-0 w-20 h-20 animate-spin text-gray-300"
+              viewBox="0 0 100 101"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                fill="currentColor"
+              />
+              <path
+                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                fill="#170645"
+              />
+            </svg>
+          </div>
+          {/* Loading Text */}
+          <p className="mt-4 text-lg font-semibold text-gray-700">Search Your Photo With AI...</p>
+        </div>
+        <div className="absolute bottom-10 text-center">
+          <p className="text-lg font-bold text-gray-700">
+            The latest <span className="text-black font-bold">AI</span> image search.
+          </p>
+        </div>
 
-                  </div>
+      </div>
     );
   }
-  
+
   return (
     <div className="items-center min-h-screen bg-white font-sans">
       <Navbar setShowGallery={setShowGallery} />
@@ -442,7 +482,10 @@ setCurrentPage(1);
                   <input
                     type="date"
                     value={selectedDate}
-                    onChange={(e) => setSelectedDate(e.target.value)}
+                    onChange={(e) => {
+                      setSelectedDate(e.target.value);
+                      fetchEventsByDate(e.target.value);  // ✅ Fetch events for selected date
+                    }}
                     className="w-full p-3 border border-gray-300 rounded-full text-[#170645] bg-white focus:outline-none"
                   />
                   <span className="absolute right-4 top-4 text-gray-400"></span>
@@ -453,11 +496,15 @@ setCurrentPage(1);
                     className="w-full p-3 border border-gray-300 rounded-full appearance-none text-[#170645] bg-white focus:outline-none"
                   >
                     <option value="">Select Event By Category </option>
-                    {events.map((event, index) => (
-                      <option key={index} value={event}>
-                        {event}
-                      </option>
-                    ))}
+                    {events.length === 0 ? (
+                      <option value="">No Events Available for this date</option>
+                    ) : (
+                      events.map((event, index) => (
+                        <option key={index} value={event}>
+                          {event}
+                        </option>
+                      ))
+                    )}
                   </select>
 
                   <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
@@ -480,12 +527,40 @@ setCurrentPage(1);
 
                 <label
                   htmlFor="file-upload"
-                  className="flex flex-row items-center justify-center w-full p-4 border border-gray-400 rounded-full cursor-pointer text-gray-600 mt-4 bg-white hover:bg-gray-100"
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setIsDragging(true);
+                  }}
+                  onDragLeave={(e) => {
+                    e.preventDefault();
+                    setIsDragging(false);
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setIsDragging(false);
+                    const droppedFile = e.dataTransfer.files[0];
+                    if (droppedFile) {
+                      if (!droppedFile.type.startsWith("image/")) {
+                        alert("Please upload a valid image file (jpg, png, jpeg etc.)");
+                        return;
+                      }
+                      setFile(droppedFile);
+                    }
+                  }}
+                  className={`flex flex-row items-center justify-center w-full p-4 border border-gray-400 rounded-full cursor-pointer text-gray-600 mt-4 bg-white transform transition-all duration-300 ${isDragging ? "scale-105 border border-[#170645] bg-blue-100" : "hover:bg-gray-200"
+                    }`}
                 >
                   <img src="/UP_PH.png" width={22} height={22} alt="Upload Icon" className="mr-2" />
                   <p className="text-sm text-[#170645] font-semibold">Drag An Image Here Or Upload A File</p>
-                  <input id="file-upload" type="file" className="hidden" onChange={handleFileChange} />
+                  <input
+                    id="file-upload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
                 </label>
+
                 {file && <p className="text-sm mt-2 text-gray-600 text-center">{file.name}</p>}
                 <button onClick={handleProceed} className="w-full mt-6 bg-[#170645] text-yellow-500 py-3 rounded-full text-lg font-semibold shadow-md hover:shadow-lg transition-all">Proceed</button>
                 {isLoading && (
@@ -577,7 +652,11 @@ setCurrentPage(1);
                 onClick={handleShareAll}
                 className="min-w-[150px] px-4 py-2 bg-yellow-400 text-black rounded-full flex items-center justify-center gap-2 text-sm font-semibold shadow hover:shadow-md"
               >
-                <FiShare size={18} /> Share
+                <FiShare size={18} /> Share <span className={`${selectedImages.length > 10 ? "text-red-600 font-bold" : "text-black font-semibold"
+                  }`}>
+
+                  {selectedImages.length}/10
+                </span>
               </button>
               <button
 
@@ -589,23 +668,23 @@ setCurrentPage(1);
             </div>
           </div>
           <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4 mt-4">
-          {images
-  .slice((currentPage - 1) * imagesPerPage, currentPage * imagesPerPage)
-  .map((image, index) => (
-              <div key={index} className="break-inside-avoid bg-white p-2 rounded-[30px] transition 
+            {images
+              .slice((currentPage - 1) * imagesPerPage, currentPage * imagesPerPage)
+              .map((image, index) => (
+                <div key={index} className="break-inside-avoid bg-white p-2 rounded-[30px] transition 
                border-2 border-transparent hover:border-[#0084FF] hover:shadow-md">
-                <div className="relative">
-                  <input
-                    type="checkbox"
-                    className="absolute top-4 right-4 z-10 w-4 h-4 accent-[#170645]"
-                    checked={selectedImages.includes(`data:image/jpeg;base64,${image.image}`)}
-                    onChange={() => handleImageSelect(`data:image/jpeg;base64,${image.image}`)}
-                  />
-                  <img src={`data:image/jpeg;base64,${image.image}`} alt={image.title} className="w-full rounded-[30px]" />
-                </div>
-                <h3 className="text-[20px] font-bold text-black mt-2">{image.title}</h3>
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      className="absolute top-4 right-4 z-10 w-4 h-4 accent-[#170645]"
+                      checked={selectedImages.includes(image.image)}
+                      onChange={() => handleImageSelect(image.image)}
+                    />
+                    <img src={image.image} alt={image.title} className="w-full rounded-[30px]" />
+                  </div>
+                  <h3 className="text-[20px] font-bold text-black mt-2">{image.title}</h3>
 
-                {/* <div className="flex gap-[10px] items-center mt-2">
+                  {/* <div className="flex gap-[10px] items-center mt-2">
                
                 <button onClick={() => handleShare(image.src)} className="w-[2vw] h-[4vh] border border-gray-400 flex items-center justify-center rounded-full transition-all duration-300 group-hover:bg-[rgba(23,6,69,1)] group-hover:text-white">
                   <FiShare size={18} className="text-gray-500 group-hover:text-white" />
@@ -617,8 +696,8 @@ setCurrentPage(1);
                   <FiDownload size={18} className="text-gray-500 group-hover:text-white" />
                 </button>
               </div> */}
-              </div>
-            ))}
+                </div>
+              ))}
           </div>
           {totalPages > 1 && (
             <>
@@ -648,41 +727,41 @@ setCurrentPage(1);
           )}
 
         </div >
-        
+
       )}
-      
 
-{isDownloading && (
-          <div className="fixed top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-black bg-opacity-30 z-[9999] backdrop-blur-sm">
-            <div className="flex flex-col items-center p-6 rounded-2xl">
-              {/* Spinner */}
-              <div className="relative w-20 h-20">
-                <svg
-                  aria-hidden="true"
-                  className="absolute inset-0 w-20 h-20 animate-spin text-gray-300"
-                  viewBox="0 0 100 101"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                    fill="currentColor"
-                  />
-                  <path
-                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                    fill="#170645"
-                  />
-                </svg>
-              </div>
 
-              {/* Loading Text */}
-              
-              <p className="mt-6 text-lg font-bold text-white">
-                The latest <span className="text-[#170645] font-bold">AI</span> Based Photo Gallery App.
-              </p>
+      {isDownloading && (
+        <div className="fixed top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-black bg-opacity-30 z-[9999] backdrop-blur-sm">
+          <div className="flex flex-col items-center p-6 rounded-2xl">
+            {/* Spinner */}
+            <div className="relative w-20 h-20">
+              <svg
+                aria-hidden="true"
+                className="absolute inset-0 w-20 h-20 animate-spin text-gray-300"
+                viewBox="0 0 100 101"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                  fill="#170645"
+                />
+              </svg>
             </div>
+
+            {/* Loading Text */}
+
+            <p className="mt-6 text-lg font-bold text-white">
+              The latest <span className="text-[#170645] font-bold">AI</span> Based Photo Gallery App.
+            </p>
           </div>
-        )}
+        </div>
+      )}
 
       <Footer />
     </div>

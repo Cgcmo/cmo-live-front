@@ -357,9 +357,9 @@ export default function Home() {
             <div className="relative mx-auto mt-8 max-w-md w-full flex justify-center">
               <button
                 onClick={() => {
-                  localStorage.removeItem("resetMobile");
-                  window.location.href = "/verification";
-                }}
+                  localStorage.setItem("showSignup", "true"); // 📦 Save small info in localstorage
+                  setShowLoginPage(true);                     // 📃 Open AuthPage
+                }}                
                 className="group relative text-white px-8 py-3 rounded-lg font-semibold overflow-hidden z-10 transition-transform duration-300 transform hover:scale-105"
               >
                 {/* Glowy background */}
@@ -375,7 +375,7 @@ export default function Home() {
                     textShadow: '0 0 4px rgba(255,255,255,0.2)',
                   }}
                 >
-                  Register Now
+                  {isHindi ? 'रजिस्टर करें' : 'Register Now'}
                 </span>
 
                 <style jsx>{`
@@ -456,70 +456,98 @@ export default function Home() {
 
           </div>
 
+{/* Chief Minister Section */}
+<section className="relative py-16 px-4 sm:px-8 md:px-16 bg-[#fff7c2]">
+  <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12">
 
+    {/* Left Text */}
+    <div className="w-full lg:w-1/2 text-center lg:text-left">
+      <p className="text-[#170645] text-xl sm:text-2xl md:text-3xl mb-4">
+        {isHindi ? 'अपने ' : 'Know Your '}
+        <span
+          className="inline-block font-bold text-black px-3 py-1"
+          style={{
+            backgroundImage: "url('/bgy.png')",
+            backgroundSize: '100% 100%',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+          }}
+        >
+          {isHindi ? 'मुख्यमंत्री' : 'Chief Minister'}
+        </span>
+      </p>
 
-          {/* video section */}
-          <section className="px-4 sm:px-6 md:px-8 py-12 bg-white text-[#170645]">
-            <h2 className="text-center text-xl sm:text-2xl md:text-3xl mb-8">
-              {isHindi ? 'लेटेस्ट ' : 'Latest '}
-              <span
-                className="inline-flex items-center justify-center text-black font-semibold text-xl sm:text-2xl md:text-3xl"
-                style={{
-                  backgroundImage: "url('/bgy.png')",
-                  backgroundSize: '100% 100%',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'center',
-                  width: '4em',  // based on text size
-                  height: '1.6em',
-                  lineHeight: 1,
-                }}
-              >
-                {isHindi ? 'वीडियो' : 'Videos'}
-              </span>
-            </h2>
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#170645] mb-6">
+        {isHindi ? 'श्री विष्णुदेव साय' : 'Shri Vishnu Deo Sai'}
+      </h2>
 
+      <p className="text-gray-800 text-[16px] leading-relaxed mb-4">
+        {isHindi 
+          ? '21 फरवरी 1964 को जन्मे, श्री विष्णुदेव साय छत्तीसगढ़ के 4वें मुख्यमंत्री हैं। वे इस पद को संभालने वाले पहले आदिवासी नेता हैं। वे 2020 से 2022 तक भारतीय जनता पार्टी, छत्तीसगढ़ के अध्यक्ष भी रहे हैं और वर्तमान में कुनकुरी विधानसभा क्षेत्र से विधायक हैं।'
+          : 'Born 21 February 1964, Shri Vishnu Deo Sai is an Indian politician currently serving as the 4th Chief Minister of Chhattisgarh. He is the first tribal leader to hold the post. He also served as President of Bharatiya Janata Party, Chhattisgarh from 2020 until 2022. He currently represents Kunkuri in Chhattisgarh Legislative Assembly.'
+        }
+      </p>
+      <p className="text-gray-800 text-[16px] leading-relaxed">
+        {isHindi
+          ? 'श्री विष्णुदेव साय का जन्म जशपुर जिले के बगिया गांव में एक कृषक परिवार में हुआ था। उनके पिता का नाम श्री राम प्रसाद साय और माता का नाम श्रीमती जशमणी देवी है। उनका विवाह 1991 में श्रीमती कौशल्या देवी से हुआ।'
+          : 'Shri Vishnu Deo Sai was born in a farmer\'s family in Bagia Village of Jashpur District to Shri Ram Prasad Sai and Smt. Jashmani Devi. He married Kaushalya Devi in 1991.'
+        }
+      </p>
+    </div>
 
-            <div className="grid lg:grid-cols-2 gap-6 w-full px-2 sm:px-4 lg:px-6">
-              {/* Left Large Video */}
-              <div className="w-full">
-                <div className="rounded-2xl overflow-hidden shadow-lg">
-                  <div className="w-full aspect-video">
-                    <VideoPlayer
-                      key={mainVideo.src}
-                      src={mainVideo.src}
-                      title={mainVideo.title}
-                      variant="main"
-                      autoPlay={shouldAutoPlay}
-                    />
-                  </div>
+    {/* Right Images */}
+    {/* Right Images */}
+<div className="w-full lg:w-1/2 grid grid-cols-2 grid-rows-2 gap-6">
 
-                </div>
-              </div>
+{/* Big Vertical Image */}
+<div className="row-span-2 rounded-[50px] overflow-hidden ">
+  <img
+    src="/ban-03.png"
+    alt="Big Vertical Image"
+    className="w-[20vw] h-[70vh] object-cover"
+  />
+</div>
 
-              {/* Right: 2x2 grid on large, vertical on mobile */}
-              <div className="grid grid-cols-2 gap-4 ">
-                {videoData.map((video, idx) => (
+{/* Small Image 1 */}
+<div className="rounded-[30px] overflow-hidden ">
+  <img
+    src="/001.png"
+    alt="Small Image 1"
+    className="w-[18vw] h-auto object-cover"
+  />
+</div>
 
-                  <div
-                    key={idx}
-                    className="rounded-2xl overflow-hidden relative group cursor-pointer hover:opacity-90 transition aspect-video"
-                  >
-                    <VideoPlayer
-                      src={video.src}
-                      title={video.title}
-                      aspect="aspect-video"
-                      variant="small"
-                      onClick={() => {
-                        setMainVideo(video);
-                        setShouldAutoPlay(true); // now autoplay
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-          {/* vidoe seciton ended */}
+{/* Small Image 2 */}
+<div className="rounded-[30px] overflow-hidden ">
+  <img
+    src="/002.png"
+    alt="Small Image 2"
+    className="w-[18vw] h-auto object-cover"
+  />
+</div>
+
+{/* Small Image 3 */}
+<div className="rounded-[30px] overflow-hidden ">
+  <img
+    src="/003.png"
+    alt="Small Image 3"
+    className="w-[18vw] h-auto object-cover"
+  />
+</div>
+
+{/* Small Image 4 */}
+<div className="rounded-[30px] overflow-hidden ">
+  <img
+    src="/004.png"
+    alt="Small Image 4"
+    className="w-[18vw] h-auto object-cover"
+  />
+</div>
+
+</div>
+</div>
+</section>
+
 
           {/* Chief Minister Section */}
           <section className="relative py-12 px-4 sm:px-6 md:px-12">
@@ -644,10 +672,10 @@ export default function Home() {
 
                 <button
                   onClick={() => {
-                    localStorage.removeItem("resetMobile");
-                    window.location.href = "/verification"; // ✅ correct for signup
+                    localStorage.setItem("showSignup", "true"); // 📦 Save small info in localstorage
+                    setShowLoginPage(true);                     // 📃 Open AuthPage
                   }}
-
+                  
                   className="mt-8 border border-yellow-400 text-yellow-400 px-14 py-4 rounded-full hover:bg-yellow-400 hover:text-black transition text-[18px] font-semibold"
                 >
                   {isHindi ? 'रजिस्टर करें' : 'Register Now'}

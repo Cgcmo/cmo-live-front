@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X, ChevronDown, BarChart2, Users, Image, User } from 'lucide-react';
 import './ToggleSwitch.css';
 import CustomBarChart from './CustomBarChart';
-import ModalPopup from "./ModalPopup";
 import Profile from "./Profile";
 import EventCard from "./EventCard";
 import AllPhotos from "./AllPhotos";
@@ -12,7 +11,7 @@ import Navbar from '@/app/dashboard/components/Navbar';
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Footer from "@/app/dashboard/components/Footer";
-
+import JSZip from "jszip";
 
 function App() {
   const [search, setSearch] = useState("");
@@ -55,30 +54,48 @@ function App() {
 
   const eventNames = ["Rajyotsava", "Mahtarivandan Yojna", "Mor Awas Mor Adhikar"];
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (selectedImages.length === 0) {
       alert("No images selected for download.");
       return;
     }
-    setIsDownloading(true); // Show loader
-    const startTime = Date.now();
-
-    selectedImages.forEach((image) => {
+  
+    setIsDownloading(true);
+  
+    try {
+      const zip = new JSZip();
+  
+      await Promise.all(
+        selectedImages.map(async (imageUrl, index) => {
+          const response = await fetch(imageUrl, { mode: "cors" });
+          if (!response.ok) throw new Error("Failed to fetch image: " + imageUrl);
+  
+          const blob = await response.blob();
+          const filename = `image_${index + 1}.jpg`; // You can customize name
+          zip.file(filename, blob);
+        })
+      );
+  
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      const zipUrl = URL.createObjectURL(zipBlob);
+  
       const link = document.createElement("a");
-      link.href = image; // Assuming image URLs are valid direct links
-      link.download = image.split("/").pop(); // Extract filename from URL
+      link.href = zipUrl;
+      link.download = "selected_images.zip"; // Final zip filename
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-    });
-
-    const elapsed = Date.now() - startTime;
-    const delay = Math.max(1000 - elapsed, 0); // At least 1 sec
   
-    setTimeout(() => {
-      setIsDownloading(false); // Hide loader after delay
-    }, delay);
+      URL.revokeObjectURL(zipUrl); // Clean memory
+    } catch (error) {
+      console.error("Download ZIP failed:", error);
+      alert("Failed to download images as ZIP.");
+    } finally {
+      setIsDownloading(false);
+    }
   };
+
+
 
   const Switch = ({ checked, onChange }) => {
     return (
@@ -120,9 +137,9 @@ function App() {
   const fetchAllStats = async () => {
     try {
       const [userRes, albumRes, photoRes] = await Promise.all([
-        fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/count-users"),
-        fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/count-albums"),
-        fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/count-photos"),
+        fetch("http://147.93.106.153:5000/count-users"),
+        fetch("http://147.93.106.153:5000/count-albums"),
+        fetch("http://147.93.106.153:5000/count-photos"),
       ]);
   
       const totalUsers = (await userRes.json()).total_users;

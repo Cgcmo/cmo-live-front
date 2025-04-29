@@ -45,7 +45,7 @@ function App() {
 
   const fetchAlbums = async () => {
     try {
-      const response = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/albums");
+      const response = await fetch("http://147.93.106.153:5000/albums");
       if (!response.ok) {
         throw new Error("Failed to fetch albums");
       }
@@ -61,10 +61,10 @@ function App() {
   const fetchAllStats = async () => {
     try {
       const [userRes, albumRes, photoRes, downloadRes] = await Promise.all([
-        axios.get("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/count-users"),
-        axios.get("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/count-albums"),
-        axios.get("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/count-photos"),
-        axios.get("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/get-download-count"),
+        axios.get("http://147.93.106.153:5000/count-users"),
+        axios.get("http://147.93.106.153:5000/count-albums"),
+        axios.get("http://147.93.106.153:5000/count-photos"),
+        axios.get("http://147.93.106.153:5000/get-download-count"),
       ]);
 
       const totalUsers = userRes.data.total_users;
@@ -89,7 +89,7 @@ function App() {
   useEffect(() => {
     const fetchDownloadCount = async () => {
       try {
-        const res = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/get-download-count");
+        const res = await fetch("http://147.93.106.153:5000/get-download-count");
         const data = await res.json();
         const downloadCount = data.count || 0;
 
@@ -123,7 +123,7 @@ function App() {
   useEffect(() => {
     const fetchDownloadCount = async () => {
       try {
-        const res = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/get-download-count");
+        const res = await fetch("http://147.93.106.153:5000/get-download-count");
         const data = await res.json();
         const downloadCount = data.count || 0;
 

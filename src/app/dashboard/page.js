@@ -58,7 +58,7 @@
 
 //   const fetchAlbums = async () => {
 //     try {
-//       const res = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/albums");
+//       const res = await fetch("http://147.93.106.153:5000/albums");
 //       const data = await res.json();
 //       setAlbums(data);
 //     } catch (err) {
@@ -69,7 +69,7 @@
 
 //   const fetchPhotos = async (album) => {
 //     try {
-//       const res = await fetch(`https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${album._id}`);
+//       const res = await fetch(`http://147.93.106.153:5000/photos/${album._id}`);
 //       const data = await res.json();
 
 //       if (data.length === 0) {
@@ -163,7 +163,7 @@
 //     if (!album || !album._id) return;
 
 //     try {
-//       const response = await fetch(`https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${album._id}`);
+//       const response = await fetch(`http://147.93.106.153:5000/photos/${album._id}`);
 //       if (!response.ok) throw new Error("Failed to fetch photos");
 //       const photos = await response.json();
 
@@ -186,7 +186,7 @@
 //       link.download = `${album.name}.zip`;
 //       link.click();
 //       const historyItem = {
-//         image: `data:image/jpeg;base64,${album.cover}`, // first image as thumbnail
+//         image: `{album.cover}`, // first image as thumbnail
 //         title: album.name,
 //         lastDownload: new Date().toLocaleDateString("en-GB"), // e.g., 07/04/2025
 //         photoCount: photos.length,
@@ -350,7 +350,7 @@
 //               >
 //                 <div className="relative rounded-[30px] overflow-hidden">
 //                   <img
-//                     src={`data:image/jpeg;base64,${album.cover}`}
+//                     src={album.cover}
 //                     alt={album.name}
 //                     className="w-full rounded-[30px] transition-all duration-300 group-hover:brightness-75"
 //                   />
@@ -677,7 +677,7 @@ export default function Homepage() {
 
   const fetchAlbums = async (page = 1) => {
     try {
-      const res = await fetch(`https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/albums?page=${page}&limit=${imagesPerPage}`);
+      const res = await fetch(`http://147.93.106.153:5000/albums?page=${page}&limit=${imagesPerPage}`);
       const data = await res.json();
       setAlbums(data.albums);
       setTotalPages(Math.ceil(data.total / imagesPerPage));
@@ -693,24 +693,24 @@ export default function Homepage() {
   const fetchPhotos = async (album, page = 1) => {
     try {
       setIsLoading(true);
-      const res = await fetch(`https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${album._id}?page=${page}&limit=${imagesPerPage}`);
+      const res = await fetch(`http://147.93.106.153:5000/photos/${album._id}?page=${page}&limit=${imagesPerPage}`);
       const data = await res.json();
-
+  
       if (data.photos.length === 0) {
         alert("This album is empty");
         return;
       }
-
+  
       setSelectedAlbum(album);
       setAlbumPhotos(data.photos);
-      setTotalPages(Math.ceil(data.total / imagesPerPage));
+      setTotalPages(Math.ceil(data.total / imagesPerPage)); // ✅ based on photos count
     } catch (err) {
       console.error("Error fetching photos:", err);
     } finally {
-      setTimeout(() => setIsLoading(false), 500); // smooth loader delay
+      setTimeout(() => setIsLoading(false), 500);
     }
   };
-
+  
 
   const filteredImages = images.filter((img) =>
     img.title.toLowerCase().includes(search.toLowerCase())
@@ -811,46 +811,51 @@ export default function Homepage() {
 
   const handleDownloadAlbum = async (album) => {
     if (!album || !album._id) return;
-
+  
     try {
       setIsLoading(true);
-      const response = await fetch(`https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/photos/${album._id}`);
-      if (!response.ok) throw new Error("Failed to fetch photos");
-      const photos = await response.json();
-
-      if (photos.length === 0) {
+  
+      const res = await fetch(`http://147.93.106.153:5000/photos/${album._id}?limit=0`);
+      const data = await res.json();
+      const photos = data.photos;
+  
+      if (!Array.isArray(photos) || photos.length === 0) {
         alert("No photos to download in this album.");
         return;
       }
-
+  
       const JSZip = (await import("jszip")).default;
       const zip = new JSZip();
-
-      photos.forEach((photo, index) => {
-        const base64Data = photo.image.split(",")[1];
-        zip.file(`${album.name}_photo_${index + 1}.jpg`, base64Data, { base64: true });
-      });
-
+  
+      await Promise.all(photos.map(async (photo, index) => {
+        const response = await fetch(photo.image);
+        const blob = await response.blob();
+        zip.file(`${album.name}_photo_${index + 1}.jpg`, blob);
+      }));
+  
       const content = await zip.generateAsync({ type: "blob" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(content);
       link.download = `${album.name}.zip`;
       link.click();
+  
       const historyItem = {
-        image: `data:image/jpeg;base64,${album.cover}`, // first image as thumbnail
+        image: album.cover,
         title: album.name,
-        lastDownload: new Date().toLocaleDateString("en-GB"), // e.g., 07/04/2025
+        lastDownload: new Date().toLocaleDateString("en-GB"),
         photoCount: photos.length,
       };
-
+  
       saveToDownloadHistory(historyItem);
-
+  
     } catch (error) {
       console.error("Error downloading album:", error);
+      alert("❌ Failed to download album.");
     } finally {
-      setIsLoading(false); // ✅ Always hide loader!
+      setIsLoading(false);
     }
   };
+   
 
 
   const handleSelectAll = () => {
@@ -901,74 +906,82 @@ export default function Homepage() {
       alert("No images selected!");
       return;
     }
-
+  
     setIsLoading(true);
-    const startTime = Date.now(); // ⏱️ Mark the start time
-
+    const startTime = Date.now();
+  
     try {
       const JSZip = (await import("jszip")).default;
       const zip = new JSZip();
-
-      selectedImages.forEach((dataUrl, index) => {
-        const base64 = dataUrl.split(",")[1];
-        zip.file(`image_${index + 1}.jpg`, base64, { base64: true });
-      });
-
+  
+      await Promise.all(selectedImages.map(async (url, index) => {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        zip.file(`image_${index + 1}.jpg`, blob);
+      }));
+  
       const blob = await zip.generateAsync({ type: "blob" });
       const url = URL.createObjectURL(blob);
-
+  
       const link = document.createElement("a");
       link.href = url;
       link.download = "selected_images.zip";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-
+  
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Download all error:", error);
       alert("❌ Failed to download selected images.");
     } finally {
       const elapsedTime = Date.now() - startTime;
-      const delay = Math.max(0, 1000 - elapsedTime); // minimum 1 sec
-
+      const delay = Math.max(0, 1000 - elapsedTime);
       setTimeout(() => {
-        setIsLoading(false); // hide loader after delay
+        setIsLoading(false);
       }, delay);
     }
   };
-
-
+  
   const handleShareAll = async () => {
-    if (selectedImages.length === 0) return alert("No images selected!");
-
-    const files = selectedImages.map((dataUrl, index) => {
-      const byteString = atob(dataUrl.split(",")[1]);
-      const mimeString = dataUrl.split(",")[0].split(":")[1].split(";")[0];
-      const ab = new ArrayBuffer(byteString.length);
-      const ia = new Uint8Array(ab);
-      for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-      }
-      return new File([ab], `image_${index + 1}.jpg`, { type: mimeString });
-    });
-
-    if (navigator.canShare && navigator.canShare({ files })) {
-      try {
+    if (selectedImages.length === 0) {
+      alert("No images selected!");
+      return;
+    }
+  
+    if (selectedImages.length > 10) {
+      alert("You can only share up to 10 images at once.");
+      return;
+    }
+  
+    setIsLoading(true);
+  
+    try {
+      const files = await Promise.all(
+        selectedImages.map(async (url, index) => {
+          const response = await fetch(url);
+          const blob = await response.blob();
+          return new File([blob], `image_${index + 1}.jpg`, { type: blob.type });
+        })
+      );
+  
+      if (navigator.canShare && navigator.canShare({ files })) {
         await navigator.share({
           title: "Check out these images!",
-          text: "Shared via choicesay!",
+          text: "Shared via Choicesay!",
           files,
         });
-      } catch (err) {
-        console.error("Error sharing files:", err);
-        alert("Error sharing images.");
+      } else {
+        alert("Sharing files is not supported on your device or browser.");
       }
-    } else {
-      alert("Sharing files is not supported on your device or browser.");
+    } catch (error) {
+      console.error("Error sharing files:", error);
+      alert("Error sharing images.");
+    } finally {
+      setIsLoading(false);
     }
   };
-
+  
   useEffect(() => {
     if (!selectedAlbum) fetchAlbums(currentPage);
     else fetchPhotos(selectedAlbum, currentPage);
@@ -1024,12 +1037,15 @@ export default function Homepage() {
           <div className="flex justify-between items-center w-full px-4 py-3 top-0 z-30">
             <button
               onClick={() => {
-                setIsLoading(true); // start loader
+                setIsLoading(true); 
                 setSelectedAlbum(null);
                 setSelectedImages([]);
                 setSelectAll(false);
+                setCurrentPage(1); // ✅ reset page to 1
+                fetchAlbums(1); // ✅ fetch albums again and reset totalPages correctly
                 setTimeout(() => setIsLoading(false), 500);
               }}
+              
               className="flex items-center gap-2 text-[#170645] px-4 py-1 font-normal rounded-lg text-sm sm:text-base"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
@@ -1090,7 +1106,7 @@ export default function Homepage() {
               >
                 <div className="relative rounded-[30px] overflow-hidden">
                   <img
-                    src={`data:image/jpeg;base64,${album.cover}`}
+                    src={album.cover}
                     alt={album.name}
                     className="w-full rounded-[30px] transition-all duration-300 group-hover:brightness-75"
                   />
@@ -1174,7 +1190,9 @@ export default function Homepage() {
                   onClick={handleShareAll}
                   className="min-w-[150px] px-4 py-2 bg-yellow-400 text-black rounded-full flex items-center justify-center gap-2 text-sm font-semibold shadow hover:shadow-md"
                 >
-                  <FiShare size={18} /> Share
+                  <FiShare size={18} /> <span className={`${selectedImages.length > 10 ? "text-red-600 font-bold" : "text-black font-semibold"}`}>
+    Share ({selectedImages.length}/10)
+  </span>
                 </button>
                 <button
                   onClick={handleDownloadAll}
@@ -1366,7 +1384,7 @@ export default function Homepage() {
               {/* Loading Text */}
 
               <p className="mt-6 text-lg font-bold text-white">
-                The latest <span className="text-[#170645] font-bold">AI</span> Based Photo Gallery App.
+                Prearing Your File With <span className="text-[#170645] font-bold">AI</span> Based Photo Gallery App.
               </p>
             </div>
           </div>

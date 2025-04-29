@@ -18,11 +18,10 @@ const EventCard = () => {
 
   const handleRedownload = async (title) => {
     setIsDownloading(true);
+    const startTime = Date.now();
   
-  const startTime = Date.now();
-
     try {
-      const response = await fetch("https://5f64-2409-4043-400-c70d-f18c-bef4-7b7d-6e83.ngrok-free.app/fetch-album-photos", {
+      const response = await fetch("http://147.93.106.153:5000/fetch-album-photos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ eventName: title }),
@@ -37,14 +36,13 @@ const EventCard = () => {
       const JSZip = (await import("jszip")).default;
       const zip = new JSZip();
   
-      photos.forEach((photo, index) => {
-        const imageBase64 = photo.image.startsWith("data:image")
-          ? photo.image.split(",")[1]
-          : photo.image;
-  
-        const extension = photo.image.includes("image/png") ? "png" : "jpg";
-        zip.file(`${title}_photo_${index + 1}.${extension}`, imageBase64, { base64: true });
-      });
+      await Promise.all(
+        photos.map(async (photo, index) => {
+          const response = await fetch(photo.image);
+          const blob = await response.blob();
+          zip.file(`${title}_photo_${index + 1}.jpg`, blob);
+        })
+      );
   
       const blob = await zip.generateAsync({ type: "blob" });
       const url = URL.createObjectURL(blob);
@@ -57,18 +55,18 @@ const EventCard = () => {
       document.body.removeChild(link);
   
       URL.revokeObjectURL(url);
-     } catch (err) {
-    console.error("❌ Redownload failed:", err);
-    alert("Redownload failed.");
-  } finally {
-    const elapsed = Date.now() - startTime;
-    const delay = Math.max(1000 - elapsed, 0);
-    setTimeout(() => {
-      setIsDownloading(false);
-      setDownloadingTitle("");
-    }, delay);
-  }
+    } catch (err) {
+      console.error("❌ Redownload failed:", err);
+      alert("Redownload failed.");
+    } finally {
+      const elapsed = Date.now() - startTime;
+      const delay = Math.max(1000 - elapsed, 0);
+      setTimeout(() => {
+        setIsDownloading(false);
+      }, delay);
+    }
   };
+  
   
   
   const handleDelete = (index) => {
