@@ -6,6 +6,7 @@ import Footer from "@/app/dashboard/components/Footer";
 import { FiDownload } from "react-icons/fi";
 import { FiShare } from "react-icons/fi";
 import { useRouter } from "next/navigation";
+import API_URL from '@/app/api';
 
 export default function SearchResults() {
   const searchParams = useSearchParams();
@@ -22,7 +23,7 @@ export default function SearchResults() {
   
     setLoading(true); // already present
   
-    fetch("http://147.93.106.153:5000/master-search", {
+    fetch(`${API_URL}/master-search`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query }),
@@ -78,7 +79,7 @@ export default function SearchResults() {
     try {
       const files = await Promise.all(
         selectedPhotos.map(async (photo, index) => {
-          const response = await fetch(photo.image);
+          const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(url)}`);
           const blob = await response.blob();
           return new File([blob], `image_${index + 1}.jpg`, { type: blob.type });
         })
@@ -117,7 +118,7 @@ export default function SearchResults() {
   
       // Instead of treating photo.image as base64, fetch it properly
       await Promise.all(selectedPhotos.map(async (photo, index) => {
-        const response = await fetch(photo.image);
+        const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(photo.image)}`);
         const blob = await response.blob();
         zip.file(`image_${index + 1}.jpg`, blob);
       }));

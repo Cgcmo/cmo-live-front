@@ -7,7 +7,7 @@ import Footer from "../../dashboard/components/Footer";
 import { FiShare, FiLink, FiDownload } from "react-icons/fi";
 import JSZip from "jszip";
 import Masonry from "react-masonry-css";
-
+import API_URL from '@/app/api';
 
 export default function AlbumViewer() {
   const { albumId } = useParams();
@@ -31,12 +31,12 @@ export default function AlbumViewer() {
   useEffect(() => {
     const fetchPhotos = async () => {
       try {
-        const res = await fetch(`http://147.93.106.153:5000/photos/${albumId}`);
+        const res = await fetch(`${API_URL}/photos/${albumId}`);
         const photoData = await res.json();
         setPhotos(photoData.photos);
         setTotalPages(Math.ceil(photoData.photos.length / imagesPerPage));
 
-        const albumRes = await fetch("http://147.93.106.153:5000/albums");
+        const albumRes = await fetch(`${API_URL}/albums`);
 const albumData = await albumRes.json();
 const album = albumData.albums.find((a) => a._id === albumId);
 
@@ -85,7 +85,7 @@ const album = albumData.albums.find((a) => a._id === albumId);
     try {
       await Promise.all(
         selectedPhotos.map(async (photo, i) => {
-          const response = await fetch(photo.image);
+          const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(photo.image)}`)
           const blob = await response.blob();
           zip.file(`photo_${i + 1}.jpg`, blob);
         })
@@ -124,7 +124,7 @@ const handleShareAll = async () => {
   try {
     const files = await Promise.all(
       selectedPhotos.map(async (photo, index) => {
-        const response = await fetch(photo.image);
+        const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(url)}`);
         const blob = await response.blob();
         return new File([blob], `image_${index + 1}.jpg`, { type: blob.type });
       })

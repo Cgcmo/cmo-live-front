@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { searchFace } from "@/utils/api";  // Import API function
-
+import API_URL from '@/app/api';
 const SearchComponent = () => {
     const [selectedFace, setSelectedFace] = useState(null);
     const [results, setResults] = useState([]);
@@ -34,7 +34,7 @@ const SearchComponent = () => {
                     {results.map((match, index) => (
                         <div key={index}>
                             <p>{match.event_name} - {match.event_date}</p>
-                            <img src={`http://147.93.106.153:5000/${match.image_path}`} alt="Match" />
+                            <img src={`${API_URL}/${match.image_path}`} alt="Match" />
                         </div>
                     ))}
                 </div>

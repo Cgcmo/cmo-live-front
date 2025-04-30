@@ -1,11 +1,12 @@
 "use client";
 import React, { useEffect, useState } from 'react';
+import API_URL from '@/app/api';
 const Footer = () => {
     // Dynamic District List
     const [districts, setDistricts] = useState([]);
 
     useEffect(() => {
-        fetch("http://147.93.106.153:5000/districts")
+        fetch(`${API_URL}/districts`)
             .then((res) => res.json())
             .then((data) => {
                 const names = data.map(d => d.name);

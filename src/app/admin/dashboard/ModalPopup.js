@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { X, Upload } from "lucide-react";
-
+import API_URL from '@/app/api';
 
 const ModalPopup = ({ isOpen, setIsOpen, fetchAlbums, fetchAllStats }) => {
   const [eventName, setEventName] = useState("");
@@ -19,7 +19,7 @@ const ModalPopup = ({ isOpen, setIsOpen, fetchAlbums, fetchAllStats }) => {
   useEffect(() => {
     const fetchDistricts = async () => {
       try {
-        const response = await fetch("http://147.93.106.153:5000/districts");
+        const response = await fetch(`${API_URL}/districts`);
         if (response.ok) {
           const data = await response.json();
           setDistricts(data); // Update state with fetched districts
@@ -40,7 +40,7 @@ const ModalPopup = ({ isOpen, setIsOpen, fetchAlbums, fetchAllStats }) => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await fetch("http://147.93.106.153:5000/departments");
+        const response = await fetch(`${API_URL}/departments`);
         if (response.ok) {
           const data = await response.json();
           setDepartments(data); // Update state with fetched departments
@@ -87,7 +87,7 @@ const ModalPopup = ({ isOpen, setIsOpen, fetchAlbums, fetchAllStats }) => {
         cover: base64Cover,
       };
 
-      const response = await fetch("http://147.93.106.153:5000/create-album", {
+      const response = await fetch(`${API_URL}/create-album`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newAlbum),

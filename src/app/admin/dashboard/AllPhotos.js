@@ -6,10 +6,10 @@ import GalleryModal from "./GalleryModal";
 import { FiShare, FiLink, FiDownload } from "react-icons/fi";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
-
+import API_URL from '@/app/api';
 
 const fetchImageAsBlob = async (url) => {
-  const response = await fetch(url);
+  const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(url)}`);
   if (!response.ok) {
     throw new Error(`Failed to fetch image: ${response.statusText}`);
   }
@@ -33,7 +33,7 @@ const AllPhotos = ({  albums, setAlbums, currentTab, fetchAllStats } ) => {
 
   const fetchAlbums = async () => {
     try {
-      const response = await fetch("http://147.93.106.153:5000/albums");
+      const response = await fetch(`${API_URL}/albums`);
       if (!response.ok) {
         throw new Error("Failed to fetch albums");
       }
@@ -50,7 +50,7 @@ const AllPhotos = ({  albums, setAlbums, currentTab, fetchAllStats } ) => {
   const fetchPhotos = async (album) => {
     if (!album || !album._id) return;
     try {
-      const response = await fetch(`http://147.93.106.153:5000/photos/${album._id}`);
+      const response = await fetch(`${API_URL}/photos/${album._id}`);
       if (!response.ok) throw new Error("Failed to fetch photos");
       const data = await response.json();
       console.log("📸 Fetched Photos:", data);
@@ -66,7 +66,7 @@ const AllPhotos = ({  albums, setAlbums, currentTab, fetchAllStats } ) => {
   
   const handleCreateAlbum = async (newAlbum) => {
     try {
-      const response = await fetch("http://147.93.106.153:5000/create-album", {
+      const response = await fetch(`${API_URL}/create-album`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newAlbum),
@@ -162,7 +162,7 @@ const handleDownloadAlbum = async (album) => {
   if (!album || !album._id) return;
 
   try {
-    const response = await fetch(`http://147.93.106.153:5000/photos/${album._id}`);
+    const response = await fetch(`${API_URL}/photos/${album._id}`);
     if (!response.ok) throw new Error("Failed to fetch photos");
     const data = await response.json();
     const photos = data.photos || [];
@@ -203,7 +203,7 @@ const handleDownload = async () => {
       zip.file(`photo_${item.photo_id}.jpg`, blob);
     } else if (item._id) {
       try {
-        const response = await fetch(`http://147.93.106.153:5000/photos/${item._id}`);
+        const response = await fetch(`${API_URL}/photos/${item._id}`);
         if (!response.ok) throw new Error("Failed to fetch photos");
         const data = await response.json();
         const photos = data.photos || [];
@@ -242,7 +242,7 @@ const handleDownload = async () => {
               }
 
               const response = await fetch(
-                `http://147.93.106.153:5000/photo/${selectedAlbum._id}/${photo.photo_id}`,
+                `${API_URL}/photo/${selectedAlbum._id}/${photo.photo_id}`,
                 { method: "DELETE" }
               );
 
@@ -253,7 +253,7 @@ const handleDownload = async () => {
             await fetchPhotos(selectedAlbum); // ✅ Refresh album after deletion
           } else {
             // Deleting albums
-            const response = await fetch("http://147.93.106.153:5000/delete-albums", {
+            const response = await fetch(`${API_URL}/delete-albums`, {
               method: "DELETE",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ albumIds: selectedItems.map((album) => album._id) }),

@@ -6,7 +6,7 @@ import debounce from "lodash.debounce";
 import { FaSearch } from "react-icons/fa";
 import { FiUser, FiLogOut } from "react-icons/fi";
 import { signOut, useSession } from "next-auth/react";
-
+import API_URL from '@/app/api';
 
 export default function Navbar({ setShowGallery, setGalleryPhotos }) {
   const [showFilter, setShowFilter] = useState(false);
@@ -30,19 +30,19 @@ export default function Navbar({ setShowGallery, setGalleryPhotos }) {
 
   useEffect(() => {
     // Fetch Events
-    fetch("http://147.93.106.153:5000/get-events")
+    fetch(`${API_URL}/get-events`)
       .then(res => res.json())
       .then(data => setEventList(data))
       .catch(err => console.error("Failed to fetch events:", err));
 
     // Fetch Categories (Departments)
-    fetch("http://147.93.106.153:5000/departments")
+    fetch(`${API_URL}/departments`)
       .then(res => res.json())
       .then(data => setCategoryList(data.map(d => d.name)))  // extract only names
       .catch(err => console.error("Failed to fetch departments:", err));
 
     // Fetch Districts
-    fetch("http://147.93.106.153:5000/districts")
+    fetch(`${API_URL}/districts`)
       .then(res => res.json())
       .then(data => setDistrictList(data.map(d => d.name)))
       .catch(err => console.error("Failed to fetch districts:", err));
@@ -50,7 +50,7 @@ export default function Navbar({ setShowGallery, setGalleryPhotos }) {
 
 
   useEffect(() => {
-    fetch("http://147.93.106.153:5000/search-suggestions")
+    fetch(`${API_URL}/search-suggestions`)
       .then(res => res.json())
       .then(data => {
         const combined = [

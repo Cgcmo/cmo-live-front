@@ -4,6 +4,7 @@ import { Poppins } from "next/font/google";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import API_URL from '@/app/api';
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -61,7 +62,7 @@ export default function AuthPage() {
     }
   
     try {
-      const response = await fetch("http://147.93.106.153:5000/login", {
+      const response = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

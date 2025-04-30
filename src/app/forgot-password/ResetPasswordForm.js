@@ -2,6 +2,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import API_URL from '@/app/api';
 
 export default function ResetPasswordForm({ mobile }) {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function ResetPasswordForm({ mobile }) {
     }
 
     try {
-      const res = await fetch("http://147.93.106.153:5000/reset-password", {
+      const res = await fetch(`${API_URL}/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mobile, newPassword: password }),

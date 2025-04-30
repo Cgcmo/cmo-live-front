@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import API_URL from '@/app/api';
 
 const GalleryModal = ({ isOpen, setIsOpen, albumId, fetchPhotos, fetchAllStats }) => {
   const [uploadedImages, setUploadedImages] = useState([]);
@@ -30,7 +31,7 @@ const GalleryModal = ({ isOpen, setIsOpen, albumId, fetchPhotos, fetchAllStats }
     setLoading(true); 
 
     try {
-      const response = await fetch(`http://147.93.106.153:5000/upload-gallery/${albumId}`, {
+      const response = await fetch(`${API_URL}/upload-gallery/${albumId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ images: uploadedImages }),

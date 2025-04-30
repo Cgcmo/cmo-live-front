@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import API_URL from '@/app/api';
+
 const Footer = () => {
     // Dynamic District List
     const [districts, setDistricts] = useState([]);
 
     useEffect(() => {
-        fetch("http://147.93.106.153:5000/districts") // 🔁 Replace with actual domain (e.g., https://api.choicesay.com)
+        fetch(`${API_URL}/districts`) // 🔁 Replace with actual domain (e.g., https://api.choicesay.com)
             .then((res) => res.json())
             .then((data) => {
                 const names = data.map(d => d.name);

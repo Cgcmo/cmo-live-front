@@ -7,6 +7,7 @@ import Navbar from "@/app/dashboard/components/Navbar";
 import Footer from "@/app/dashboard/components/Footer";
 import { FiShare, FiLink, FiDownload } from "react-icons/fi";
 import { useRouter } from "next/navigation";
+import API_URL from '@/app/api';
 
 export default function DistrictGalleryPage() {
   const { districtName } = useParams();
@@ -46,7 +47,7 @@ export default function DistrictGalleryPage() {
     try {
       // setIsLoading(true);
       const res = await fetch(
-        `http://147.93.106.153:5000/albums-by-district?name=${districtName}&page=${currentPage}&limit=${imagesPerPage}`
+        `${API_URL}/albums-by-district?name=${districtName}&page=${currentPage}&limit=${imagesPerPage}`
       );
       const data = await res.json();
       setAlbums(data.albums || []);
@@ -61,7 +62,7 @@ export default function DistrictGalleryPage() {
   const fetchPhotos = async (album) => {
     try {
       setIsLoading(true);
-      const res = await fetch(`http://147.93.106.153:5000/photos/${album._id}?page=${currentPage}&limit=${imagesPerPage}`);
+      const res = await fetch(`${API_URL}/photos/${album._id}?page=${currentPage}&limit=${imagesPerPage}`);
       const data = await res.json();
       if (data.length === 0) return alert("This album is empty");
       setSelectedAlbum(album);
@@ -109,7 +110,7 @@ export default function DistrictGalleryPage() {
     try {
       setIsLoading(true);
   
-      const response = await fetch(`http://147.93.106.153:5000/photos/${album._id}?limit=0`);
+      const response = await fetch(`${API_URL}/photos/${album._id}?limit=0`);
       const data = await response.json();
       const photos = data.photos;
   
@@ -122,7 +123,7 @@ export default function DistrictGalleryPage() {
       const zip = new JSZip();
   
       await Promise.all(photos.map(async (photo, index) => {
-        const response = await fetch(photo.image);
+        const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(photo.image)}`);
         const blob = await response.blob();
         zip.file(`${album.name}_${index + 1}.jpg`, blob);
       }));
@@ -160,7 +161,7 @@ export default function DistrictGalleryPage() {
       const zip = new JSZip();
   
       await Promise.all(selectedImages.map(async (url, index) => {
-        const response = await fetch(url);
+        const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(photo.image)}`)
         const blob = await response.blob();
         zip.file(`image_${index + 1}.jpg`, blob);
       }));
@@ -204,7 +205,7 @@ export default function DistrictGalleryPage() {
     try {
       const files = await Promise.all(
         selectedImages.map(async (url, index) => {
-          const response = await fetch(url);
+          const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(url)}`);
           const blob = await response.blob();
           return new File([blob], `image_${index + 1}.jpg`, { type: blob.type });
         })

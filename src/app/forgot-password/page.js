@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ResetPasswordForm from './ResetPasswordForm';
+import API_URL from '@/app/api';
 
 export default function VerificationPage() {
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function VerificationPage() {
 
         if (m === "reset") {
           // check user existence
-          fetch("http://147.93.106.153:5000/check-user-exists", {
+          fetch(`${API_URL}/check-user-exists`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ mobile }),

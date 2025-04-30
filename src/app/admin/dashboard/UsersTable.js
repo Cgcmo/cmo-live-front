@@ -171,6 +171,7 @@
 import React, { useState, useEffect } from "react";
 import Switch from "./Switch"; // Import your custom switch
 import "./ToggleSwitch.css"; // Ensure styles are applied
+import API_URL from '@/app/api';
 
 
 export default function UsersTable({fetchAllStats}) {
@@ -189,7 +190,7 @@ export default function UsersTable({fetchAllStats}) {
 
   const toggleStatus = async (id, currentStatus) => {
     try {
-      const response = await fetch(`http://147.93.106.153:5000/update-user/${id}`, {
+      const response = await fetch(`${API_URL}/update-user/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: !currentStatus }),
@@ -244,7 +245,7 @@ export default function UsersTable({fetchAllStats}) {
   // Fetch Users from Backend
   const fetchUsers = async () => {
     try {
-      const response = await fetch("http://147.93.106.153:5000/users");
+      const response = await fetch(`${API_URL}/users`);
       const data = await response.json();
       setUsers(data);
     } catch (error) {
@@ -311,7 +312,7 @@ export default function UsersTable({fetchAllStats}) {
     }
   }
     try {
-      const response = await fetch(`http://147.93.106.153:5000/update-user/${editedUser._id}`, {
+      const response = await fetch(`${API_URL}/update-user/${editedUser._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editedUser),
@@ -359,7 +360,7 @@ export default function UsersTable({fetchAllStats}) {
       return;
     }
     try {
-      const response = await fetch("http://147.93.106.153:5000/add-staff", {
+      const response = await fetch(`${API_URL}/add-staff`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newStaff),

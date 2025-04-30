@@ -1,6 +1,7 @@
 "use client"; // ✅ Ensures this component runs on the client
 
 import React, { useState, useEffect } from "react";
+import API_URL from '@/app/api';
 
 export default function DepartmentsTab() {
   const [departmentName, setDepartmentName] = useState(""); // Store input value
@@ -9,7 +10,7 @@ export default function DepartmentsTab() {
   const [editedName, setEditedName] = useState(""); // Store the edited name
 
   useEffect(() => {
-    fetch("http://147.93.106.153:5000/departments")
+    fetch(`${API_URL}/departments`)
       .then((res) => res.json())
       .then((data) => setDepartments(data));
   }, []);
@@ -17,7 +18,7 @@ export default function DepartmentsTab() {
   // Function to handle adding a department
   const handleAddDepartment = () => {
     if (departmentName.trim() !== "") {
-      fetch("http://147.93.106.153:5000/departments", {
+      fetch(`${API_URL}/departments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: departmentName })
@@ -36,7 +37,7 @@ export default function DepartmentsTab() {
   // Function to save the edited department name
   const handleSaveEdit = (index) => {
     if (editedName.trim() !== "") {
-      fetch(`http://147.93.106.153:5000/departments/${departments[index].name}`, {
+      fetch(`${API_URL}/departments/${departments[index].name}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: editedName })
@@ -50,7 +51,7 @@ export default function DepartmentsTab() {
   };
 
   const handleDelete = (name) => {
-    fetch(`http://147.93.106.153:5000/departments/${name}`, { method: "DELETE" })
+    fetch(`${API_URL}/departments/${name}`, { method: "DELETE" })
       .then(() => setDepartments(departments.filter(d => d.name !== name)));
   };
 

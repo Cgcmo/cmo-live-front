@@ -5,6 +5,7 @@ import { FaChevronDown, FaSlidersH } from "react-icons/fa";
 import debounce from "lodash.debounce";
 import { FaSearch } from "react-icons/fa";
 import ModalPopup from "./ModalPopup";
+import API_URL from '@/app/api';
 
 export default function Navbar({ setShowGallery, setGalleryPhotos, fetchAlbums: fetchAlbumsProp,
   fetchAllStats: fetchAllStatsProp }) {
@@ -26,7 +27,7 @@ export default function Navbar({ setShowGallery, setGalleryPhotos, fetchAlbums: 
 
   const fetchAlbums = async () => {
     try {
-      const response = await fetch("http://147.93.106.153:5000/albums");
+      const response = await fetch(`${API_URL}/albums`);
       if (!response.ok) {
         throw new Error("Failed to fetch albums");
       }
@@ -39,19 +40,19 @@ export default function Navbar({ setShowGallery, setGalleryPhotos, fetchAlbums: 
 
   useEffect(() => {
     // Fetch Events
-    fetch("http://147.93.106.153:5000/get-events")
+    fetch(`${API_URL}/get-events`)
       .then(res => res.json())
       .then(data => setEventList(data))
       .catch(err => console.error("Failed to fetch events:", err));
 
     // Fetch Categories (Departments)
-    fetch("http://147.93.106.153:5000/departments")
+    fetch(`${API_URL}/departments`)
       .then(res => res.json())
       .then(data => setCategoryList(data.map(d => d.name)))  // extract only names
       .catch(err => console.error("Failed to fetch departments:", err));
 
     // Fetch Districts
-    fetch("http://147.93.106.153:5000/districts")
+    fetch(`${API_URL}/districts`)
       .then(res => res.json())
       .then(data => setDistrictList(data.map(d => d.name)))
       .catch(err => console.error("Failed to fetch districts:", err));
@@ -59,7 +60,7 @@ export default function Navbar({ setShowGallery, setGalleryPhotos, fetchAlbums: 
 
 
   useEffect(() => {
-    fetch("http://147.93.106.153:5000/search-suggestions")
+    fetch(`${API_URL}/search-suggestions`)
       .then(res => res.json())
       .then(data => {
         const combined = [

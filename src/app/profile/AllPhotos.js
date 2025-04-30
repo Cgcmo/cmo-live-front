@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import API_URL from '@/app/api';
 
 const AllPhotos = ({ isSelectAll, setSelectedImages: updateSelectedImages }) => {
   const [selected, setSelected] = useState([]);
@@ -21,7 +21,7 @@ const AllPhotos = ({ isSelectAll, setSelectedImages: updateSelectedImages }) => 
   
         const startTime = Date.now();
   
-        const response = await fetch(`http://147.93.106.153:5000/fetch-all-photos?page=${currentPage}&limit=${limit}`);
+        const response = await fetch(`${API_URL}/fetch-all-photos?page=${currentPage}&limit=${limit}`);
         const data = await response.json();
   
         

@@ -16,7 +16,7 @@ import axios from "axios"
 import { ArrowUpRight, ArrowDownRight } from "lucide-react";
 import BannerTab from "./BannerTab"
 import Footer from "./Footer";
-
+import API_URL from '@/app/api';
 
 function App() {
   const [search, setSearch] = useState("");
@@ -45,7 +45,7 @@ function App() {
 
   const fetchAlbums = async () => {
     try {
-      const response = await fetch("http://147.93.106.153:5000/albums");
+      const response = await fetch(`${API_URL}/albums`);
       if (!response.ok) {
         throw new Error("Failed to fetch albums");
       }
@@ -61,10 +61,10 @@ function App() {
   const fetchAllStats = async () => {
     try {
       const [userRes, albumRes, photoRes, downloadRes] = await Promise.all([
-        axios.get("http://147.93.106.153:5000/count-users"),
-        axios.get("http://147.93.106.153:5000/count-albums"),
-        axios.get("http://147.93.106.153:5000/count-photos"),
-        axios.get("http://147.93.106.153:5000/get-download-count"),
+        axios.get(`${API_URL}/count-users`),
+        axios.get(`${API_URL}/count-albums`),
+        axios.get(`${API_URL}/count-photos`),
+        axios.get(`${API_URL}/get-download-count`),
       ]);
 
       const totalUsers = userRes.data.total_users;
@@ -89,7 +89,7 @@ function App() {
   useEffect(() => {
     const fetchDownloadCount = async () => {
       try {
-        const res = await fetch("http://147.93.106.153:5000/get-download-count");
+        const res = await fetch(`${API_URL}/get-download-count`);
         const data = await res.json();
         const downloadCount = data.count || 0;
 
@@ -123,7 +123,7 @@ function App() {
   useEffect(() => {
     const fetchDownloadCount = async () => {
       try {
-        const res = await fetch("http://147.93.106.153:5000/get-download-count");
+        const res = await fetch(`${API_URL}/get-download-count`);
         const data = await res.json();
         const downloadCount = data.count || 0;
 

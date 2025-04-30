@@ -9,6 +9,7 @@ import Footer from "../components/Footer";
 import JSZip from "jszip";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import API_URL from '@/app/api';
 
 
 export default function UploadPhoto() {
@@ -90,7 +91,7 @@ export default function UploadPhoto() {
       let uploadPhotos = [];
 
       if (eventSelect && eventSelect !== "Select Event") {
-        const eventResponse = await fetch("http://147.93.106.153:5000/fetch-album-photos", {
+        const eventResponse = await fetch(`${API_URL}/fetch-album-photos`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           mode: "cors",
@@ -105,7 +106,7 @@ export default function UploadPhoto() {
       }
 
       if (selectedDate) {
-        const dateResponse = await fetch("http://147.93.106.153:5000/fetch-photos-by-date", {
+        const dateResponse = await fetch(`${API_URL}/fetch-photos-by-date`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           mode: "cors",
@@ -123,7 +124,7 @@ export default function UploadPhoto() {
         const reader = new FileReader();
         reader.onloadend = async () => {
           const base64String = reader.result.split(",")[1];
-          const uploadResponse = await fetch("http://147.93.106.153:5000/search-by-upload", {
+          const uploadResponse = await fetch(`${API_URL}/search-by-upload`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ image: base64String }),
@@ -193,7 +194,7 @@ export default function UploadPhoto() {
 
   const handleDownloadC = async () => {
     try {
-      await fetch("http://147.93.106.153:5000/increment-download-count", {
+      await fetch(`${API_URL}/increment-download-count`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
@@ -295,7 +296,7 @@ export default function UploadPhoto() {
             console.warn("Skipping invalid URL:", url);
             return; // Skip non-URLs
           }
-          const response = await fetch(url);
+          const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(photo.image)}`)
           if (!response.ok) {
             console.warn("Skipping fetch failed:", url);
             return;
@@ -351,7 +352,7 @@ export default function UploadPhoto() {
 
     try {
       const files = await Promise.all(selectedImages.map(async (url, index) => {
-        const response = await fetch(url);
+        const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(url)}`);
         const blob = await response.blob();
         return new File([blob], `image_${index + 1}.jpg`, { type: blob.type });
       }));
@@ -384,7 +385,7 @@ export default function UploadPhoto() {
       return;
     }
     try {
-      const response = await fetch("http://147.93.106.153:5000/events-by-date", {
+      const response = await fetch(`${API_URL}/events-by-date`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ date }),

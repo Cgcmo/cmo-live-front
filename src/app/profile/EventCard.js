@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { FiDownload } from "react-icons/fi";
 import { FiX } from "react-icons/fi";
-
+import API_URL from '@/app/api';
 
 const EventCard = () => {
   const [events, setEvents] = useState([]);
@@ -21,7 +21,7 @@ const EventCard = () => {
     const startTime = Date.now();
   
     try {
-      const response = await fetch("http://147.93.106.153:5000/fetch-album-photos", {
+      const response = await fetch(`${API_URL}/fetch-album-photos`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ eventName: title }),
@@ -38,7 +38,7 @@ const EventCard = () => {
   
       await Promise.all(
         photos.map(async (photo, index) => {
-          const response = await fetch(photo.image);
+          const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(photo.image)}`);
           const blob = await response.blob();
           zip.file(`${title}_photo_${index + 1}.jpg`, blob);
         })

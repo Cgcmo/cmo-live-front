@@ -5,6 +5,7 @@
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import API_URL from '@/app/api';
 
 export default function Profile() {
   const [user, setUser] = useState({
@@ -26,7 +27,7 @@ export default function Profile() {
     // Fetch user details
     const fetchUserDetails = async () => {
       try {
-        const response = await fetch("http://147.93.106.153:5000/users");
+        const response = await fetch(`${API_URL}/users`);
         const users = await response.json();
         const loggedUser = users.find((u) => u._id === userId);
 
@@ -47,7 +48,7 @@ export default function Profile() {
     // Fetch list of districts
     const fetchDistricts = async () => {
       try {
-        const response = await fetch("http://147.93.106.153:5000/districts");
+        const response = await fetch(`${API_URL}/districts`);
         const data = await response.json();
         setDistricts(data);
       } catch (error) {
@@ -64,7 +65,7 @@ export default function Profile() {
     if (!userId) return;
 
     try {
-      const response = await fetch(`http://147.93.106.153:5000/update-user/${userId}`, {
+      const response = await fetch(`${API_URL}/update-user/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(user),

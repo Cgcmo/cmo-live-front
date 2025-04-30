@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-
+import API_URL from '@/app/api';
 
 function CustomBarChart({ onPercentageChange }) {
 
@@ -10,7 +10,7 @@ function CustomBarChart({ onPercentageChange }) {
   useEffect(() => {
     const fetchVisitorStats = async () => {
       try {
-        const response = await fetch("http://147.93.106.153:5000/visitor-stats");
+        const response = await fetch(`${API_URL}/visitor-stats`);
         const data = await response.json();
 
         // Format data for recharts (x as day number or short name)

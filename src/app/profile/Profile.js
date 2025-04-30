@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { signOut } from "next-auth/react";
+import API_URL from '@/app/api';
 
 const Profile = () => {
   const router = useRouter();
@@ -42,7 +43,7 @@ const Profile = () => {
             setProfileImage("/pro.png");
           }
         } else if (session?.user?.email) {
-          const res = await fetch(`http://147.93.106.153:5000/get-user-by-email/${session.user.email}`);
+          const res = await fetch(`${API_URL}/get-user-by-email/${session.user.email}`);
           const userData = await res.json();
           setUser({ email: session.user.email });
           setName(userData.name || session.user.name || "");
@@ -50,7 +51,7 @@ const Profile = () => {
           setDistrict(userData.district || "");
         }
   
-        const districtRes = await fetch("http://147.93.106.153:5000/districts");
+        const districtRes = await fetch(`${API_URL}/districts`);
         const districtData = await districtRes.json();
         setDistricts(districtData);
       } catch (err) {
@@ -75,7 +76,7 @@ const Profile = () => {
     if (session?.user?.email) {
       // ✅ Save Google user to DB
       try {
-        const res = await fetch("http://147.93.106.153:5000/save-google-user", {
+        const res = await fetch(`${API_URL}/save-google-user`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -99,7 +100,7 @@ const Profile = () => {
       }
     } else {
       try {
-        const res = await fetch(`http://147.93.106.153:5000/update-client/${user.userId}`, {
+        const res = await fetch(`${API_URL}/update-client/${user.userId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, mobile, district }),

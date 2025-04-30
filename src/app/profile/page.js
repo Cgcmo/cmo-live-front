@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Footer from "@/app/dashboard/components/Footer";
 import JSZip from "jszip";
+import API_URL from '@/app/api';
 
 function App() {
   const [search, setSearch] = useState("");
@@ -67,8 +68,8 @@ function App() {
   
       await Promise.all(
         selectedImages.map(async (imageUrl, index) => {
-          const response = await fetch(imageUrl, { mode: "cors" });
-          if (!response.ok) throw new Error("Failed to fetch image: " + imageUrl);
+          const proxyUrl = `${API_URL}/proxy-image?url=${encodeURIComponent(imageUrl)}`;
+          const response = await fetch(proxyUrl);
   
           const blob = await response.blob();
           const filename = `image_${index + 1}.jpg`; // You can customize name
@@ -137,9 +138,9 @@ function App() {
   const fetchAllStats = async () => {
     try {
       const [userRes, albumRes, photoRes] = await Promise.all([
-        fetch("http://147.93.106.153:5000/count-users"),
-        fetch("http://147.93.106.153:5000/count-albums"),
-        fetch("http://147.93.106.153:5000/count-photos"),
+        fetch(`${API_URL}/count-users`),
+        fetch(`${API_URL}/count-albums`),
+        fetch(`${API_URL}/count-photos`),
       ]);
   
       const totalUsers = (await userRes.json()).total_users;

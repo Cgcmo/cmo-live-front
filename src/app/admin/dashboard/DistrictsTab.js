@@ -1,6 +1,7 @@
 "use client"; // ✅ Ensures this component runs on the client
 
 import React, { useState, useEffect } from "react";
+import API_URL from '@/app/api';
 
 export default function DistrictsTab() {
   const [districtName, setDistrictName] = useState(""); // Store input value
@@ -12,7 +13,7 @@ export default function DistrictsTab() {
   // Function to handle adding a district
 
   useEffect(() => {
-    fetch("http://147.93.106.153:5000/districts")
+    fetch(`${API_URL}/districts`)
       .then((res) => res.json())
       .then((data) => setDistricts(data));
   }, []);
@@ -20,7 +21,7 @@ export default function DistrictsTab() {
   // Function to enable editing mode
   const handleAddDistrict = () => {
     if (districtName.trim() !== "") {
-      fetch("http://147.93.106.153:5000/districts", {
+      fetch(`${API_URL}/districts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: districtName })
@@ -40,7 +41,7 @@ export default function DistrictsTab() {
   };
   const handleSaveEdit = (index) => {
     if (editedName.trim() !== "" && index >= 0 && index < districts.length) {
-      fetch(`http://147.93.106.153:5000/districts/${districts[index].name}`, {
+      fetch(`${API_URL}/districts/${districts[index].name}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: editedName }),
@@ -59,7 +60,7 @@ export default function DistrictsTab() {
   };
 
   const handleDelete = (name) => {
-    fetch(`http://147.93.106.153:5000/districts/${name}`, { method: "DELETE" })
+    fetch(`${API_URL}/districts/${name}`, { method: "DELETE" })
       .then(() => setDistricts(districts.filter(d => d.name !== name)));
   };
 
