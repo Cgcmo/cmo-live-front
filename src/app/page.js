@@ -45,10 +45,26 @@ export default function Home() {
   
 
 
-  // Now this will work correctly
-  const [mainVideo, setMainVideo] = useState(videoData[0]);
-  const [shouldAutoPlay, setShouldAutoPlay] = useState(false);
-  // default to first video
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const error = url.searchParams.get("error");
+    const showSignup = url.searchParams.get("showSignup");
+  
+    if (error?.toLowerCase()?.includes("inactive")) {
+      alert("Your account has been temporarily suspended. Please contact the administrator.");
+    }
+  
+    if (showSignup === "true") {
+      setShowLoginPage(true);  // This will show AuthPage
+    }
+  
+    // Clean up the URL AFTER checking
+    url.searchParams.delete("error");
+    url.searchParams.delete("showSignup");
+    url.searchParams.delete("showLogin");
+    window.history.replaceState({}, "", url.pathname);
+  }, []);
+  
 
 
 

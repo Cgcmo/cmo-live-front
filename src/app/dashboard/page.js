@@ -89,6 +89,19 @@ export default function Homepage() {
       }
   
       setSelectedAlbum(album);
+      const localUser = JSON.parse(localStorage.getItem("otpUser"));
+      const user = localUser || session?.user;
+
+      if (user && user.userId && album._id) {
+        fetch(`${API_URL}/record-album-view`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user.userId,
+            albumId: album._id,
+          }),
+        }).catch((err) => console.error("Failed to record album view:", err));
+      }
       setAlbumPhotos(data.photos);
       setTotalPages(Math.ceil(data.total / imagesPerPage)); // ✅ based on photos count
     } catch (err) {
@@ -212,14 +225,28 @@ const blob = await response.blob();
       link.download = `${album.name}.zip`;
       link.click();
   
-      const historyItem = {
-        image: album.cover,
-        title: album.name,
-        lastDownload: new Date().toLocaleDateString("en-GB"),
-        photoCount: photos.length,
-      };
-  
-      saveToDownloadHistory(historyItem);
+      const localUser = JSON.parse(localStorage.getItem("otpUser"));
+    const sessionUser = session?.user;
+    const user = localUser || sessionUser;
+
+    if (user?.userId) {
+      await fetch(`${API_URL}/record-download-history`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.userId,
+          download: {
+            title: album.name,
+            image: photos[0]?.image || "",
+            photoCount: photos.length,
+            date: new Date().toLocaleDateString("en-GB"),
+            photoUrls: photos.map((p) => p.image),
+          },
+        }),
+      }).catch((err) =>
+        console.error("❌ Failed to record download history to DB:", err)
+      );
+    }
   
     } catch (error) {
       console.error("Error downloading album:", error);
@@ -288,7 +315,7 @@ const blob = await response.blob();
       const zip = new JSZip();
   
       await Promise.all(selectedImages.map(async (url, index) => {
-        const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(photo.image)}`)
+        const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(url)}`);
 const blob = await response.blob();
 
         zip.file(`image_${index + 1}.jpg`, blob);
@@ -302,6 +329,28 @@ const blob = await response.blob();
       link.download = "selected_images.zip";
       document.body.appendChild(link);
       link.click();
+      const localUser = JSON.parse(localStorage.getItem("otpUser"));
+    const sessionUser = session?.user;
+    const user = localUser || sessionUser;
+
+    if (user?.userId) {
+      await fetch(`${API_URL}/record-download-history`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.userId,
+          download: {
+            title: "Custom Download", // or dynamically assign a custom name
+            image: selectedImages[0], // use the first selected image
+            photoCount: selectedImages.length,
+            date: new Date().toLocaleDateString("en-GB"),
+            photoUrls: selectedImages,
+          },
+        }),
+      }).catch((err) =>
+        console.error("❌ Failed to record download history to DB:", err)
+      );
+    }
       document.body.removeChild(link);
   
       URL.revokeObjectURL(url);
@@ -343,7 +392,7 @@ const blob = await response.blob();
       if (navigator.canShare && navigator.canShare({ files })) {
         await navigator.share({
           title: "Check out these images!",
-          text: "Shared via Choicesay!",
+          text: "Shared via CMO AI!",
           files,
         });
       } else {

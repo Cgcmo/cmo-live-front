@@ -110,7 +110,32 @@ useEffect(() => {
       .catch((err) => console.error("Failed to fetch districts:", err));
   }, []);
 
+  // useEffect(() => {
+  //   const params = new URLSearchParams(window.location.search);
+  //   const error = params.get("error");
+  //   const showSignup = params.get("showSignup");
+  
+  //   if (error?.toLowerCase().includes("inactive")) {
+  //     alert("Your account has been temporarily suspended. Please contact the administrator.");
+  //   }
+  
+  //   if (showSignup === "true") {
+  //     setShowSignup(true);
+  //   }
+  // }, []);
 
+  // useEffect(() => {
+  //   const signupFromLocal = localStorage.getItem("showSignup");
+  //   if (signupFromLocal === "true") {
+  //     setShowSignup(true);
+  //     localStorage.removeItem("showSignup"); // 🧹 Clean after using
+  //   }
+  // }, []);
+  
+  
+  
+
+  
   useEffect(() => {
     if (showSignup) {
       setShowVideoFrame(true);
@@ -217,7 +242,11 @@ useEffect(() => {
       if (!res.ok) {
         if (contentType && contentType.includes("application/json")) {
           const error = await res.json();
+          if (res.status === 403 && error.error?.includes("inactive")) {
+            return alert("Your account is inactive. Please contact admin.");
+          }
           alert(error.error || "Login failed.");
+      
         } else {
           const errorText = await res.text();
           console.error("Server responded with:", errorText);

@@ -70,10 +70,8 @@ function App() {
         selectedImages.map(async (imageUrl, index) => {
           const proxyUrl = `${API_URL}/proxy-image?url=${encodeURIComponent(imageUrl)}`;
           const response = await fetch(proxyUrl);
-  
           const blob = await response.blob();
-          const filename = `image_${index + 1}.jpg`; // You can customize name
-          zip.file(filename, blob);
+          zip.file(`image_${index + 1}.jpg`, blob);
         })
       );
   
@@ -82,20 +80,45 @@ function App() {
   
       const link = document.createElement("a");
       link.href = zipUrl;
-      link.download = "selected_images.zip"; // Final zip filename
+      link.download = "selected_images.zip";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      URL.revokeObjectURL(zipUrl);
   
-      URL.revokeObjectURL(zipUrl); // Clean memory
+      // ✅ Record download in MongoDB
+      const localUser = JSON.parse(localStorage.getItem("otpUser"));
+      const sessionUser = session?.user;
+      const user = localUser || sessionUser;
+  
+      if (user?.userId) {
+        await fetch(`${API_URL}/record-download-history`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user.userId,
+            download: {
+              title: "Custom Download", // or dynamically assign a custom name
+              image: selectedImages[0], // use the first selected image
+              photoCount: selectedImages.length,
+              date: new Date().toLocaleDateString("en-GB"),
+              photoUrls: selectedImages,
+            },
+          }),
+        }).catch((err) => {
+          console.error("❌ Failed to record download history to DB:", err);
+        });
+      }
+  
     } catch (error) {
       console.error("Download ZIP failed:", error);
       alert("Failed to download images as ZIP.");
     } finally {
       setIsDownloading(false);
+      fetchAllStats();
     }
   };
-
+  
 
 
   const Switch = ({ checked, onChange }) => {
@@ -127,39 +150,29 @@ function App() {
   ]);
 
 
-  const toggleStatus = (id) => {
-    setUsers((users) =>
-      users.map((user) =>
-        user.id === id ? { ...user, status: !user.status } : user
-      )
-    );
-  };
-
   const fetchAllStats = async () => {
     try {
-      const [userRes, albumRes, photoRes] = await Promise.all([
-        fetch(`${API_URL}/count-users`),
-        fetch(`${API_URL}/count-albums`),
-        fetch(`${API_URL}/count-photos`),
-      ]);
+     
   
-      const totalUsers = (await userRes.json()).total_users;
-      const totalAlbums = (await albumRes.json()).total_albums;
-      const totalPhotos = (await photoRes.json()).total_photos;
-      const localDownloads = JSON.parse(localStorage.getItem("downloadHistory") || "[]").length;
+      const localUser = JSON.parse(localStorage.getItem("otpUser"));
+      const user = localUser || session?.user;
+  
+      const downloadRes = await fetch(`${API_URL}/get-user-download-count`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user?.userId }),
+      });
+      const { downloads = 0, photos = 0 } = await downloadRes.json();
   
       setStats([
-        // { label: "Total User", count: totalUsers.toString(), image: "/tuser.png", bg: "#A889FC80" },
-        { label: "Total Image", count: totalPhotos.toString(), image: "/timage.png", bg: "#90C0F6" },
-        { label: "Total Download", count: localDownloads.toString(), image: "/tdownload.png", bg: "#A1C181" },
-        // { label: "Total Event", count: totalAlbums.toString(), image: "/tevent.png", bg: "#F6CB90" },
+        { label: "Total Image", count: photos.toString(), image: "/timage.png", bg: "#90C0F6" },
+        { label: "Total Download", count: downloads.toString(), image: "/tdownload.png", bg: "#A1C181" },
       ]);
     } catch (error) {
       console.error("Failed to fetch stats:", error);
     }
   };
   
-
 
 
   useEffect(() => {

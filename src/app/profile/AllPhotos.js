@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import API_URL from '@/app/api';
+import { useSession } from "next-auth/react";
+
 
 const AllPhotos = ({ isSelectAll, setSelectedImages: updateSelectedImages }) => {
   const [selected, setSelected] = useState([]);
@@ -13,6 +15,7 @@ const AllPhotos = ({ isSelectAll, setSelectedImages: updateSelectedImages }) => 
       { images: [...prevAlbums.flatMap(album => album.images), ...newImages] },
     ]);
   };
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchPhotos = async () => {
@@ -21,13 +24,27 @@ const AllPhotos = ({ isSelectAll, setSelectedImages: updateSelectedImages }) => 
   
         const startTime = Date.now();
   
-        const response = await fetch(`${API_URL}/fetch-all-photos?page=${currentPage}&limit=${limit}`);
-        const data = await response.json();
-  
-        
-        const imageUrls = data.photos.map((item) => item.image);
-        setAlbums([{ images: imageUrls }]);
-        setTotalPages(Math.ceil(data.total / limit));
+        const localUser = JSON.parse(localStorage.getItem("otpUser"));
+const sessionUser = session?.user;
+const userId = localUser?.userId || sessionUser?.userId;
+
+if (!userId) {
+  console.warn("No userId found in localStorage or session");
+  setLoading(false);
+  return;
+}
+
+const response = await fetch(`${API_URL}/photos-from-recent-albums`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ userId, page: currentPage, limit })
+});
+
+const data = await response.json();
+const imageUrls = data.photos.map((item) => item.image);
+setAlbums([{ images: imageUrls }]);
+setTotalPages(Math.ceil((data.total || 0) / limit));
+
   
         // Ensure loader stays for at least 1 second
         const elapsed = Date.now() - startTime;

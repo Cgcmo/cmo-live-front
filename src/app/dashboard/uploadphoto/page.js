@@ -72,7 +72,10 @@ export default function UploadPhoto() {
     checkAccess();
   }, [status, router]);
 
-
+  useEffect(() => {
+    fetchEventsByDate(""); // ✅ Load latest 10 events on initial load
+  }, []);
+  
 
   const handleProceed = async () => {
     const eventSelect = document.querySelector("select").value;
@@ -296,7 +299,7 @@ export default function UploadPhoto() {
             console.warn("Skipping invalid URL:", url);
             return; // Skip non-URLs
           }
-          const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(photo.image)}`)
+          const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(url)}`);
           if (!response.ok) {
             console.warn("Skipping fetch failed:", url);
             return;
@@ -316,6 +319,28 @@ export default function UploadPhoto() {
       link.download = "selected_images.zip";
       document.body.appendChild(link);
       link.click();
+      const localUser = JSON.parse(localStorage.getItem("otpUser"));
+    const sessionUser = session?.user;
+    const user = localUser || sessionUser;
+
+    if (user?.userId) {
+      await fetch(`${API_URL}/record-download-history`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.userId,
+          download: {
+            title: "Custom Download", // or dynamically assign a custom name
+            image: selectedImages[0], // use the first selected image
+            photoCount: selectedImages.length,
+            date: new Date().toLocaleDateString("en-GB"),
+            photoUrls: selectedImages,
+          },
+        }),
+      }).catch((err) =>
+        console.error("❌ Failed to record download history to DB:", err)
+      );
+    }
       document.body.removeChild(link);
 
       URL.revokeObjectURL(zipUrl);
@@ -380,19 +405,16 @@ export default function UploadPhoto() {
 
 
   const fetchEventsByDate = async (date) => {
-    if (!date) {
-      setEvents([]); // Clear events if no date
-      return;
-    }
     try {
       const response = await fetch(`${API_URL}/events-by-date`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ date }),
+        body: JSON.stringify({ date }), // Pass empty string if no date
       });
+  
       const data = await response.json();
       if (response.ok) {
-        setEvents(data); // set only the events of that date
+        setEvents(data); // Will be latest 10 if no date, or filtered events if date is present
       } else {
         setEvents([]);
       }
@@ -401,7 +423,7 @@ export default function UploadPhoto() {
       setEvents([]);
     }
   };
-
+  
 
   // useEffect(() => {
   //   const otpUser = localStorage.getItem("otpUser");

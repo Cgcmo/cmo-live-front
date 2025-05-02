@@ -4,77 +4,143 @@ import { FiDownload } from "react-icons/fi";
 import { FiX } from "react-icons/fi";
 import API_URL from '@/app/api';
 
-const EventCard = () => {
+const EventCard = ({ fetchAllStats }) => {
   const [events, setEvents] = useState([]);
   const [isDownloading, setIsDownloading] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [redownloading, setRedownloading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-    const history = JSON.parse(localStorage.getItem("downloadHistory") || "[]");
-    setEvents(history);
-    setTimeout(() => setLoading(false), 500);
+    const fetchDownloadHistory = async () => {
+      const localUser = JSON.parse(localStorage.getItem("otpUser"));
+      if (!localUser || !localUser.userId) {
+        setEvents([]);
+        setLoading(false);
+        return;
+      }
+  
+      try {
+        const res = await fetch(`${API_URL}/get-download-history`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: localUser.userId }),
+        });
+  
+        const data = await res.json();
+        if (res.ok && Array.isArray(data.history)) {
+          setEvents(data.history);
+        } else {
+          console.warn("No download history found.");
+          setEvents([]);
+        }
+      } catch (err) {
+        console.error("❌ Error fetching download history:", err);
+        setEvents([]);
+      } finally {
+        setTimeout(() => setLoading(false), 300);
+      }
+    };
+  
+    fetchDownloadHistory();
   }, []);
+  
 
-  const handleRedownload = async (title) => {
-    setIsDownloading(true);
-    const startTime = Date.now();
-  
+  const handleRedownload = async (event) => {
+    if (!event.photoUrls || event.photoUrls.length === 0) {
+      alert("No photos available to redownload.");
+      return;
+    }
+    const start = Date.now();
+  setIsDownloading(true);
     try {
-      const response = await fetch(`${API_URL}/fetch-album-photos`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ eventName: title }),
-      });
-  
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Error fetching album photos");
-  
-      const photos = data.photos;
-      if (!photos.length) return alert("No photos found for this album.");
-  
+      setRedownloading(true);
       const JSZip = (await import("jszip")).default;
       const zip = new JSZip();
   
       await Promise.all(
-        photos.map(async (photo, index) => {
-          const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(photo.image)}`);
+        event.photoUrls.map(async (url, index) => {
+          const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(url)}`);
           const blob = await response.blob();
-          zip.file(`${title}_photo_${index + 1}.jpg`, blob);
+          zip.file(`image_${index + 1}.jpg`, blob);
         })
       );
   
-      const blob = await zip.generateAsync({ type: "blob" });
-      const url = URL.createObjectURL(blob);
-  
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      const zipUrl = URL.createObjectURL(zipBlob);
       const link = document.createElement("a");
-      link.href = url;
-      link.download = `${title}.zip`;
-      document.body.appendChild(link);
+      link.href = zipUrl;
+      link.download = `${event.title || "download"}.zip`;
       link.click();
-      document.body.removeChild(link);
+      URL.revokeObjectURL(zipUrl);
   
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("❌ Redownload failed:", err);
-      alert("Redownload failed.");
+      // ✅ Update the lastDownload date in DB
+      const localUser = JSON.parse(localStorage.getItem("otpUser"));
+      await fetch(`${API_URL}/update-download-date`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: localUser.userId,
+          downloadId: event.downloadId,  // ✅ Use unique download ID
+          date: new Date().toLocaleDateString("en-GB"),
+        }),
+      });  
+      setEvents(prev => {
+        const updated = prev.map(ev => {
+          if (ev.downloadId === event.downloadId) {
+            return { ...ev, lastDownload: new Date().toLocaleDateString("en-GB") };
+          }
+          return ev;
+        });
+      
+        const reOrdered = [
+          updated.find(ev => ev.downloadId === event.downloadId),
+          ...updated.filter(ev => ev.downloadId !== event.downloadId),
+        ];
+      
+        return reOrdered;
+      });    
+    } catch (error) {
+      console.error("❌ Redownload failed:", error);
+      alert("Failed to redownload.");
     } finally {
-      const elapsed = Date.now() - startTime;
-      const delay = Math.max(1000 - elapsed, 0);
-      setTimeout(() => {
-        setIsDownloading(false);
-      }, delay);
+      const elapsed = Date.now() - start;
+      const delay = Math.max(0, 1000 - elapsed);
+      setTimeout(() => setIsDownloading(false), delay);
+      
     }
   };
   
   
   
-  const handleDelete = (index) => {
+  const handleDelete = async (index) => {
+    const start = Date.now();
+    setIsDownloading(true);
+
+    const localUser = JSON.parse(localStorage.getItem("otpUser"));
+    const userId = localUser?.userId;
+  
+    if (!userId) return;
+  
     const updated = [...events];
-    updated.splice(index, 1);
+    const removed = updated.splice(index, 1); // take out one item
+  
     setEvents(updated);
-    localStorage.setItem("downloadHistory", JSON.stringify(updated));
+  
+    try {
+      await fetch(`${API_URL}/update-download-history`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, updatedHistory: updated }),
+      });
+    } catch (err) {
+      console.error("❌ Failed to update history:", err);
+    }finally {
+      const elapsed = Date.now() - start;
+      const delay = Math.max(0, 1000 - elapsed);
+      setTimeout(() => setIsDownloading(false), delay);
+    }
   };
+  
 
   if (events.length === 0) {
     return (
@@ -129,7 +195,8 @@ const EventCard = () => {
           <div className="ml-8">
             <h2 className="text-lg text-black font-bold">{event.title}</h2>
             <p className="text-sm font-semibold text-[#170645]">
-              <span className="font-semibold text-[#170645]">Last Download :</span> {event.lastDownload}
+              <span className="font-semibold text-[#170645]">Last Download :</span> {event.lastDownload || event.date}
+
             </p>
             <p className="text-[#170645] text-sm font-semibold mt-1">{event.photoCount} Photos</p>
           </div>
@@ -137,7 +204,7 @@ const EventCard = () => {
         {/* Right Side: Buttons */}
         <div className="flex space-x-2">
         <button
-  onClick={() => handleRedownload(event.title)}
+  onClick={() => handleRedownload(event)}
   className="text-green-600 hover:text-green-800 p-2 rounded-full"
   title="Download Album"
 >

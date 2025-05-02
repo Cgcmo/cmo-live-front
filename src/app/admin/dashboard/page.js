@@ -64,7 +64,7 @@ function App() {
         axios.get(`${API_URL}/count-users`),
         axios.get(`${API_URL}/count-albums`),
         axios.get(`${API_URL}/count-photos`),
-        axios.get(`${API_URL}/get-download-count`),
+        axios.get(`${API_URL}/total-user-downloads`),
       ]);
 
       const totalUsers = userRes.data.total_users;
@@ -83,34 +83,34 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    fetchAllStats();
-  }, []);
-  useEffect(() => {
-    const fetchDownloadCount = async () => {
-      try {
-        const res = await fetch(`${API_URL}/get-download-count`);
-        const data = await res.json();
-        const downloadCount = data.count || 0;
+  // useEffect(() => {
+  //   fetchAllStats();
+  // }, []);
+  // useEffect(() => {
+  //   const fetchDownloadCount = async () => {
+  //     try {
+  //       const res = await fetch(`${API_URL}/total-user-downloads`);
+  //       const data = await res.json();
+  //       const downloadCount = data.count || 0;
 
-        setStats(prev =>
-          prev.map(stat =>
-            stat.label === "Total Download"
-              ? { ...stat, count: downloadCount.toString() }
-              : stat
-          )
-        );
-      } catch (err) {
-        console.error("Failed to fetch download count:", err);
-      }
-    };
+  //       setStats(prev =>
+  //         prev.map(stat =>
+  //           stat.label === "Total Download"
+  //             ? { ...stat, count: downloadCount.toString() }
+  //             : stat
+  //         )
+  //       );
+  //     } catch (err) {
+  //       console.error("Failed to fetch download count:", err);
+  //     }
+  //   };
 
-    fetchDownloadCount(); // initial fetch
+  //   fetchDownloadCount(); // initial fetch
 
-    const interval = setInterval(fetchDownloadCount, 10000); // 🔁 update every 10s
+  //   const interval = setInterval(fetchDownloadCount, 10000); // 🔁 update every 10s
 
-    return () => clearInterval(interval); // cleanup
-  }, []);
+  //   return () => clearInterval(interval); // cleanup
+  // }, []);
 
 
   const [stats, setStats] = useState([
@@ -123,7 +123,7 @@ function App() {
   useEffect(() => {
     const fetchDownloadCount = async () => {
       try {
-        const res = await fetch(`${API_URL}/get-download-count`);
+        const res = await fetch(`${API_URL}/total-user-downloads`);
         const data = await res.json();
         const downloadCount = data.count || 0;
 
@@ -150,7 +150,10 @@ function App() {
     );
   };
 
-
+  useEffect(() => {
+    fetchAllStats();
+  }, []);
+  
 
   useEffect(() => {
     const storedUser = localStorage.getItem("otpUser");

@@ -6,7 +6,7 @@ const Footer = () => {
     const [districts, setDistricts] = useState([]);
 
     useEffect(() => {
-        fetch(`${API_URL}/districts`) // 🔁 Replace with actual domain (e.g., https://api.choicesay.com)
+        fetch(`${API_URL}/districts`) 
             .then((res) => res.json())
             .then((data) => {
                 const names = data.map(d => d.name);

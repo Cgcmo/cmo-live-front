@@ -1,170 +1,4 @@
 
-// "use client";
-
-// import React, { useState } from "react";
-// import Switch from "./Switch"; // Import your custom switch
-// import "./ToggleSwitch.css"; // Ensure styles are applied
-// import Cookies from "js-cookie";
-// import axios from "axios";
-
-// export default function UsersTable() {
-//   const [editIndex, setEditIndex] = useState(null);
-//   const [editedUser, setEditedUser] = useState({});
-//   const [filter, setFilter] = useState("All");
-//   const [isModalOpen, setIsModalOpen] = useState(false);
-//   const [users, setUsers] = useState([
-//     { id: 1, name: "Sneha Roy", role: "Admin", district: "Durg", mobile: "9235468505", email: "sneharoy17@gmail.com", status: true },
-//     { id: 2, name: "Disha Sahu", role: "User", district: "Bastar", mobile: "9235468505", email: "dishasahu65@gmail.com", status: true },
-//     { id: 3, name: "Shyam Shing", role: "User", district: "Balod", mobile: "9235468505", email: "shyamshing@gmail.com", status: true },
-//     { id: 4, name: "Suriya Kumar", role: "User", district: "Bijapur", mobile: "9235468505", email: "suriyakumar25@gmail.com", status: true },
-//     { id: 5, name: "Leshika Tandan", role: "Admin", district: "Durg", mobile: "9235468505", email: "leshikatandan156@gmail.com", status: true },
-//     { id: 6, name: "Pratik Raj", role: "User", district: "Bilaspur", mobile: "9235468505", email: "pratikraj11@gmail.com", status: true },
-//     { id: 7, name: "Aditi Shign", role: "User", district: "Dhamtari", mobile: "9235468505", email: "aditishign152@gmail.com", status: true },
-//   ]);
-  
-
-//   const toggleStatus = (id) => {
-//     setUsers((prevUsers) =>
-//       prevUsers.map((user) =>
-//         user.id === id ? { ...user, status: !user.status } : user
-//       )
-//     );
-//   };
-
-//   const handleEdit = (index, user) => {
-//     setEditIndex(index);
-//     setEditedUser({ ...user });
-//   };
-
-//   const handleInputChange = (e, field) => {
-//     setEditedUser({ ...editedUser, [field]: e.target.value });
-//   };
-
-//   const handleSave = (index) => {
-//     users[index] = { ...editedUser };
-//     setEditIndex(null);
-//   };
-
-//   const handleCancel = () => {
-//     setEditIndex(null);
-//   };
-
-
-//   const filteredUsers = users.filter(user => {
-//     if (filter === "All") return true;
-//     if (filter === "Admin") return user.role === "Admin";
-//     if (filter === "User") return user.role === "User";
-//     if (filter === "Limited Access") return !user.status;
-//     return true;
-//   });
-
-//   return (
-//     <div className="mt-4 overflow-x-auto">
-//       <div className="flex flex-col sm:flex-row justify-end items-center gap-4 mb-4 w-full sm:w-auto">
-//         {/* Filter Dropdown */}
-//         <div className="relative">
-//           <select
-//             className="border text-center border-gray-400 text-md rounded-full py-2 text-gray-700  w-full sm:w-auto"
-//             value={filter}
-//             onChange={(e) => setFilter(e.target.value)}
-//             style={{ textAlign: "center", textAlignLast: "center" }}
-//           >
-//             <option value="All" style={{ textAlign: "center", textAlignLast: "center" }}>All</option>
-//             <option value="User" style={{ textAlign: "center", textAlignLast: "center" }} >User</option>
-//             <option value="Admin" style={{ textAlign: "center", textAlignLast: "center" }}>Admin</option>
-//             <option value="Limited Access" style={{ textAlign: "center", textAlignLast: "center" }}>Limited Access</option>
-//           </select>
-//         </div>
-//         {/* Add Staff Button */}
-//         <button className="bg-[#170645] text-md font text-yellow-400 px-[35px] py-2 rounded-full shadow-xxl w-full sm:w-auto" onClick={() => setIsModalOpen(true)} >
-//           Add Staff
-//         </button>
-//       </div>
-
-//       <table className="w-full border-collapse">
-//         <thead>
-//           <tr className="bg-[#D9D9D9] text-center text-[#170645] font-normal">
-//             <th className="p-2 border">No.</th>
-//             <th className="p-2 border">Full Name</th>
-//             <th className="p-2 border">Role</th>
-//             <th className="p-2 border">District</th>
-//             <th className="p-2 border">Mobile No.</th>
-//             <th className="p-2 border">Email Id</th>
-//             <th className="p-2 border">Action</th> {/* New column for Edit button */}
-//             <th className="p-2 border">Status</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {filteredUsers.length > 0 ? (
-//             filteredUsers.map((user, index) => (
-//               <tr key={user.id} className="text-[#170645] text-center border-b">
-//                 <td className="p-2">{index + 1}</td>
-//                 <td className="p-2">{editIndex === index ? <input type="text" value={editedUser.name} onChange={(e) => handleInputChange(e, "name")} className="p-1 border border-gray-300 rounded w-full" /> : user.name}</td>
-//                 <td className="p-2">{editIndex === index ? <input type="text" value={editedUser.role} onChange={(e) => handleInputChange(e, "role")} className="p-1 border border-gray-300 rounded w-full" /> : user.role}</td>
-//                 <td className="p-2">{editIndex === index ? <input type="text" value={editedUser.district} onChange={(e) => handleInputChange(e, "district")} className="p-1 border border-gray-300 rounded w-full" /> : user.district}</td>
-//                 <td className="p-2">{editIndex === index ? <input type="text" value={editedUser.mobile} onChange={(e) => handleInputChange(e, "mobile")} className="p-1 border border-gray-300 rounded w-full" /> : user.mobile}</td>
-//                 <td className="p-2 max-w-[150px] truncate">{editIndex === index ? <input type="text" value={editedUser.email} onChange={(e) => handleInputChange(e, "email")} className="p-1 border border-gray-300 rounded w-full" /> : user.email}</td>
-//                 <td className="p-2 flex justify-center items-center gap-2">{editIndex === index ? (<><button className="text-green-600 font-semibold" onClick={() => handleSave(index)}>Save</button><button className="text-red-600 font-semibold" onClick={handleCancel}>Cancel</button></>) : (<button className="flex items-center text-blue-600" onClick={() => handleEdit(index, user)}><img src="/edit-icon.png" alt="Edit" className="w-4 h-4 mr-1" />Edit</button>)}</td>
-//                 <td className="p-2 text-center"><Switch checked={user.status} onChange={() => toggleStatus(user.id)} /></td>
-//               </tr>
-//             ))
-//           ) : (
-//             <tr>
-//               <td colSpan="8" className="p-[50px] text-center text-[#170645]">No data found for this filter</td>
-//             </tr>
-//           )}
-//         </tbody>
-//       </table>
-//       {isModalOpen && (
-//         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-//           <div className="relative bg-white p-6 rounded-2xl shadow-lg w-[90%] sm:w-[400px]">
-//             {/* Close Button */}
-//             <button
-//               className="absolute rounded-full bg-gray-300 w-[30px] h-[30px] top-4 right-4 text-gray-500 hover:text-black text-lg"
-//               onClick={() => setIsModalOpen(false)}
-//             >
-//               x
-//             </button>
-
-//             {/* Modal Title */}
-//             <h2 className="text-[27px] font-bold text-center text-[#170645] mb-4">
-//               Add Staff
-//             </h2>
-
-//             {/* Form Inputs */}
-//             <form>
-//               <input type="text" placeholder="Full Name" className="w-full p-3 text-sm border border-gray-400 text-[#170645] placeholder-[#170645] rounded-full mb-3 focus:outline-none" />
-//               <input type="email" placeholder="Email" className="w-full p-3 text-sm border border-gray-400 text-[#170645] placeholder-[#170645] rounded-full mb-3 focus:outline-none" />
-//               <input type="tel" placeholder="Mobile No." className="w-full text-sm p-3 border border-gray-400 text-[#170645] placeholder-[#170645] rounded-full mb-3 focus:outline-none" />
-//               <input type="password" placeholder="Password" className="w-full p-3 text-sm border-gray-400 text-[#170645] placeholder-[#170645] border rounded-full mb-3 focus:outline-none" />
-//               {/* Dropdowns */}
-//               <select className="w-full p-3 border-gray-400 text-sm  text-[#170645] border rounded-full mb-3 bg-white focus:outline-none">
-//                 <option>District</option>
-//               </select>
-//               <select className="w-full p-3 text-sm text-[#170645] border-gray-400 border rounded-full mb-4 bg-white focus:outline-none">
-//                 <option>Access</option>
-//               </select>
-
-//               {/* Submit Button */}
-//               <button
-//                 type="submit"
-//                 className="w-full bg-[#170645] text-yellow-400 font-bold py-3 rounded-full hover:opacity-90"
-//               >
-//                 Submit
-//               </button>
-//             </form>
-//           </div>
-//         </div>
-//       )}
-
-//     </div>
-
-
-
-//   );
-// }
-
-
 
 "use client";
 
@@ -187,6 +21,9 @@ export default function UsersTable({fetchAllStats}) {
     password: "",
     district: "",
   }); 
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 10;
+
 
   const toggleStatus = async (id, currentStatus) => {
     try {
@@ -238,10 +75,13 @@ export default function UsersTable({fetchAllStats}) {
     return true;
   });
 
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+
   useEffect(() => {
     fetchUsers();
   }, []);
 
+  
   // Fetch Users from Backend
   const fetchUsers = async () => {
     try {
@@ -403,22 +243,26 @@ export default function UsersTable({fetchAllStats}) {
       </div>
 
       <table className="w-full border-collapse">
-        <thead>
-          <tr className="bg-[#D9D9D9] text-center text-[#170645] font-normal">
-            <th className="p-2 border">No.</th>
-            <th className="p-2 border">Full Name</th>
-            <th className="p-2 border">Role</th>
-            <th className="p-2 border">District</th>
-            <th className="p-2 border">Mobile No.</th>
-            <th className="p-2 border">Email Id</th>
-            <th className="p-2 border">Action</th> {/* New column for Edit button */}
-            <th className="p-2 border">Status</th>
-          </tr>
-        </thead>
+      <thead>
+  <tr className="bg-[#D9D9D9] text-center text-[#170645] font-normal">
+    <th className="p-2 border">No.</th>
+    <th className="p-2 border">Full Name</th>
+    <th className="p-2 border">Role</th>
+    <th className="p-2 border">District</th>
+    <th className="p-2 border">Mobile No.</th>
+    <th className="p-2 border">Email Id</th>
+    <th className="p-2 border">Action</th>
+    <th className="p-2 border">Status</th>
+  </tr>
+</thead>
+
         <tbody>
           {filteredUsers.length > 0 ? (
-            filteredUsers.map((user, index) => (
-              <tr key={user.id} className="text-[#170645] text-center border-b">
+           filteredUsers
+           .slice((currentPage - 1) * usersPerPage, currentPage * usersPerPage)
+           .map((user, index) => (         
+            <tr key={user._id || user.id || index} className="text-[#170645] text-center border-b">
+
                 <td className="p-2">{index + 1}</td>
                 <td className="p-2">{editIndex === index ? <input type="text" value={editedUser.name} onChange={(e) => handleInputChange(e, "name")} className="p-1 border border-gray-300 rounded w-full" /> : user.name}</td>
                 <td className="p-2">{editIndex === index ? <input type="text" value={editedUser.role} onChange={(e) => handleInputChange(e, "role")} className="p-1 border border-gray-300 rounded w-full" /> : user.role}</td>
@@ -428,14 +272,54 @@ export default function UsersTable({fetchAllStats}) {
                 <td className="p-2 flex justify-center items-center gap-2">{editIndex === index ? (<><button className="text-green-600 font-semibold" onClick={() => handleSave(index)}>Save</button><button className="text-red-600 font-semibold" onClick={handleCancel}>Cancel</button></>) : (<button className="flex items-center text-blue-600" onClick={() => handleEdit(index, user)}><img src="/edit-icon.png" alt="Edit" className="w-4 h-4 mr-1" />Edit</button>)}</td>
                 <td className="p-2 text-center"><Switch checked={user.status} onChange={() => toggleStatus(user._id, user.status)} /></td>
               </tr>
+              
             ))
+            
           ) : (
             <tr>
               <td colSpan="8" className="p-[50px] text-center text-[#170645]">No data found for this filter</td>
             </tr>
           )}
+
+
         </tbody>
+        
       </table>
+              
+{totalPages > 1 && (
+  <div className="w-full flex justify-center mt-6 mb-4">
+    <div className="flex items-center justify-center gap-4">
+      {/* Previous Button */}
+      <button
+        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+        disabled={currentPage === 1}
+        className={`px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500 transition-all ${
+          currentPage === 1 ? " cursor-not-allowed" : ""
+        }`}
+      >
+        {"<<"}
+      </button>
+
+      {/* Page Number */}
+      <span className="px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500">
+        Page {currentPage} of {totalPages}
+      </span>
+
+      {/* Next Button */}
+      <button
+        onClick={() =>
+          setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+        }
+        disabled={currentPage === totalPages}
+        className={`px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500 transition-all ${
+          currentPage === totalPages ? " cursor-not-allowed" : ""
+        }`}
+      >
+        {">>"}
+      </button>
+    </div>
+  </div>
+)}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="relative bg-white p-6 rounded-2xl shadow-lg w-[90%] sm:w-[400px]">

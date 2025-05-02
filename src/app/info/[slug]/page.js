@@ -1,191 +1,246 @@
-// "use client";
+"use client";
 
-// import { useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 
-// export default function InfoPage() {
-//   const params = useParams();
+export default function InfoPage() {
+  const params = useParams();
 
-//   const content = {
-//     "copyright-policy": {
-//       title: "Copyright Policy",
-//       content: `
-// All content, including images, videos, and text hosted on nbdigital.online, is owned exclusively by the Chief Minister's Office (CMO), Chhattisgarh, Government of India.
+  const content = {
+    "copyright-policy": {
+      title: "Copyright Policy",
+      content: `
+All content, including images, videos, and text hosted on nbdigital.online, is owned exclusively by the Chief Minister's Office (CMO), Chhattisgarh, Government of India.
 
-// 1. **Ownership:**
-//    - All photographs, videos, and written content on this website are protected by Indian copyright laws.
-//    - Intellectual property rights exclusively belong to CMO Chhattisgarh.
+1. **Ownership:**
+   - All photographs, videos, and written content on this website are protected by Indian copyright laws.
+   - Intellectual property rights exclusively belong to CMO Chhattisgarh.
 
-// 2. **Usage Guidelines:**
-//    - Users may view, download, and share content strictly for personal and non-commercial purposes.
-//    - Reproduction, redistribution, or commercial exploitation of content without written consent from CMO Chhattisgarh is strictly prohibited.
+2. **Usage Guidelines:**
+   - Users may view, download, and share content strictly for personal and non-commercial purposes.
+   - Reproduction, redistribution, or commercial exploitation of content without written consent from CMO Chhattisgarh is strictly prohibited.
 
-// 3. **Reporting Violations:**
-//    - If you believe content on this site is being misused elsewhere, please report it immediately at dprcgh@gmail.com.
+3. **Reporting Violations:**
+   - If you believe content on this site is being misused elsewhere, please report it immediately at dprcgh@gmail.com.
 
-// 4. **Legal Action:**
-//    - Unauthorized commercial or exploitative use may result in legal action under applicable Indian laws.
-//       `,
-//     },
+4. **Legal Action:**
+   - Unauthorized commercial or exploitative use may result in legal action under applicable Indian laws.
+      `,
+    },
 
-//     disclaimer: {
-//       title: "Disclaimer",
-//       content: `
-// The content and services provided by nbdigital.online, an AI-based platform maintained by the Chief Minister's Office, Chhattisgarh, are intended solely for the public's convenience and informational purposes.
+    disclaimer: {
+      title: "Disclaimer",
+      content: `
+The content and services provided by nbdigital.online, an AI-based platform maintained by the Chief Minister's Office, Chhattisgarh, are intended solely for the public's convenience and informational purposes.
 
-// 1. **Accuracy and Reliability:**
-//    - While our platform uses advanced FaceNet AI technology for face recognition and retrieval, accuracy cannot always be guaranteed.
-//    - If no exact match is found, the system may display broader photo results to help users locate relevant images.
+1. **Accuracy and Reliability:**
+   - While our platform uses advanced FaceNet AI technology for face recognition and retrieval, accuracy cannot always be guaranteed.
+   - If no exact match is found, the system may display broader photo results to help users locate relevant images.
 
-// 2. **Liability Limitation:**
-//    - CMO Chhattisgarh does not assume liability for misuse, misinterpretation, or any unintended use of images retrieved from this website.
-//    - Users bear full responsibility for how retrieved content is used or shared.
+2. **Liability Limitation:**
+   - CMO Chhattisgarh does not assume liability for misuse, misinterpretation, or any unintended use of images retrieved from this website.
+   - Users bear full responsibility for how retrieved content is used or shared.
 
-// 3. **User Responsibility:**
-//    - Users are encouraged to ethically utilize and protect the privacy and integrity of all images obtained from this platform.
+3. **User Responsibility:**
+   - Users are encouraged to ethically utilize and protect the privacy and integrity of all images obtained from this platform.
 
-// 4. **Technical Issues:**
-//    - While every effort is made to ensure website availability, we do not guarantee uninterrupted service due to maintenance, updates, or technical issues beyond our control.
-//       `,
-//     },
+4. **Technical Issues:**
+   - While every effort is made to ensure website availability, we do not guarantee uninterrupted service due to maintenance, updates, or technical issues beyond our control.
+      `,
+    },
 
-//     "site-map": {
-//       title: "Site Map",
-//       content: `
-// The following is a comprehensive map of the structure and content of nbdigital.online, designed to help users navigate effectively:
+    "site-map": {
+      title: "Site Map",
+      content: `
+The following is a comprehensive map of the structure and content of nbdigital.online, designed to help users navigate effectively:
 
-// 1) Admin Panel
+1) Admin Panel
 
-// - **Dashboard:** Central admin controls and analytics
-//   - All Photos
-//   - Banner Tab
-//   - Custom Bar Chart
-//   - Departments Tab
-//   - Districts Tab
-//   - Footer Configuration
-//   - Gallery Modal
-//   - Modal Popup
-//   - Navbar Customization
-//   - Profile Management
-//   - Search Component
-//   - Switch Controls
-//   - User Management (Users Table)
+- **Dashboard:** Central admin controls and analytics
+  - All Photos
+  - Banner Tab
+  - Custom Bar Chart
+  - Departments Tab
+  - Districts Tab
+  - Footer Configuration
+  - Gallery Modal
+  - Modal Popup
+  - Navbar Customization
+  - Profile Management
+  - Search Component
+  - Switch Controls
+  - User Management (Users Table)
 
-// - **Column Management:**
-//   - Column 1
-//   - Column 2
-//   - Column 3
+- **Column Management:**
+  - Column 1
+  - Column 2
+  - Column 3
 
-// 2) User Views
+2) User Views
 
-// - **Albums and Districts:**
-//   - Album Photos ("/album/:albumId")
-//   - District Photos ("/district/:districtName")
+- **Albums and Districts:**
+  - Album Photos ("/album/:albumId")
+  - District Photos ("/district/:districtName")
 
-// - **Dashboard:**
-//   - Main Dashboard
-//   - Search Interface
-//   - Upload Photos
-//   - Footer Component
-//   - Navbar Component
-//   - Rolling Date Picker
-//   - Upload Photo Modal
+- **Dashboard:**
+  - Main Dashboard
+  - Search Interface
+  - Upload Photos
+  - Footer Component
+  - Navbar Component
+  - Rolling Date Picker
+  - Upload Photo Modal
 
-// - **Profile Section:**
-//   - Profile Main View
-//   - All Photos
-//   - Custom Bar Chart
-//   - Event Cards
-//   - Gallery Modal
-//   - Modal Popup
-//   - Profile Edit
-//   - Switch View
+- **Profile Section:**
+  - Profile Main View
+  - All Photos
+  - Custom Bar Chart
+  - Event Cards
+  - Gallery Modal
+  - Modal Popup
+  - Profile Edit
+  - Switch View
 
-// 3) User Authentication and Security
+3) User Authentication and Security
 
-// - Forgot Password
-// - Reset Password Form
-// - Verification Page
-// - Authentication Page
+- Forgot Password
+- Reset Password Form
+- Verification Page
+- Authentication Page
 
-// 4) General and Miscellaneous
+4) General and Miscellaneous
 
-// - Home Page
-// - Layout and Structure
-// - Informational Pages ("/info/:slug")
-// - Search Results
-// - Search Bar
-// - Search Parameter Handling
-// - Session Wrapper
-// - Embedded Video Player
-//       `,
-//     },
+- Home Page
+- Layout and Structure
+- Informational Pages ("/info/:slug")
+- Search Results
+- Search Bar
+- Search Parameter Handling
+- Session Wrapper
+- Embedded Video Player
+      `,
+    },
 
-//     "terms-and-conditions": {
-//       title: "Terms and Conditions",
-//       content: `
-// By accessing or registering on nbdigital.online, users explicitly agree to the following terms and conditions established by the Chief Minister's Office, Chhattisgarh:
+    "terms-and-conditions": {
+      title: "Terms and Conditions",
+      content: `
+By accessing or registering on nbdigital.online, users explicitly agree to the following terms and conditions established by the Chief Minister's Office, Chhattisgarh:
 
-// 1. **User Registration:**
-//    - Users must provide truthful and accurate information including their name, mobile number, email address, and district.
-//    - All personal data is securely stored in compliance with applicable data protection laws.
+1. **User Registration:**
+   - Users must provide truthful and accurate information including their name, mobile number, email address, and district.
+   - All personal data is securely stored in compliance with applicable data protection laws.
 
-// 2. **Account Security:**
-//    - Users must create strong, confidential passwords that are stored securely in hashed form.
-//    - Users must immediately report unauthorized account access or security breaches.
+2. **Account Security:**
+   - Users must create strong, confidential passwords that are stored securely in hashed form.
+   - Users must immediately report unauthorized account access or security breaches.
 
-// 3. **Permitted Usage:**
-//    - Users may download, share, and copy photo links responsibly and ethically for personal use only.
+3. **Permitted Usage:**
+   - Users may download, share, and copy photo links responsibly and ethically for personal use only.
 
-// 4. **Prohibited Activities:**
-//    - Unauthorized distribution, commercial exploitation, or misuse of images and content is strictly forbidden.
-//    - Users are prohibited from using this platform in ways that could compromise its functionality or security.
+4. **Prohibited Activities:**
+   - Unauthorized distribution, commercial exploitation, or misuse of images and content is strictly forbidden.
+   - Users are prohibited from using this platform in ways that could compromise its functionality or security.
 
-// 5. **Consequences of Violations:**
-//    - Violating these terms may result in account suspension or termination, and potential legal action.
-//       `,
-//     },
+5. **Consequences of Violations:**
+   - Violating these terms may result in account suspension or termination, and potential legal action.
+      `,
+    },
 
-//     "terms-of-use": {
-//       title: "Terms of Use",
-//       content: `
-// All users of nbdigital.online agree to adhere to the following conditions to ensure the ethical and secure operation of our AI-based services provided by the Chief Minister's Office, Chhattisgarh:
+    "terms-of-use": {
+      title: "Terms of Use",
+      content: `
+All users of nbdigital.online agree to adhere to the following conditions to ensure the ethical and secure operation of our AI-based services provided by the Chief Minister's Office, Chhattisgarh:
 
-// 1. **Ethical Usage:**
-//    - Users must use the AI facial recognition responsibly to find photos taken at public events with the Chief Minister.
-//    - Any inappropriate, malicious, or harmful use of the platform and its content is strictly prohibited.
+1. **Ethical Usage:**
+   - Users must use the AI facial recognition responsibly to find photos taken at public events with the Chief Minister.
+   - Any inappropriate, malicious, or harmful use of the platform and its content is strictly prohibited.
 
-// 2. **Data Integrity and Privacy:**
-//    - Users are expected to maintain the confidentiality of their login credentials.
-//    - Any detected compromise must be reported immediately for appropriate measures.
+2. **Data Integrity and Privacy:**
+   - Users are expected to maintain the confidentiality of their login credentials.
+   - Any detected compromise must be reported immediately for appropriate measures.
 
-// 3. **Content Interaction:**
-//    - Users can interact by downloading and sharing photos or photo links, strictly for non-commercial purposes.
-//    - Editing or altering images in a way that compromises authenticity or privacy is prohibited.
+3. **Content Interaction:**
+   - Users can interact by downloading and sharing photos or photo links, strictly for non-commercial purposes.
+   - Editing or altering images in a way that compromises authenticity or privacy is prohibited.
 
-// 4. **Legal Compliance:**
-//    - Users must comply with all applicable Indian laws regarding data privacy, intellectual property, and cybersecurity.
-//    - Misuse, unauthorized sharing, or redistribution of protected content may result in legal proceedings and penalties.
-//       `,
-//     },
-//   };
+4. **Legal Compliance:**
+   - Users must comply with all applicable Indian laws regarding data privacy, intellectual property, and cybersecurity.
+   - Misuse, unauthorized sharing, or redistribution of protected content may result in legal proceedings and penalties.
+      `,
+    },
+"privacy-policy": {
+  title: "Privacy Policy",
+  content: `
+This Privacy Policy outlines how we collect, use, and protect your personal data when you visit and interact with nbdigital.online.
 
-//   const pageContent = content[params.slug];
+1. **Information We Collect:**
+   - Name, mobile number, email, district (during account creation or submissions).
+   - Face photos uploaded for AI-based matching (temporarily processed, not stored).
+   - Device and session logs (IP address, browser info, access times) for analytics.
 
-//   if (!pageContent) {
-//     return (
-//       <main className="max-w-4xl mx-auto py-12 px-4">
-//         <h1 className="text-3xl font-bold mb-4 text-black">Page Not Found</h1>
-//         <p className="text-gray-600">Sorry, the page you're looking for does not exist.</p>
-//       </main>
-//     );
-//   }
+2. **Usage of Data:**
+   - To personalize content and improve user experience.
+   - To support AI image search accuracy and validation.
+   - We do not sell or rent your data.
 
-//   return (
-//     <main className="max-w-5xl mx-auto py-16 px-6 md:px-12">
-//       <h1 className="text-4xl font-bold mb-8 text-black">{pageContent.title}</h1>
-//       <div className="text-black whitespace-pre-line leading-relaxed text-lg">
-//         {pageContent.content}
-//       </div>
-//     </main>
-//   );
-// }
+3. **Storage and Security:**
+   - All data is stored securely in compliance with Indian data protection laws.
+   - We use encryption, access control, and regular monitoring to protect data.
+
+4. **Third-Party Services:**
+   - We may use analytics tools or storage providers that comply with security regulations.
+   - No third-party has access to your personal data unless legally required.
+
+5. **User Rights:**
+   - You may request data deletion or correction via dprcgh@gmail.com.
+   - By using this platform, you consent to this policy.
+
+For questions, contact: dprcgh@gmail.com
+  `,
+},
+
+"hyperlink-policy": {
+  title: "Hyperlink Policy",
+  content: `
+Links to external websites and platforms are provided for user convenience on nbdigital.online.
+
+1. **External Link Disclaimer:**
+   - We do not control or guarantee the accuracy, relevance, or security of third-party sites linked on our platform.
+   - Clicking such links will take you outside our domain.
+
+2. **Linking to Our Website:**
+   - Other websites may link to our homepage or specific public pages.
+   - Linking should not misrepresent our endorsement or mislead users.
+
+3. **No Prior Permission Required:**
+   - No prior permission is required for linking to public information hosted on nbdigital.online.
+   - However, for use of content (logos, text, or graphics), formal permission must be obtained.
+
+4. **Removal of Unintended Links:**
+   - If you find any inappropriate links, report them to dprcgh@gmail.com.
+
+This policy may be updated without prior notice.
+  `,
+},
+
+  };
+
+  const pageContent = content[params.slug];
+
+  if (!pageContent) {
+    return (
+      <main className="max-w-4xl mx-auto py-12 px-4">
+        <h1 className="text-3xl font-bold mb-4 text-black">Page Not Found</h1>
+        <p className="text-gray-600">Sorry, the page you're looking for does not exist.</p>
+      </main>
+    );
+  }
+
+  return (
+    <main className="max-w-5xl mx-auto py-16 px-6 md:px-12">
+      <h1 className="text-4xl font-bold mb-8 text-black">{pageContent.title}</h1>
+      <div className="text-black whitespace-pre-line leading-relaxed text-lg">
+        {pageContent.content}
+      </div>
+    </main>
+  );
+}

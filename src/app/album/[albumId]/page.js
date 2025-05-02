@@ -79,13 +79,15 @@ const album = albumData.albums.find((a) => a._id === albumId);
       return;
     }
   
-    setIsLoading(true); // ✅ Start loader
+    setIsLoading(true);
     const zip = new JSZip();
   
     try {
       await Promise.all(
         selectedPhotos.map(async (photo, i) => {
-          const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(photo.image)}`)
+          const response = await fetch(
+            `${API_URL}/proxy-image?url=${encodeURIComponent(photo.image)}`
+          );
           const blob = await response.blob();
           zip.file(`photo_${i + 1}.jpg`, blob);
         })
@@ -98,11 +100,34 @@ const album = albumData.albums.find((a) => a._id === albumId);
       link.download = `${albumName || "album"}.zip`;
       link.click();
       URL.revokeObjectURL(url);
+  
+      // ✅ Record download to MongoDB
+      const localUser = JSON.parse(localStorage.getItem("otpUser"));
+      const user = localUser; // Or include session.user fallback if needed
+  
+      if (user?.userId) {
+        await fetch(`${API_URL}/record-download-history`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user.userId,
+            download: {
+              title: albumName || "Downloaded Album",
+              image: selectedPhotos[0]?.image || "",
+              photoCount: selectedPhotos.length,
+              date: new Date().toLocaleDateString("en-GB"),
+              photoUrls: selectedPhotos.map((p) => p.image),
+            },
+          }),
+        }).catch((err) =>
+          console.error("❌ Failed to record download history to DB:", err)
+        );
+      }
     } catch (error) {
       console.error("Download failed", error);
       alert("Error while downloading");
     } finally {
-      setIsLoading(false); // ✅ Stop loader
+      setIsLoading(false);
     }
   };
   
@@ -124,10 +149,10 @@ const handleShareAll = async () => {
   try {
     const files = await Promise.all(
       selectedPhotos.map(async (photo, index) => {
-        const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(url)}`);
+        const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(photo.image)}`);
         const blob = await response.blob();
         return new File([blob], `image_${index + 1}.jpg`, { type: blob.type });
-      })
+      })      
     );
 
     if (navigator.canShare && navigator.canShare({ files })) {

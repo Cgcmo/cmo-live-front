@@ -1,3 +1,4 @@
+
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SessionWrapper from "./session-wrapper"; // Import SessionProvider wrapper
@@ -6,6 +7,7 @@ const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
+
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -28,11 +30,11 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="icon" href="/img_1.png" type="image/png" />
         <Script
-  id="otpless-sdk"
-  strategy="afterInteractive"
-  src="https://otpless.com/v4/headless.js"
-  data-appid="936N5Z8BP088IVS1951D" 
-/>
+          id="otpless-sdk"
+          strategy="afterInteractive"
+          src="https://otpless.com/v4/headless.js"
+          data-appid="936N5Z8BP088IVS1951D"
+        />
 
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>

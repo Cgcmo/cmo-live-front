@@ -7,6 +7,8 @@ import { FiDownload } from "react-icons/fi";
 import { FiShare } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import API_URL from '@/app/api';
+import { useSession } from "next-auth/react";
+
 
 export default function SearchResults() {
   const searchParams = useSearchParams();
@@ -17,6 +19,8 @@ export default function SearchResults() {
   const [selectAll, setSelectAll] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isDownloading, setIsDownloading] = useState(false);
+  const { data: session } = useSession();
+
 
   useEffect(() => {
     if (!query) return;
@@ -74,12 +78,12 @@ export default function SearchResults() {
       return;
     }
   
-    setIsDownloading(true); // optional spinner while preparing
+    setIsDownloading(true);
   
     try {
       const files = await Promise.all(
         selectedPhotos.map(async (photo, index) => {
-          const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(url)}`);
+          const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(photo.image)}`);
           const blob = await response.blob();
           return new File([blob], `image_${index + 1}.jpg`, { type: blob.type });
         })
@@ -88,7 +92,7 @@ export default function SearchResults() {
       if (navigator.canShare && navigator.canShare({ files })) {
         await navigator.share({
           title: "Check out these images!",
-          text: "Shared via Choicesay!",
+          text: "Shared via CMO AI!",
           files,
         });
       } else {
@@ -131,6 +135,29 @@ export default function SearchResults() {
       link.download = "selected_images.zip";
       document.body.appendChild(link);
       link.click();
+      const localUser = JSON.parse(localStorage.getItem("otpUser"));
+const sessionUser = session?.user;
+const user = localUser || sessionUser;
+
+if (user?.userId) {
+  await fetch(`${API_URL}/record-download-history`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      userId: user.userId,
+      download: {
+        title: "Custom Download", // backend will replace with album name
+        image: selectedPhotos[0]?.image || "",
+        photoCount: selectedPhotos.length,
+        date: new Date().toLocaleDateString("en-GB"),
+        photoUrls: selectedPhotos.map((p) => p.image),
+      },
+    }),
+  }).catch((err) =>
+    console.error("❌ Failed to record download history to DB:", err)
+  );
+}
+
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
     } catch (error) {

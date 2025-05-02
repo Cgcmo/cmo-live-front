@@ -1,10 +1,21 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import API_URL from '@/app/api';
+import { useRouter } from 'next/navigation';
+
 const Footer = () => {
     // Dynamic District List
     const [districts, setDistricts] = useState([]);
+    const router = useRouter();
 
+    const handleRedirect = (url) => {
+        if (url === "/") {
+          window.location.href = "/"; // force hard redirect to root
+        } else {
+          router.push(url);
+        }
+      };
+      
     useEffect(() => {
         fetch(`${API_URL}/districts`)
             .then((res) => res.json())
@@ -16,15 +27,16 @@ const Footer = () => {
     }, []);
     // Dynamic Featured Links
     const featuredLinks = [
-        { name: "Home", url: "#" },
+        { name: "Home", url: "/" },
         { name: "Copyright Policy", url: "/info/copyright-policy" },
-    { name: "Disclaimer", url: "/info/disclaimer" },
-    { name: "Site Map", url: "/info/site-map" },
-        { name: "Hyperlink Policy", url: "#" },
-        { name: "Privacy Policy", url: "#" },
+        { name: "Disclaimer", url: "/info/disclaimer" },
+        { name: "Site Map", url: "/info/site-map" },
+        { name: "Hyperlink Policy", url: "/info/hyperlink-policy" },
+        { name: "Privacy Policy", url: "/info/privacy-policy" },
         { name: "Terms And Conditions", url: "/info/terms-and-conditions" },
         { name: "Terms Of Use", url: "/info/terms-of-use" }
-    ];
+      ];
+      
 
     // Dynamic Social Media Links
     const socialLinks = [
