@@ -512,55 +512,72 @@ export default function Home() {
     </div>
 
     {/* Right Images */}
-    {/* Right Images */}
-<div className="w-full lg:w-1/2 grid grid-cols-2 grid-rows-2 gap-6">
+<div className="w-full lg:w-1/2 relative min-h-[600px] hidden lg:block">
+  {/* Desktop Layout - Absolute positioning */}
+  <div className="absolute top-0 left-0 w-[28vw] max-w-[396px] rounded-[50px] overflow-hidden z-10">
+    <img
+      src="/Rectangle 4215.png"
+      alt="Big Vertical Image"
+      className="w-full h-auto object-contain"
+    />
+  </div>
 
-{/* Big Vertical Image */}
-<div className="row-span-2 rounded-[50px] overflow-hidden ">
-  <img
-    src="/ban-03.png"
-    alt="Big Vertical Image"
-    className="w-[20vw] h-[70vh] object-cover"
-  />
+  <div className="absolute top-0 right-[-1%] w-[17vw] max-w-[248px]  rounded-[30px] overflow-hidden">
+    <img
+      src="/Rectangle 4216.png"
+      alt="Small Image 1"
+      className="w-full h-auto object-contain"
+    />
+  </div>
+
+  <div className="absolute top-[40%] right-[4%] w-[13vw] max-w-[186px] rounded-[30px] overflow-hidden">
+    <img
+      src="/002.png"
+      alt="Small Image 2"
+      className="w-full h-auto object-contain"
+    />
+  </div>
+
+  <div className="absolute top-[60%] left-[18%] w-[15vw] max-w-[227px] rounded-[30px] overflow-hidden mt-10">
+    <img
+      src="/006.png"
+      alt="Small Image 3"
+      className="w-full h-auto object-contain"
+    />
+  </div>
+
+  <div className="absolute top-[70%] right-[-2%] w-[17vw] max-w-[253px] rounded-[30px] overflow-hidden">
+    <img
+      src="/001.png"
+      alt="Small Image 4"
+      className="w-full h-auto object-contain"
+    />
+  </div>
 </div>
 
-{/* Small Image 1 */}
-<div className="rounded-[30px] overflow-hidden ">
-  <img
-    src="/001.png"
-    alt="Small Image 1"
-    className="w-[18vw] h-auto object-cover"
-  />
+{/* Mobile Layout - Stacked grid (fallback) */}
+<div className="block lg:hidden grid grid-cols-2 gap-4 mt-6">
+  <div className="col-span-2 rounded-[30px] overflow-hidden">
+    <img
+      src="/Rectangle 4215.png"
+      alt="Big Image Mobile"
+      className="w-full h-auto object-contain"
+    />
+  </div>
+  <div className="rounded-[30px] overflow-hidden">
+    <img src="/Rectangle 4216.png" alt="Small 1" className="w-full h-auto object-contain" />
+  </div>
+  <div className="rounded-[30px] overflow-hidden">
+    <img src="/002.png" alt="Small 2" className="w-full h-auto object-contain" />
+  </div>
+  <div className="rounded-[30px] overflow-hidden">
+    <img src="/006.png" alt="Small 3" className="w-full h-auto object-contain" />
+  </div>
+  <div className="rounded-[30px] overflow-hidden">
+    <img src="/001.png" alt="Small 4" className="w-full h-auto object-contain" />
+  </div>
 </div>
 
-{/* Small Image 2 */}
-<div className="rounded-[30px] overflow-hidden ">
-  <img
-    src="/002.png"
-    alt="Small Image 2"
-    className="w-[18vw] h-auto object-cover"
-  />
-</div>
-
-{/* Small Image 3 */}
-<div className="rounded-[30px] overflow-hidden ">
-  <img
-    src="/003.png"
-    alt="Small Image 3"
-    className="w-[18vw] h-auto object-cover"
-  />
-</div>
-
-{/* Small Image 4 */}
-<div className="rounded-[30px] overflow-hidden ">
-  <img
-    src="/004.png"
-    alt="Small Image 4"
-    className="w-[18vw] h-auto object-cover"
-  />
-</div>
-
-</div>
 </div>
 </section>
 
