@@ -86,7 +86,7 @@ setTotalPages(Math.ceil((data.total || 0) / limit));
   }, [selected, updateSelectedImages]);
 
   return (
-    <div className="mt-4 h-[500px] overflow-y-auto">
+    <div className={`mt-4 overflow-y-auto ${albums.flatMap(album => album.images).length > 0 ? 'h-[500px]' : 'h-auto'}`}>
      {loading ? (
         <div className="flex justify-center items-center h-full">
          <div className="relative w-20 h-20">
@@ -109,6 +109,10 @@ setTotalPages(Math.ceil((data.total || 0) / limit));
                         </svg>
                       </div>
                               </div>
+      ) : albums.flatMap(album => album.images).length === 0 ? (
+        <div className="p-6 text-center text-gray-600">
+          No photo history found.
+        </div>
       ) : (
         <>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
