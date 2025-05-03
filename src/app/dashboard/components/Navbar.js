@@ -113,10 +113,18 @@ export default function Navbar({ setShowGallery, setGalleryPhotos }) {
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             className="w-full bg-transparent text-gray-700 outline-none px-2"
           />
-          <button  onClick={() => {
-    setSearch("");
-    setSuggestions([]); // optionally clear suggestions too
-  }} className="text-gray-500">✕</button>
+          {search.length > 0 && (
+  <button
+    onClick={() => {
+      setSearch("");
+      setSuggestions([]); // Clear suggestions too
+    }}
+    className="text-gray-500"
+  >
+    ✕
+  </button>
+)}
+
           <span className="text-gray-400 px-3">|</span>
           <button onClick={() => handleSearch()} className="text-gray-600 text-base">
             <FaSearch />
@@ -236,7 +244,9 @@ export default function Navbar({ setShowGallery, setGalleryPhotos }) {
 
     try {
       localStorage.removeItem("otpUser");
-      await signOut({ redirect: true, callbackUrl: "/" });
+      await signOut({ redirect: false });
+router.push("/");
+
     } catch (err) {
       console.error("Logout failed:", err);
       setIsLoggingOut(false); // Fallback stop

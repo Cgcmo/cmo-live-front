@@ -3,17 +3,22 @@ import React, { useEffect, useState } from "react";
 import { FiDownload } from "react-icons/fi";
 import { FiX } from "react-icons/fi";
 import API_URL from '@/app/api';
+import { useSession } from "next-auth/react";
+
 
 const EventCard = ({ fetchAllStats }) => {
   const [events, setEvents] = useState([]);
   const [isDownloading, setIsDownloading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [redownloading, setRedownloading] = useState(false);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchDownloadHistory = async () => {
       const localUser = JSON.parse(localStorage.getItem("otpUser"));
-      if (!localUser || !localUser.userId) {
+      const user = localUser || session?.user; // ✅ fallback to Google session
+  
+      if (!user || !user.userId) {
         setEvents([]);
         setLoading(false);
         return;
@@ -23,7 +28,7 @@ const EventCard = ({ fetchAllStats }) => {
         const res = await fetch(`${API_URL}/get-download-history`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: localUser.userId }),
+          body: JSON.stringify({ userId: user.userId }),
         });
   
         const data = await res.json();
@@ -42,8 +47,7 @@ const EventCard = ({ fetchAllStats }) => {
     };
   
     fetchDownloadHistory();
-  }, []);
-  
+  }, [session]);
 
   const handleRedownload = async (event) => {
     if (!event.photoUrls || event.photoUrls.length === 0) {
@@ -75,15 +79,23 @@ const EventCard = ({ fetchAllStats }) => {
   
       // ✅ Update the lastDownload date in DB
       const localUser = JSON.parse(localStorage.getItem("otpUser"));
-      await fetch(`${API_URL}/update-download-date`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: localUser.userId,
-          downloadId: event.downloadId,  // ✅ Use unique download ID
-          date: new Date().toLocaleDateString("en-GB"),
-        }),
-      });  
+const user = localUser || session?.user;
+
+if (!user?.userId) {
+  console.error("User ID not found. Cannot update download date.");
+  return;
+}
+
+await fetch(`${API_URL}/update-download-date`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    userId: user.userId,
+    downloadId: event.downloadId,
+    date: new Date().toLocaleDateString("en-GB"),
+  }),
+});
+
       setEvents(prev => {
         const updated = prev.map(ev => {
           if (ev.downloadId === event.downloadId) {
@@ -225,7 +237,7 @@ const EventCard = ({ fetchAllStats }) => {
         
       ))}
       {isDownloading && (
-          <div className="fixed top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-black bg-opacity-30 z-[9999] backdrop-blur-sm">
+          <div className="fixed top-[-3%] left-0 w-full h-[110vh] flex flex-col items-center justify-center bg-black bg-opacity-30 z-[9999] backdrop-blur-sm">
             <div className="flex flex-col items-center p-6 rounded-2xl">
               {/* Spinner */}
               <div className="relative w-20 h-20">

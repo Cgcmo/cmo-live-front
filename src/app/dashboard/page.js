@@ -537,7 +537,9 @@ const blob = await response.blob();
                   <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-between items-end p-4 rounded-[30px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="text-left">
                       <span className="text-white font-extrabold text-4xl leading-none block">{album.name}</span>
-                      <span className="text-white font-semibold text-lg block mt-[-5px]">Click to view</span>
+                      <span className="text-white font-semibold text-lg block mt-[-5px]">
+  {album.photo_count || 0} photos
+</span>
                     </div>
                     <span className="text-white text-lg font-medium">{album.date}</span>
                   </div>
@@ -602,6 +604,7 @@ const blob = await response.blob();
                         src={photo.image}
                         alt={`Photo ${index + 1}`}
                         className="rounded-[20px] mb-4"
+                        onClick={() => handleImageSelect(photo.image)}
                       />
 
                     </div>
@@ -808,7 +811,7 @@ const blob = await response.blob();
               {/* Loading Text */}
 
               <p className="mt-6 text-lg font-bold text-white">
-                Prearing Your File With <span className="text-[#170645] font-bold">AI</span> Based Photo Gallery App.
+              The latest <span className="text-[#170645] font-bold">AI</span> Based Photo Gallery App.
               </p>
             </div>
           </div>

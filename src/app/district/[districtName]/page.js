@@ -34,18 +34,25 @@ export default function DistrictGalleryPage() {
   //   return () => clearTimeout(timer);
   // }, []);
 
-  
+
   useEffect(() => {
     if (districtName) {
       setCurrentPage(1);
     }
   }, [districtName]);
-  
+
   // Second: only fetch albums when districtName is valid AND currentPage is set
   useEffect(() => {
     if (!districtName || !currentPage) return;
     fetchDistrictAlbums();
   }, [districtName, currentPage]);
+
+  useEffect(() => {
+    if (selectedAlbum && selectedAlbum._id) {
+      fetchPhotos(selectedAlbum);
+    }
+  }, [currentPage]);
+
 
   const fetchDistrictAlbums = async () => {
     try {
@@ -69,11 +76,11 @@ export default function DistrictGalleryPage() {
       const res = await fetch(`${API_URL}/photos/${album._id}?page=${currentPage}&limit=${imagesPerPage}`);
       const data = await res.json();
       if (data.length === 0) return alert("This album is empty");
-  
+
       setSelectedAlbum(album);
       setAlbumPhotos(data.photos);
       setTotalPages(Math.ceil((data.total || 0) / imagesPerPage));
-  
+
       // ✅ Add this block to record album view
       const localUser = JSON.parse(localStorage.getItem("otpUser"));
       const user = localUser || session?.user;
@@ -93,7 +100,7 @@ export default function DistrictGalleryPage() {
       setIsLoading(false);
     }
   };
-  
+
 
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
@@ -125,60 +132,60 @@ export default function DistrictGalleryPage() {
 
   const handleDownloadAlbum = async (album) => {
     if (!album || !album._id) return;
-  
+
     try {
       setIsLoading(true);
-  
+
       const response = await fetch(`${API_URL}/photos/${album._id}?limit=0`);
       const data = await response.json();
       const photos = data.photos;
-  
+
       if (!Array.isArray(photos) || photos.length === 0) {
         alert("No photos to download in this album.");
         return;
       }
-  
+
       const JSZip = (await import("jszip")).default;
       const zip = new JSZip();
-  
+
       await Promise.all(photos.map(async (photo, index) => {
         const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(photo.image)}`);
         const blob = await response.blob();
         zip.file(`${album.name}_${index + 1}.jpg`, blob);
       }));
-  
+
       const content = await zip.generateAsync({ type: "blob" });
       const url = URL.createObjectURL(content);
-  
+
       const link = document.createElement("a");
       link.href = url;
       link.download = `${album.name}.zip`;
       document.body.appendChild(link);
       link.click();
       const localUser = JSON.parse(localStorage.getItem("otpUser"));
-    const sessionUser = session?.user;
-    const user = localUser || sessionUser;
+      const sessionUser = session?.user;
+      const user = localUser || sessionUser;
 
-    if (user?.userId) {
-      await fetch(`${API_URL}/record-download-history`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user.userId,
-          download: {
-            title: album.name,
-            image: photos[0]?.image || "",
-            photoCount: photos.length,
-            date: new Date().toLocaleDateString("en-GB"),
-            photoUrls: photos.map((p) => p.image),
-          },
-        }),
-      }).catch((err) =>
-        console.error("❌ Failed to record download history to DB:", err)
-      );
-    }
+      if (user?.userId) {
+        await fetch(`${API_URL}/record-download-history`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user.userId,
+            download: {
+              title: album.name,
+              image: photos[0]?.image || "",
+              photoCount: photos.length,
+              date: new Date().toLocaleDateString("en-GB"),
+              photoUrls: photos.map((p) => p.image),
+            },
+          }),
+        }).catch((err) =>
+          console.error("❌ Failed to record download history to DB:", err)
+        );
+      }
       document.body.removeChild(link);
-  
+
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading album:", error);
@@ -187,60 +194,60 @@ export default function DistrictGalleryPage() {
       setIsLoading(false);
     }
   };
-  
+
   const handleDownloadAll = async () => {
     if (selectedImages.length === 0) {
       alert("No images selected!");
       return;
     }
-  
+
     setIsLoading(true);
     const startTime = Date.now();
-  
+
     try {
       const JSZip = (await import("jszip")).default;
       const zip = new JSZip();
-  
+
       await Promise.all(selectedImages.map(async (url, index) => {
         const response = await fetch(`${API_URL}/proxy-image?url=${encodeURIComponent(url)}`);
         const blob = await response.blob();
         zip.file(`image_${index + 1}.jpg`, blob);
       }));
-  
+
       const blob = await zip.generateAsync({ type: "blob" });
       const url = URL.createObjectURL(blob);
-  
+
       const link = document.createElement("a");
       link.href = url;
       link.download = "selected_images.zip";
       document.body.appendChild(link);
       link.click();
       const localUser = JSON.parse(localStorage.getItem("otpUser"));
-    const sessionUser = session?.user;
-    const user = localUser || sessionUser;
+      const sessionUser = session?.user;
+      const user = localUser || sessionUser;
 
-    if (user?.userId) {
-      await fetch(`${API_URL}/record-download-history`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user.userId,
-          download: {
-            title: "Custom Download", // or dynamically assign a custom name
-            image: selectedImages[0], // use the first selected image
-            photoCount: selectedImages.length,
-            date: new Date().toLocaleDateString("en-GB"),
-            photoUrls: selectedImages,
-          },
-        }),
-      }).catch((err) =>
-        console.error("❌ Failed to record download history to DB:", err)
-      );
+      if (user?.userId) {
+        await fetch(`${API_URL}/record-download-history`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user.userId,
+            download: {
+              title: "Custom Download", // or dynamically assign a custom name
+              image: selectedImages[0], // use the first selected image
+              photoCount: selectedImages.length,
+              date: new Date().toLocaleDateString("en-GB"),
+              photoUrls: selectedImages,
+            },
+          }),
+        }).catch((err) =>
+          console.error("❌ Failed to record download history to DB:", err)
+        );
 
-      
-    }
+
+      }
       document.body.removeChild(link);
-  
+
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Download all error:", error);
@@ -253,20 +260,20 @@ export default function DistrictGalleryPage() {
       }, delay);
     }
   };
-  
+
   const handleShareAll = async () => {
     if (selectedImages.length === 0) {
       alert("No images selected!");
       return;
     }
-  
+
     if (selectedImages.length > 10) {
       alert("You can only share up to 10 images at once.");
       return;
     }
-  
+
     setIsLoading(true);
-  
+
     try {
       const files = await Promise.all(
         selectedImages.map(async (url, index) => {
@@ -275,7 +282,7 @@ export default function DistrictGalleryPage() {
           return new File([blob], `image_${index + 1}.jpg`, { type: blob.type });
         })
       );
-  
+
       if (navigator.canShare && navigator.canShare({ files })) {
         await navigator.share({
           title: "Check out these images!",
@@ -292,7 +299,7 @@ export default function DistrictGalleryPage() {
       setIsLoading(false);
     }
   };
-  
+
   const breakpointColumnsObj = {
     default: 4,
     1280: 3,
@@ -301,11 +308,9 @@ export default function DistrictGalleryPage() {
   };
 
 
-  
-
   return (
     <div className="min-h-screen bg-white">
-      <Navbar />
+      <Navbar setShowGallery={() => setSelectedAlbum(null)} />
       <div className="pt-4 px-4">
         {selectedAlbum ? (
           <div className="flex items-center justify-between flex-wrap gap-4 sm:px-1 mt-6 mb-4">
@@ -341,24 +346,24 @@ export default function DistrictGalleryPage() {
           </div>
         ) : (
           <div className="flex items-center justify-between flex-wrap gap-4 sm:px-1 mt-6 mb-4">
-    {/* Back Button absolutely positioned on the left */}
-    <button
-      onClick={() => router.push("/dashboard")}
-      className="flex items-center gap-2 text-[#170645] py-1 font-normal rounded-lg text-sm sm:text-base"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
-        viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-      </svg>
-      <span>Back </span>
-    </button>
+            {/* Back Button absolutely positioned on the left */}
+            <button
+              onClick={() => router.push("/dashboard")}
+              className="flex items-center gap-2 text-[#170645] py-1 font-normal rounded-lg text-sm sm:text-base"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+              <span>Back </span>
+            </button>
 
-    {/* Center Heading */}
-    <h2 className="text-center font-extrabold text-xl sm:text-3xl text-[#170645] flex-1 truncate max-w-full">
-      Albums in {decodeURIComponent(districtName)}
-    </h2>
-    <div className="flex items-center gap-2 text-[#170645] font-semibold text-sm sm:text-base cursor-pointer"></div>
-  </div>
+            {/* Center Heading */}
+            <h2 className="text-center font-extrabold text-xl sm:text-3xl text-[#170645] flex-1 truncate max-w-full">
+              Albums in {decodeURIComponent(districtName)}
+            </h2>
+            <div className="flex items-center gap-2 text-[#170645] font-semibold text-sm sm:text-base cursor-pointer"></div>
+          </div>
         )}
 
         {!selectedAlbum && albums.length === 0 ? (
@@ -379,7 +384,7 @@ export default function DistrictGalleryPage() {
                   key={index}
                   className="break-inside-avoid bg-white p-4 rounded-lg group transition-all duration-300 cursor-pointer"
                 >
-                  
+
                   <div className="relative rounded-[30px] overflow-hidden">
                     <input
                       type="checkbox"
@@ -390,11 +395,12 @@ export default function DistrictGalleryPage() {
                     <img
                       src={photo.image}
                       alt={`Photo ${index + 1}`}
+                      onClick={() => handleImageSelect(photo.image)}
                       className="w-full rounded-[30px] transition-all duration-300 group-hover:brightness-75"
                     />
                   </div>
                 </div>
-                          
+
               ))
               : albums.map((album, index) => (
                 <div
@@ -411,8 +417,9 @@ export default function DistrictGalleryPage() {
                     <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-between items-end p-4 rounded-[30px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <div className="text-left">
                         <span className="text-white font-extrabold text-4xl leading-none block">{album.name}</span>
-                        <span className="text-white font-semibold text-lg block mt-[-5px]">Click to view</span>
-                      </div>
+                        <span className="text-white font-semibold text-lg block mt-[-5px]">
+                          {album.photo_count || 0} photos
+                        </span>                      </div>
                       <span className="text-white text-lg font-medium">{album.date}</span>
                     </div>
                   </div>
@@ -440,8 +447,8 @@ export default function DistrictGalleryPage() {
           <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 flex flex-col sm:flex-row gap-3 px-4 py-3 rounded-full">
             <button onClick={handleShareAll} className="min-w-[150px] px-4 py-2 bg-yellow-400 text-black rounded-full flex items-center justify-center gap-2 text-sm font-semibold shadow hover:shadow-md">
               <FiShare size={18} /> Share <span className={`${selectedImages.length > 10 ? "text-red-600 font-bold" : "text-black font-semibold"}`}>
-        ({selectedImages.length}/10)
-      </span>
+                ({selectedImages.length}/10)
+              </span>
             </button>
             <button onClick={handleDownloadAll} className="min-w-[150px] px-4 py-2 bg-[#170645] text-yellow-500 rounded-full flex items-center justify-center gap-2 text-sm font-semibold shadow hover:shadow-md">
               <FiDownload size={18} /> Download
@@ -451,97 +458,97 @@ export default function DistrictGalleryPage() {
       </div>
 
       {totalPages > 1 && (
-  <div className="w-full text-center mt-6 mb-4">
-  <div className="inline-flex space-x-4">
-    <button
-      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-      disabled={currentPage === 1}
-      className="px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500"
-    >
-      {"<<"}
-    </button>
-    <span className="px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500">
-      Page {currentPage} of {totalPages}
-    </span>
-    <button
-      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-      disabled={currentPage === totalPages}
-      className="px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500"
-    >
-      {">>"}
-    </button>
-  </div>
-</div>
+        <div className="w-full text-center mt-6 mb-4">
+          <div className="inline-flex space-x-4">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500"
+            >
+              {"<<"}
+            </button>
+            <span className="px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500"
+            >
+              {">>"}
+            </button>
+          </div>
+        </div>
 
-)}
+      )}
 
       <Footer />
 
       {isPageLoading && (
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-white z-50">
-        <div className="flex flex-col items-center">
-          <div className="relative w-20 h-20">
-            {/* Circular Loading Spinner */}
-            <svg
-              aria-hidden="true"
-              className="absolute inset-0 w-20 h-20 animate-spin text-gray-300"
-              viewBox="0 0 100 101"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                fill="currentColor"
-              />
-              <path
-                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                fill="#170645"
-              />
-            </svg>
+          <div className="flex flex-col items-center">
+            <div className="relative w-20 h-20">
+              {/* Circular Loading Spinner */}
+              <svg
+                aria-hidden="true"
+                className="absolute inset-0 w-20 h-20 animate-spin text-gray-300"
+                viewBox="0 0 100 101"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                  fill="#170645"
+                />
+              </svg>
+            </div>
+            {/* Loading Text */}
+            <p className="mt-4 text-lg font-semibold text-gray-700">Searching Related Photo...</p>
           </div>
-          {/* Loading Text */}
-          <p className="mt-4 text-lg font-semibold text-gray-700">Searching Related Photo...</p>
-        </div>
-        <div className="absolute bottom-10 text-center">
-          <p className="text-lg font-bold text-gray-700">
-            The latest <span className="text-black font-bold">AI</span> image search.
-          </p>
-        </div>
+          <div className="absolute bottom-10 text-center">
+            <p className="text-lg font-bold text-gray-700">
+              The latest <span className="text-black font-bold">AI</span> image search.
+            </p>
+          </div>
 
-      </div>
+        </div>
 
       )}
 
       {isLoading && (
         <div className="fixed top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-black bg-opacity-30 z-[9999] backdrop-blur-sm">
-        <div className="flex flex-col items-center p-6 rounded-2xl">
-          {/* Spinner */}
-          <div className="relative w-20 h-20">
-            <svg
-              aria-hidden="true"
-              className="absolute inset-0 w-20 h-20 animate-spin text-gray-300"
-              viewBox="0 0 100 101"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                fill="currentColor"
-              />
-              <path
-                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                fill="#170645"
-              />
-            </svg>
+          <div className="flex flex-col items-center p-6 rounded-2xl">
+            {/* Spinner */}
+            <div className="relative w-20 h-20">
+              <svg
+                aria-hidden="true"
+                className="absolute inset-0 w-20 h-20 animate-spin text-gray-300"
+                viewBox="0 0 100 101"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                  fill="#170645"
+                />
+              </svg>
+            </div>
+
+            {/* Loading Text */}
+
+            <p className="mt-6 text-lg font-bold text-white">
+              The latest <span className="text-[#170645] font-bold">AI</span> Based Photo Gallery App.
+            </p>
           </div>
-
-          {/* Loading Text */}
-
-          <p className="mt-6 text-lg font-bold text-white">
-            The latest <span className="text-[#170645] font-bold">AI</span> Based Photo Gallery App.
-          </p>
         </div>
-      </div>
       )}
     </div>
   );

@@ -20,6 +20,7 @@ export default function AlbumViewer() {
   const [totalPages, setTotalPages] = useState(1);
   const imagesPerPage = 16;
   const [isLoading, setIsLoading] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const breakpointColumnsObj = {
     default: 4,
     1280: 3,
@@ -29,12 +30,32 @@ export default function AlbumViewer() {
   
   
   useEffect(() => {
+    const handleClick = (e) => {
+      const clickedInsideNavbar = document.querySelector("nav")?.contains(e.target);
+      const clickedInsideFooter = document.querySelector("footer")?.contains(e.target);
+  
+      if (clickedInsideNavbar || clickedInsideFooter) {
+        e.preventDefault();
+        e.stopPropagation();
+        alert("Navigation is currently disabled. Redirecting to home...");
+        window.location.href = "/";
+      }
+    };
+  
+    document.addEventListener("click", handleClick, true); // Use capture phase
+  
+    return () => {
+      document.removeEventListener("click", handleClick, true);
+    };
+  }, []);
+    
+  useEffect(() => {
     const fetchPhotos = async () => {
       try {
-        const res = await fetch(`${API_URL}/photos/${albumId}`);
+        const res = await fetch(`${API_URL}/photos/${albumId}?page=${currentPage}&limit=${imagesPerPage}`);
         const photoData = await res.json();
-        setPhotos(photoData.photos);
-        setTotalPages(Math.ceil(photoData.photos.length / imagesPerPage));
+setPhotos(photoData.photos);
+setTotalPages(Math.ceil(photoData.total / imagesPerPage));
 
         const albumRes = await fetch(`${API_URL}/albums`);
 const albumData = await albumRes.json();
@@ -45,13 +66,14 @@ const album = albumData.albums.find((a) => a._id === albumId);
         console.error("Error fetching album:", error);
       } finally {
         setLoading(false);
+        setIsLoading(false);
       }
     };
 
     if (albumId) {
-      fetchPhotos(1);
+      fetchPhotos();
     }
-  }, [albumId]);
+  }, [albumId, currentPage]);
 
   
   
@@ -131,7 +153,7 @@ const album = albumData.albums.find((a) => a._id === albumId);
     }
   };
   
- 
+   
   
 const handleShareAll = async () => {
   if (selectedPhotos.length === 0) {
@@ -211,7 +233,19 @@ const handleShareAll = async () => {
 
   return (
     <div className="min-h-screen bg-white relative ">
-      <Navbar setShowGallery={() => {}} setGalleryPhotos={() => {}} />
+      <div className="relative">
+  <Navbar />
+  <div
+    className="absolute inset-0 z-50 cursor-not-allowed"
+    style={{ pointerEvents: "all" }}
+    onClick={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setShowLoginModal(true);
+    }}
+  ></div>
+</div>
+
       <div className="p-4">
         <div className="relative w-full mb-4 flex items-center">
           <h1 className="text-3xl font-extrabold text-[#170645] absolute left-1/2 transform -translate-x-1/2">
@@ -235,7 +269,7 @@ const handleShareAll = async () => {
   className="my-masonry-grid"
   columnClassName="my-masonry-grid_column"
 >
-        {photos.slice((currentPage - 1) * imagesPerPage, currentPage * imagesPerPage).map((photo, i) => (
+{photos.map((photo, i) => (
 
             <div
               key={i}
@@ -252,6 +286,7 @@ const handleShareAll = async () => {
                   src={photo.image}
                   alt={`Photo ${i + 1}`}
                   className="w-full rounded-[30px]"
+                  onClick={() => handleSelect(photo)}
                 />
               </div>
             </div>
@@ -262,24 +297,35 @@ const handleShareAll = async () => {
         {totalPages > 1 && (
   <div className="flex justify-center mt-6 mb-4 space-x-4">
     <button
-      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-      disabled={currentPage === 1}
-      className="px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500"
-    >
-      {"<<"}
-    </button>
+  onClick={async () => {
+    if (currentPage === 1) return;
+    setIsLoading(true);
+    await new Promise((r) => setTimeout(r, 1000)); // Minimum 1 second delay
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  }}
+  disabled={currentPage === 1}
+  className="px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500"
+>
+  {"<<"}
+</button>
 
-    <span className="px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500">
-      Page {currentPage} of {totalPages}
-    </span>
+<span className="px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500">
+  Page {currentPage} of {totalPages}
+</span>
 
-    <button
-      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-      disabled={currentPage === totalPages}
-      className="px-4 py-2 border text-sm rounded-lg text-yellow-500 bg-[#170645]"
-    >
-      {">>"}
-    </button>
+<button
+  onClick={async () => {
+    if (currentPage === totalPages) return;
+    setIsLoading(true);
+    await new Promise((r) => setTimeout(r, 1000)); // Minimum 1 second delay
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  }}
+  disabled={currentPage === totalPages}
+  className="px-4 py-2 border text-sm rounded-lg text-yellow-500 bg-[#170645]"
+>
+  {">>"}
+</button>
+
   </div>
 )}
 
@@ -302,7 +348,37 @@ const handleShareAll = async () => {
 </div>
 
       </div>
-      <Footer />
+      <div className="relative">
+  <Footer />
+  <div
+    className="absolute inset-0 z-50 cursor-not-allowed"
+    style={{ pointerEvents: "all" }}
+    onClick={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setShowLoginModal(true);
+    }}
+  ></div>
+</div>
+
+{showLoginModal && (
+  <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out">
+    <div className="bg-white rounded-xl p-6 w-[90%] max-w-sm shadow-lg text-center fade-in-modal">
+      <h2 className="text-lg font-bold mb-4 text-[#170645]">Authentication Required</h2>
+      <p className="text-sm text-gray-700 mb-6">You're not signed in. Please log in to access this feature.</p>
+      <button
+        className="bg-[#170645] text-yellow-400 px-5 py-2 rounded-full font-semibold hover:bg-[#0e0433]"
+        onClick={() => {
+          setShowLoginModal(false);
+          window.location.href = "/";
+        }}
+      >
+        Login Now
+      </button>
+    </div>
+  </div>
+)}
+
 
       {isLoading && (
   <div className="fixed top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-black bg-opacity-30 z-[9999] backdrop-blur-sm">
@@ -330,11 +406,30 @@ const handleShareAll = async () => {
     {/* Loading Text */}
 
     <p className="mt-6 text-lg font-bold text-white">
-      Prearing Your File With <span className="text-[#170645] font-bold">AI</span> Based Photo Gallery App.
+    The latest <span className="text-[#170645] font-bold">AI</span> Based Photo Gallery App.
     </p>
   </div>
 </div>
 )}
+
+
+<style jsx>{`
+  .fade-in-modal {
+    animation: fadeInUp 0.3s ease-out forwards;
+  }
+
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+`}</style>
+
 
     </div>
   );

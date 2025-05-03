@@ -29,6 +29,9 @@ export default function UploadPhoto() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
+  const [loadedImages, setLoadedImages] = useState(0);
+  const [loaderStartTime, setLoaderStartTime] = useState(null);
+
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -43,7 +46,43 @@ export default function UploadPhoto() {
       setFile(selectedFile);
     }
   };
+  
+  useEffect(() => {
+    const totalOnPage = Math.min(
+      imagesPerPage,
+      images.length - (currentPage - 1) * imagesPerPage
+    );
+  
+    if (!showGallery || totalOnPage <= 0) return;
+  
+    setLoadedImages(0);
+    setIsDownloading(true);
+    setLoaderStartTime(Date.now());
+  }, [currentPage, showGallery, images.length]);
+  
+  
 
+  useEffect(() => {
+    if (!showGallery || !loaderStartTime) return;
+  
+    const totalOnPage = Math.min(
+      imagesPerPage,
+      images.length - (currentPage - 1) * imagesPerPage
+    );
+  
+    if (loadedImages < totalOnPage || totalOnPage === 0) return;
+  
+    const elapsed = Date.now() - loaderStartTime;
+    const delay = Math.max(0, 1000 - elapsed);
+  
+    const timeout = setTimeout(() => {
+      setIsDownloading(false);
+    }, delay);
+  
+    return () => clearTimeout(timeout);
+  }, [loadedImages, loaderStartTime, showGallery, currentPage, images.length]);
+  
+  
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -254,33 +293,6 @@ export default function UploadPhoto() {
   };
 
 
-  // Download Selected Images
-  // const handleDownloadAll = async () => {
-  //   if (selectedImages.length === 0) {
-  //     alert("No images selected!");
-  //     return;
-  //   }
-
-  //   const zip = new JSZip();
-
-  //   selectedImages.forEach((dataUrl, index) => {
-  //     const base64 = dataUrl.split(",")[1]; // Strip the base64 prefix
-  //     zip.file(`image_${index + 1}.jpg`, base64, { base64: true });
-  //   });
-
-  //   const blob = await zip.generateAsync({ type: "blob" });
-  //   const url = URL.createObjectURL(blob);
-
-  //   const link = document.createElement("a");
-  //   link.href = url;
-  //   link.download = "selected_images.zip";
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-
-  //   URL.revokeObjectURL(url);
-  //   handleDownloadC();
-  // };
 
   const handleDownloadAll = async () => {
     if (selectedImages.length === 0) {
@@ -424,14 +436,6 @@ export default function UploadPhoto() {
     }
   };
   
-
-  // useEffect(() => {
-  //   const otpUser = localStorage.getItem("otpUser");
-
-  //   if (!otpUser && status !== "authenticated") {
-  //     router.replace("/"); // ❌ Not logged in
-  //   }
-  // }, [status]);
 
 
   if (isPageLoading) {
@@ -626,18 +630,6 @@ export default function UploadPhoto() {
         </>
       ) : (
         <div className="w-full p-4 mt-6">
-          {/* <h1 className="text-3xl font-extrabold text-[#170645] text-center mb-4">Related Image Searches</h1>
-          <div className="w-full relative">
-            <label className="absolute top-full right-4 mt-2 text-lg flex items-center text-gray-600 cursor-pointer">
-              <input
-                type="checkbox"
-                className="mr-2 w-4 h-4 accent-[#170645] "
-                checked={selectAll}
-                onChange={handleSelectAll}
-              />
-              Select All
-            </label>
-          </div> */}
           <div className="relative w-full mb-4 flex items-center">
             <button
               onClick={() => {
@@ -703,22 +695,8 @@ export default function UploadPhoto() {
                       checked={selectedImages.includes(image.image)}
                       onChange={() => handleImageSelect(image.image)}
                     />
-                    <img src={image.image} alt={image.title} className="w-full rounded-[30px]" />
+                    <img src={image.image} alt={image.title} onClick={() => handleImageSelect(image.image)}  onLoad={() => setLoadedImages((prev) => prev + 1)} className="w-full rounded-[30px]" />
                   </div>
-                  <h3 className="text-[20px] font-bold text-black mt-2">{image.title}</h3>
-
-                  {/* <div className="flex gap-[10px] items-center mt-2">
-               
-                <button onClick={() => handleShare(image.src)} className="w-[2vw] h-[4vh] border border-gray-400 flex items-center justify-center rounded-full transition-all duration-300 group-hover:bg-[rgba(23,6,69,1)] group-hover:text-white">
-                  <FiShare size={18} className="text-gray-500 group-hover:text-white" />
-                </button>
-                <button onClick={() => handleCopyLink(image.src)} className="w-[30px] h-[30px] border border-gray-400 flex items-center justify-center rounded-full transition-all duration-300 group-hover:bg-[rgba(23,6,69,1)] group-hover:text-white">
-                  <FiLink size={18} className="text-gray-500 group-hover:text-white" />
-                </button>
-                <button onClick={() => handleDownload(image.src)} className="w-[30px] h-[30px] border border-gray-400 flex items-center justify-center rounded-full transition-all duration-300 group-hover:bg-[rgba(23,6,69,1)] group-hover:text-white">
-                  <FiDownload size={18} className="text-gray-500 group-hover:text-white" />
-                </button>
-              </div> */}
                 </div>
               ))}
           </div>
@@ -726,7 +704,12 @@ export default function UploadPhoto() {
             <>
               <div className="flex justify-center mt-6 mb-4 space-x-4">
                 <button
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                   onClick={() => {
+                    setIsDownloading(true);
+                    setLoadedImages(0);
+                    setLoaderStartTime(Date.now());
+                    setCurrentPage((prev) => Math.max(prev - 1, 1));
+                  }}
                   disabled={currentPage === 1}
                   className="px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500"
                 >
@@ -736,7 +719,12 @@ export default function UploadPhoto() {
                   Page {currentPage} of {totalPages}
                 </span>
                 <button
-                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  onClick={() => {
+                    setIsDownloading(true);
+                    setLoadedImages(0);
+                    setLoaderStartTime(Date.now());
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+                  }}
                   disabled={currentPage === totalPages}
                   className="px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500"
                 >

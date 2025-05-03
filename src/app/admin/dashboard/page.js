@@ -366,6 +366,7 @@ function App() {
             {stats.map((item, index) => (
               <div
                 key={index}
+                onMouseEnter={fetchAllStats}
                 className="w-full h-full max-w-[200px] h-[200px] aspect-square mx-auto rounded-[25px] flex flex-col items-center justify-center shadow-md transition-all duration-300 hover:scale-105 transform transition-transform duration-300"
                 style={{ backgroundColor: item.bg }}
               >

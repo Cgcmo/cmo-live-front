@@ -78,14 +78,15 @@ export default function AuthPage() {
         setIsLoading(false);
         return;
       }
-  
-      // ✅ Store user session using Cookies
+      
+      // ✅ Store user session
       Cookies.set("adminLoggedIn", "true", { expires: 1, path: "/admin" });
       Cookies.set("loggedInUserId", data.userId, { expires: 1, path: "/" });
-
+      localStorage.setItem("otpUser", JSON.stringify({ name: data.name })); // ✅ Add this line
+      
       alert("Login successful!");
-      router.push("/admin/dashboard"); // Redirect to dashboard
-  
+      router.push("/admin/dashboard");
+      
     } catch (error) {
       console.error("Login error:", error);
       alert("Something went wrong. Please try again.");

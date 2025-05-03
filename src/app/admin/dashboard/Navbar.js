@@ -118,7 +118,17 @@ export default function Navbar({ setShowGallery, setGalleryPhotos, fetchAlbums: 
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             className="w-full bg-transparent text-gray-700 outline-none px-2"
           />
-          <button onClick={() => handleSearch()} className="text-gray-500">✕</button>
+           {search.length > 0 && (
+    <button
+      onClick={() => {
+        setSearch("");
+        setSuggestions([]);
+      }}
+      className="text-gray-500"
+    >
+      ✕
+    </button>
+  )}
           <span className="text-gray-400 px-3">|</span>
           <button className="text-gray-600 text-base">
             <FaSearch />

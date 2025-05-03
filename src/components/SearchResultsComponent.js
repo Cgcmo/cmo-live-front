@@ -20,8 +20,34 @@ export default function SearchResults() {
   const [loading, setLoading] = useState(true);
   const [isDownloading, setIsDownloading] = useState(false);
   const { data: session } = useSession();
+  const [currentPage, setCurrentPage] = useState(1);
+  const imagesPerPage = 16;
+  const [totalPages, setTotalPages] = useState(1);
+  const [loadedImages, setLoadedImages] = useState(0);
+  const [loaderStartTime, setLoaderStartTime] = useState(null);
 
 
+
+
+  useEffect(() => {
+    setIsDownloading(true);
+    setLoadedImages(0); // reset on page change
+  }, [currentPage]);
+  
+  useEffect(() => {
+    const totalOnPage = Math.min(imagesPerPage, photos.length - (currentPage - 1) * imagesPerPage);
+    
+    if (loadedImages >= totalOnPage && totalOnPage > 0) {
+      const elapsed = Date.now() - loaderStartTime;
+      const delay = Math.max(0, 1000 - elapsed); // ensure at least 1s
+      setTimeout(() => {
+        setIsDownloading(false);
+      }, delay);
+    }
+  }, [loadedImages, photos, currentPage, loaderStartTime]);
+  
+
+  
   useEffect(() => {
     if (!query) return;
   
@@ -35,6 +61,7 @@ export default function SearchResults() {
       .then((res) => res.json())
       .then((data) => {
         setPhotos(data.photos || []);
+        setTotalPages(Math.ceil((data.photos?.length || 0) / imagesPerPage));
         setLoading(false);
   
         // ✅ Remove search loader from navbar
@@ -256,7 +283,10 @@ if (user?.userId) {
           <p className="text-center text-gray-600 mt-6">No related photos found.</p>
         ) : (
           <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4 mt-4">
-            {photos.map((photo, i) => (
+            {photos
+  .slice((currentPage - 1) * imagesPerPage, currentPage * imagesPerPage)
+  .map((photo, i) => (
+
               <div
                 key={i}
                 className="break-inside-avoid bg-white p-2 rounded-[30px] border-2 border-transparent hover:border-[#0084FF] hover:shadow-md"
@@ -271,6 +301,8 @@ if (user?.userId) {
                   <img
                     src={photo.image}
                     alt={`Photo ${i + 1}`}
+                    onClick={() => handleSelect(photo)}
+                    onLoad={() => setLoadedImages((prev) => prev + 1)}
                     className="w-full rounded-[30px]"
                   />
                 </div>
@@ -334,6 +366,39 @@ if (user?.userId) {
             </div>
           </div>
         )}
+
+{totalPages > 1 && (
+  <div className="flex justify-center mt-6 mb-4 space-x-4">
+    <button
+      onClick={() => {
+        setIsDownloading(true);
+        setLoadedImages(0);
+        setLoaderStartTime(Date.now());
+        setCurrentPage((prev) => Math.max(prev - 1, 1));
+      }}
+      disabled={currentPage === 1}
+      className="px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500"
+    >
+      {"<<"}
+    </button>
+    <span className="px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500">
+      Page {currentPage} of {totalPages}
+    </span>
+    <button
+      onClick={() => {
+        setIsDownloading(true);
+        setLoadedImages(0);
+        setLoaderStartTime(Date.now());
+        setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+      }}
+      disabled={currentPage === totalPages}
+      className="px-4 py-2 border rounded-lg bg-[#170645] text-yellow-500"
+    >
+      {">>"}
+    </button>
+  </div>
+)}
+
       <Footer />
     </div>
   );
