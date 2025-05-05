@@ -929,8 +929,8 @@ useEffect(() => {
 </div>
 
               <button onClick={sendOtpBeforeSignup} 
-                className="w-full h-11 bg-[#170645] text-[#FFE100] px-3 rounded-full mt-4 text-lg font-bold">
-                Sign Up
+                className="w-full h-11 bg-[#170645] text-[#FFE100] px-3 rounded-full mt-4 text-lg font-semibold">
+                Sign Up With WhatsApp
               </button>
               <div className="flex justify-center gap-6 mt-4">
                 <button className="text-[#170645] hover:underline text-sm">Customer Support</button>

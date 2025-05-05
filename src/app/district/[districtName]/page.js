@@ -415,17 +415,23 @@ export default function DistrictGalleryPage() {
                       className="w-full rounded-[30px] transition-all duration-300 group-hover:brightness-75"
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-between items-end p-4 rounded-[30px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="text-left">
-                        <span className="text-white font-extrabold text-4xl leading-none block">{album.name}</span>
-                        <span className="text-white font-semibold text-lg block mt-[-5px]">
-                          {album.photo_count || 0} photos
-                        </span>                      </div>
-                      <span className="text-white text-lg font-medium">{album.date}</span>
+                    <div className="text-left">
+                    <span className="text-white font-semibold text-lg block mt-1">
+  {album.photo_count || 0} photos
+</span>
+<span className="text-white text-lg mt-1 block">{album.date}</span>
+<span title={album.name} className="text-white font-extrabold text-4xl leading-none block overflow-hidden whitespace-nowrap text-ellipsis max-w-full sm:max-w-[250px]">
+  {album.name}
+</span>
+
+                      
+                    </div>
                     </div>
                   </div>
-                  <h3 className="text-[20px] font-bold capitalize text-black mt-2 p-2 rounded-md">
-                    {album.name}
-                  </h3>
+                  <h3 className="text-[20px] font-bold capitalize text-black mt-2 pl-3 rounded-md overflow-hidden whitespace-nowrap text-ellipsis max-w-full sm:max-w-[250px]">
+  {album.name}
+</h3>
+
                   <div className="flex justify-start space-x-3 ml-2">
                     <button onClick={(e) => { e.stopPropagation(); handleShare(`/album/${album._id}`); }} className="border border-gray-500 p-[6px] rounded-full hover:bg-gray-300">
                       <FiShare size={16} className="text-gray-500" />

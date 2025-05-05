@@ -1,10 +1,201 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function InfoPage() {
   const params = useParams();
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [isHindi, setIsHindi] = useState(false);
+  const [fontSize, setFontSize] = useState(18);
 
+  const featuredLinks = [
+   { name: "Home", url: "/" },
+   { name: "Copyright Policy", url: "/info/copyright-policy" },
+   { name: "Disclaimer", url: "/info/disclaimer" },
+   { name: "Site Map", url: "/info/site-map" },
+   { name: "Hyperlink Policy", url: "/info/hyperlink-policy" },
+   { name: "Privacy Policy", url: "/info/privacy-policy" },
+   { name: "Terms And Conditions", url: "/info/terms-and-conditions" },
+   { name: "Terms Of Use", url: "/info/terms-of-use" },
+ ];
+
+ function renderBoldContent(text) {
+   return text.split("**").map((part, index) =>
+     index % 2 === 1 ? (
+       <span key={index} className="font-semibold text-[#222]">
+         {part}
+       </span>
+     ) : (
+       <span key={index} className="text-gray-800">
+         {part}
+       </span>
+     )
+   );
+ }
+
+ const contentHindi = {
+   "copyright-policy": {
+     title: "कॉपीराइट नीति",
+     content: `
+ nbdigital.online पर होस्ट की गई सभी सामग्री — जैसे चित्र, वीडियो और टेक्स्ट — पूरी तरह से मुख्यमंत्री कार्यालय (CMO), छत्तीसगढ़, भारत सरकार की संपत्ति है।
+ 
+ 1. **मालिकाना हक:**
+    - इस वेबसाइट पर मौजूद सभी फोटोग्राफ, वीडियो और लिखित सामग्री भारतीय कॉपीराइट कानूनों द्वारा संरक्षित हैं।
+    - बौद्धिक संपदा अधिकार पूरी तरह से CMO छत्तीसगढ़ के पास हैं।
+ 
+ 2. **उपयोग दिशा-निर्देश:**
+    - उपयोगकर्ता केवल व्यक्तिगत और गैर-व्यावसायिक उद्देश्य के लिए सामग्री देख, डाउनलोड और साझा कर सकते हैं।
+    - बिना लिखित अनुमति के पुनरुत्पादन, पुनर्वितरण या व्यावसायिक उपयोग सख्त वर्जित है।
+ 
+ 3. **उल्लंघन की रिपोर्टिंग:**
+    - यदि आपको लगे कि इस साइट की सामग्री का दुरुपयोग हो रहा है, तो कृपया dprcgh@gmail.com पर तुरंत रिपोर्ट करें।
+ 
+ 4. **कानूनी कार्रवाई:**
+    - किसी भी प्रकार का अनधिकृत व्यावसायिक उपयोग या शोषण भारतीय कानूनों के तहत कानूनी कार्रवाई को जन्म दे सकता है।
+     `,
+   },
+ 
+   disclaimer: {
+     title: "अस्वीकरण",
+     content: `
+ nbdigital.online, जो मुख्यमंत्री कार्यालय, छत्तीसगढ़ द्वारा संचालित एक एआई आधारित प्लेटफॉर्म है, केवल सूचना एवं सुविधा के उद्देश्य से सेवाएं प्रदान करता है।
+ 
+ 1. **सटीकता और विश्वसनीयता:**
+    - हमारी प्रणाली FaceNet AI तकनीक पर आधारित है, लेकिन इसकी सटीकता की पूर्ण गारंटी नहीं दी जा सकती।
+    - यदि कोई सटीक मिलान नहीं मिलता है, तो संबंधित तस्वीरों का विस्तारित सेट दिखाया जा सकता है।
+ 
+ 2. **दायित्व सीमा:**
+    - CMO छत्तीसगढ़ किसी भी गलत उपयोग, गलत व्याख्या, या आशय विरुद्ध उपयोग की ज़िम्मेदारी नहीं लेता।
+    - सामग्री का उपयोग उपयोगकर्ता की ज़िम्मेदारी पर निर्भर करता है।
+ 
+ 3. **उपयोगकर्ता की जिम्मेदारी:**
+    - उपयोगकर्ता से अपेक्षा की जाती है कि वे इस प्लेटफॉर्म की गोपनीयता और प्रामाणिकता को बनाए रखें।
+ 
+ 4. **तकनीकी समस्याएं:**
+    - साइट की उपलब्धता सुनिश्चित करने के लिए हर संभव प्रयास किया जाता है, लेकिन अनियोजित तकनीकी समस्याएं हो सकती हैं।
+     `,
+   },
+ 
+   "site-map": {
+     title: "साइट मैप",
+     content: `
+ यह साइट मैप nbdigital.online की संपूर्ण संरचना को दिखाता है ताकि उपयोगकर्ता प्रभावी रूप से नेविगेट कर सकें:
+ 
+ 1) **उपयोगकर्ता दृश्य**
+ - एल्बम और जिलों की तस्वीरें
+ - डैशबोर्ड और प्रोफाइल
+ - अपलोड, खोज, गैलरी, स्विच व्यू
+ 
+ 2) **प्रमाणीकरण और सुरक्षा**
+ - पासवर्ड रीसेट
+ - सत्यापन
+ - लॉगिन पेज
+ 
+ 3) **सामान्य**
+ - होमपेज
+ - वीडियो प्लेयर
+ - सूचना पेज
+ - सर्च परिणाम
+     `,
+   },
+ 
+   "privacy-policy": {
+     title: "गोपनीयता नीति",
+     content: `
+ यह नीति nbdigital.online पर आपकी व्यक्तिगत जानकारी कैसे एकत्र, उपयोग और सुरक्षित रखी जाती है, इसका विवरण देती है।
+ 
+ 1. **संग्रहीत जानकारी:**
+    - नाम, मोबाइल नंबर, ईमेल, जिला
+    - अस्थायी रूप से अपलोड की गई फेस फोटो (एआई मिलान के लिए)
+    - डिवाइस और सेशन लॉग्स
+ 
+ 2. **उपयोग:**
+    - अनुभव को वैयक्तिक बनाना और AI सटीकता बढ़ाना
+    - डेटा कभी बेचा या किराए पर नहीं दिया जाएगा
+ 
+ 3. **सुरक्षा:**
+    - डेटा भारतीय कानूनों के अनुसार संरक्षित है
+    - एन्क्रिप्शन और एक्सेस कंट्रोल का उपयोग किया जाता है
+ 
+ 4. **थर्ड पार्टी सेवाएं:**
+    - एनालिटिक्स टूल्स का सीमित उपयोग
+    - कानूनी आवश्यकता के बिना कोई साझेदारी नहीं
+ 
+ 5. **उपयोगकर्ता अधिकार:**
+    - डेटा हटाने या संशोधन का अनुरोध dprcgh@gmail.com पर करें।
+     `,
+   },
+ 
+   "hyperlink-policy": {
+     title: "हाइपरलिंक नीति",
+     content: `
+ nbdigital.online पर बाहरी वेबसाइटों के लिंक केवल सुविधा के लिए दिए गए हैं।
+ 
+ 1. **बाहरी लिंक अस्वीकरण:**
+    - हम किसी भी थर्ड पार्टी साइट की सटीकता या सुरक्षा की गारंटी नहीं देते।
+ 
+ 2. **हमारी साइट से लिंक करना:**
+    - अन्य साइटें हमारी होमपेज या सार्वजनिक पेज से लिंक कर सकती हैं।
+    - लिंक भ्रामक या अनुमोदन का संकेत नहीं होना चाहिए।
+ 
+ 3. **पूर्व अनुमति की आवश्यकता नहीं:**
+    - सार्वजनिक जानकारी से लिंक करने के लिए अनुमति की आवश्यकता नहीं है।
+    - लोगो या ग्राफिक्स के उपयोग हेतु अनुमति आवश्यक है।
+ 
+ 4. **अनावश्यक लिंक हटाने का अनुरोध:**
+    - किसी अनुचित लिंक की सूचना dprcgh@gmail.com पर दें।
+     `,
+   },
+ 
+   "terms-of-use": {
+     title: "उपयोग की शर्तें",
+     content: `
+ nbdigital.online के सभी उपयोगकर्ता निम्नलिखित शर्तों का पालन करेंगे:
+ 
+ 1. **नैतिक उपयोग:**
+    - प्लेटफॉर्म का उपयोग केवल सार्वजनिक कार्यक्रमों में खींची गई तस्वीरों को खोजने के लिए होना चाहिए।
+ 
+ 2. **गोपनीयता और डेटा अखंडता:**
+    - लॉगिन विवरण गोपनीय रखें।
+    - किसी भी उल्लंघन की तुरंत रिपोर्ट करें।
+ 
+ 3. **सामग्री सहभागिता:**
+    - फ़ोटो को डाउनलोड या साझा करना केवल व्यक्तिगत उपयोग के लिए।
+    - छवियों को गलत तरीके से संपादित करना मना है।
+ 
+ 4. **कानूनी अनुपालन:**
+    - सभी भारतीय साइबर और गोपनीयता कानूनों का पालन अनिवार्य है।
+    - उल्लंघन की स्थिति में कानूनी कार्रवाई हो सकती है।
+     `,
+   },
+ 
+   "terms-and-conditions": {
+     title: "नियम और शर्तें",
+     content: `
+ nbdigital.online का उपयोग करने से, उपयोगकर्ता निम्नलिखित शर्तों को स्वीकार करते हैं:
+ 
+ 1. **पंजीकरण:**
+    - उपयोगकर्ताओं को सही जानकारी देनी होगी जैसे नाम, ईमेल, मोबाइल आदि।
+ 
+ 2. **सुरक्षा:**
+    - मजबूत पासवर्ड रखें और किसी भी संदेहास्पद गतिविधि की रिपोर्ट करें।
+ 
+ 3. **अनुमत उपयोग:**
+    - फ़ोटो केवल व्यक्तिगत उपयोग के लिए डाउनलोड और साझा किए जा सकते हैं।
+ 
+ 4. **प्रतिबंधित गतिविधियां:**
+    - अनधिकृत वितरण, वाणिज्यिक उपयोग, या प्लेटफ़ॉर्म के दुरुपयोग पर रोक है।
+ 
+ 5. **उल्लंघन के परिणाम:**
+    - खाता निलंबन या समाप्ति, और कानूनी कार्यवाही हो सकती है।
+     `,
+   },
+ };
+
+ 
   const content = {
     "copyright-policy": {
       title: "Copyright Policy",
@@ -53,29 +244,7 @@ The content and services provided by nbdigital.online, an AI-based platform main
       content: `
 The following is a comprehensive map of the structure and content of nbdigital.online, designed to help users navigate effectively:
 
-1) Admin Panel
-
-- **Dashboard:** Central admin controls and analytics
-  - All Photos
-  - Banner Tab
-  - Custom Bar Chart
-  - Departments Tab
-  - Districts Tab
-  - Footer Configuration
-  - Gallery Modal
-  - Modal Popup
-  - Navbar Customization
-  - Profile Management
-  - Search Component
-  - Switch Controls
-  - User Management (Users Table)
-
-- **Column Management:**
-  - Column 1
-  - Column 2
-  - Column 3
-
-2) User Views
+1) **User Views**
 
 - **Albums and Districts:**
   - Album Photos ("/album/:albumId")
@@ -100,14 +269,14 @@ The following is a comprehensive map of the structure and content of nbdigital.o
   - Profile Edit
   - Switch View
 
-3) User Authentication and Security
+2) **User Authentication and Security**
 
 - Forgot Password
 - Reset Password Form
 - Verification Page
 - Authentication Page
 
-4) General and Miscellaneous
+3) **General and Miscellaneous**
 
 - Home Page
 - Layout and Structure
@@ -224,7 +393,9 @@ This policy may be updated without prior notice.
 
   };
 
-  const pageContent = content[params.slug];
+  const pageContent = isHindi ? contentHindi[params.slug] : content[params.slug];
+
+  
 
   if (!pageContent) {
     return (
@@ -235,12 +406,228 @@ This policy may be updated without prior notice.
     );
   }
 
+  
+
   return (
-    <main className="max-w-5xl mx-auto py-16 px-6 md:px-12">
-      <h1 className="text-4xl font-bold mb-8 text-black">{pageContent.title}</h1>
-      <div className="text-black whitespace-pre-line leading-relaxed text-lg">
-        {pageContent.content}
-      </div>
-    </main>
-  );
+   <div className="bg-[#170645] text-white min-h-screen flex flex-col">
+     {/* Navbar */}
+     <nav className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 sm:px-6 py-2 bg-[#170645] shadow-md">
+       {/* Left: Logo */}
+                    <div className="flex items-center">
+                    <Link href="/" className="flex items-center">
+  <Image
+    src="/Group 833.png"
+    alt="Logo"
+    width={71}
+    height={71}
+    className="rounded-full cursor-pointer"
+  />
+</Link>
+                    </div>
+      
+      
+      
+                    {/* Hamburger Icon on Mobile */}
+                    <div className=" flex items-center space-x-3 sm:hidden relative z-50">
+                      
+                      <button
+                        onClick={() => setMenuOpen(!menuOpen)}
+                        className="text-white focus:outline-none"
+                      >
+                        <svg
+                          className="w-8 h-8"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          {menuOpen ? (
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          ) : (
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M4 6h16M4 12h16M4 18h16"
+                            />
+                          )}
+                        </svg>
+                      </button>
+                    </div>
+      
+                    {/* Right Controls (Hidden on Mobile) */}
+                    <div className="hidden sm:flex items-center space-x-3">
+                      <button
+                        className="bg-white text-[#170645] px-4 h-[45px] rounded-full text-md"
+                        onClick={() => setIsHindi(!isHindi)}
+                      >
+                        A<sub>अ</sub> {isHindi ? 'Eng' : 'Hindi'}
+                      </button>
+      
+                      <div className="bg-white text-[#170645] px-4 h-[45px] rounded-full text-md flex space-x-2">
+                        <button onClick={() => setFontSize((prev) => Math.min(prev + 2, 24))}>A+</button>
+                        <button onClick={() => setFontSize((prev) => Math.max(prev - 2, 12))}>A-</button>
+                      </div>
+                    </div>
+                    {menuOpen && (
+              <div
+                className="fixed inset-0 bg-black bg-opacity-50 z-30"
+                onClick={() => setMenuOpen(false)}
+              ></div>
+            )}
+
+            {/* Mobile Dropdown Menu (positioned below nav) */}
+            {menuOpen && (
+              <div className="fixed top-20 right-0 w-[30vw] px-4 py-4 flex flex-col items-end space-y-3  z-40">
+                {/* Language Toggle */}
+                <button
+                  className="bg-white text-[#170645] w-full max-w-[260px] py-2 rounded-full text-sm font-medium"
+                  onClick={() => setIsHindi(!isHindi)}
+                >
+                  A<sub className="text-xs">अ</sub> {isHindi ? 'Eng' : 'Hindi'}
+                </button>
+
+                {/* Font Size Controls */}
+                <div className="bg-white text-[#170645] w-full max-w-[260px] py-2 rounded-full text-sm font-medium flex justify-around">
+                  <button onClick={() => setFontSize((prev) => Math.min(prev + 2, 24))}>A+</button>
+                  <button onClick={() => setFontSize((prev) => Math.max(prev - 2, 12))}>A-</button>
+                </div>
+
+               
+              </div>
+            )}
+                  </nav>
+
+     {/* Page Content */}
+     <main className="flex-grow pt-24 max-w-5xl mx-auto py-16 px-6 md:px-12 bg-white text-black">
+
+       {pageContent ? (
+         <>
+           <h1 className="text-4xl font-bold mt-10 mb-8">{pageContent.title}</h1>
+           <div
+  className="whitespace-pre-line leading-relaxed"
+  style={{ fontSize: `${fontSize}px` }}
+>
+           {renderBoldContent(pageContent.content)}
+           </div>
+         </>
+       ) : (
+         <>
+           <h1 className="text-3xl font-bold mb-4">Page Not Found</h1>
+           <p className="text-gray-600">Sorry, the page you're looking for does not exist.</p>
+         </>
+       )}
+     </main>
+
+     {/* Footer */}
+     <footer className="bg-gray-200 text-black py-8">
+
+       <div className="max-w-[1621px] mx-auto px-6 md:px-16">
+
+{/* Featured Links & Reach Us */}
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-16">
+
+  {/* Featured Links */}
+  <div>
+<h3 className="font-bold text-lg text-gray-800 mb-3">Featured Links</h3>
+<div className="text-sm text-gray-600 flex flex-wrap gap-x-2 gap-y-2">
+{featuredLinks.map((link, index) => (
+<span key={index} className="flex items-center">
+<a
+href={link.url}
+target="_blank"
+rel="noopener noreferrer"
+className="hover:underline"
+>
+{link.name}
+</a>
+{index !== featuredLinks.length - 1 && <span className="mx-2">|</span>}
+</span>
+))}
+</div>
+</div>
+
+
+  {/* Reach Us */}
+  <div>
+    <h3 className="font-bold text-lg text-gray-800 mb-3">Reach Us</h3>
+    <div className="text-sm text-gray-600 space-y-3">
+      <p className="flex items-center gap-3">
+        <img src="/loc.png" alt="Location" className="w-[10px] h-auto md:w-[15px]" />
+        Directorate of Public Relations, Naya Raipur, Chhattisgarh, 492001
+      </p>
+      <p className="flex items-center gap-3">
+        <img src="/cal.png" alt="Phone" className="w-[10px] h-auto md:w-[15px]" />
+        +91-771-2221614
+      </p>
+      <p className="flex items-center gap-3">
+        <img src="/mai.png" alt="Email" className="w-[10px] h-auto md:w-[15px]" />
+        dprcgh@gmail.com
+      </p>
+    </div>
+  </div>
+
+</div>
+
+{/* Horizontal Divider */}
+<div className="border-b border-gray-400 my-6"></div>
+
+{/* App, Logos, Social */}
+<div className="flex flex-col md:flex-row justify-between items-center gap-12">
+
+  {/* Download Our App */}
+  <div>
+    <h3 className="font-bold text-lg text-gray-800 mb-3 text-center md:text-left">Download Our App</h3>
+    <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+      <img src="/play_store 1 (1).png" alt="Google Play" className="w-[80px] sm:w-[120px] md:w-[150px] h-auto max-w-full" />
+      <img src="/app_store 1.png" alt="App Store" className="w-[80px] sm:w-[120px] md:w-[150px] h-auto max-w-full" />
+    </div>
+  </div>
+
+  {/* Logos */}
+  <div>
+    <div className="flex flex-wrap justify-center gap-4 mt-6">
+      <img src="/Group 833.png" alt="Logo 1" className="w-[40px] md:w-[60px] h-auto" />
+      <img src="/digitalIndia 1 (1).png" alt="Logo 2" className="w-[60px] md:w-[90px] h-auto" />
+      <img src="/mygov1.png" alt="Logo 3" className="w-[60px] md:w-[90px] h-auto" />
+      <img src="/azadi-ka-amrit-mahotsav 1 (1).png" alt="Logo 4" className="w-[60px] md:w-[90px] h-auto" />
+    </div>
+  </div>
+
+  {/* Social Media */}
+  <div>
+    <h3 className="font-bold text-lg text-gray-800 mb-3 text-center md:text-left">Follow Us</h3>
+    <div className="flex gap-4 justify-center md:justify-start">
+      {[
+        { name: "Twitter", icon: "/x.png" },
+        { name: "Facebook", icon: "/fb.png" },
+        { name: "Instagram", icon: "/insta.png" },
+        { name: "YouTube", icon: "/youtube 1 (1).png" },
+        { name: "LinkedIn", icon: "/linkedin (1) 1 (1).png" }
+      ].map((social, index) => (
+        <a key={index} href="#">
+          <img src={social.icon} alt={social.name} className="w-[30px] md:w-[40px] h-auto max-w-full" />
+        </a>
+      ))}
+    </div>
+  </div>
+
+</div>
+
+{/* Footer Bottom */}
+<div className="w-full text-center py-4 mt-8">
+  <p className="text-sm text-gray-500">
+    © 2025 CMO Gallery | Initiative by DPR Chhattisgarh
+  </p>
+</div>
+
+</div>
+</footer>
+   </div>
+ );
 }

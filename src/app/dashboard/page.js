@@ -536,17 +536,29 @@ const blob = await response.blob();
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-between items-end p-4 rounded-[30px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="text-left">
-                      <span className="text-white font-extrabold text-4xl leading-none block">{album.name}</span>
-                      <span className="text-white font-semibold text-lg block mt-[-5px]">
+                    <span className="text-white font-semibold text-lg block mt-1">
   {album.photo_count || 0} photos
 </span>
+<span className="text-white text-lg mt-1 block">{album.date}</span>
+<span title={album.name} className="text-white font-extrabold text-4xl leading-none block overflow-hidden whitespace-nowrap text-ellipsis max-w-full sm:max-w-[250px]">
+  {album.name}
+</span>
+
+                      
                     </div>
-                    <span className="text-white text-lg font-medium">{album.date}</span>
                   </div>
                 </div>
-                <h3 className="text-[20px] font-bold capitalize text-black mt-2 p-2 rounded-md">
-                  {album.name}
-                </h3>
+                <h3 className="text-[20px] font-bold capitalize text-black mt-2 pl-3 rounded-md overflow-hidden whitespace-nowrap text-ellipsis max-w-full sm:max-w-[250px]">
+  {album.name}
+</h3>
+
+
+                {album.districts && album.districts.length > 0 && (
+  <p className="text-[16px] text-gray-600 px-3 pb-1  capitalize">
+    {album.districts[0]}
+  </p>
+)}
+
                 {/* Share / Copy / Download Buttons */}
                 <div className="flex justify-start space-x-3 ml-2">
                   <button
