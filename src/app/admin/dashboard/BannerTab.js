@@ -271,7 +271,7 @@ onClick={async () => {
     }
 
     const newBanner = {
-      id: Date.now(),
+      id: data.id,
       title: bannerTitle,
       size: selectedImage.size,
       date: new Date().toLocaleDateString("en-IN"),
