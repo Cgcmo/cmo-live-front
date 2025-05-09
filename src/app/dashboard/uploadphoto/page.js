@@ -550,6 +550,9 @@ export default function UploadPhoto() {
                   <p className="mx-4 text-gray-500">Upload Photo</p>
                   <hr className="flex-grow border-gray-300" />
                 </div>
+                <p className="text-red-600 text-xs font-semibold mt-4 text-center">
+  Dont use photos with filters, heavy editing, or blurred backgrounds.
+</p>
 
                 <label
                   htmlFor="file-upload"
@@ -630,6 +633,7 @@ export default function UploadPhoto() {
                     onChange={handleFileChange}
                   />
                 </label>
+                
 
                 {file && <p className="text-sm mt-2 text-gray-600 text-center">{file.name}</p>}
                 <button onClick={handleProceed} className="w-full mt-6 bg-[#170645] text-yellow-500 py-3 rounded-full text-lg font-semibold shadow-md hover:shadow-lg transition-all">Proceed</button>
