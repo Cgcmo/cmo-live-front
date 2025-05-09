@@ -52,7 +52,7 @@ const handleDelete = async (id) => {
 
 
   useEffect(() => {
-    fetch("http://localhost:5000/get-banners")
+    fetch(`${API_URL}/get-banners`)
       .then((res) => res.json())
       .then((data) => setBanners(data));
   }, []);
