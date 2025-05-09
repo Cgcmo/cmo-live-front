@@ -106,44 +106,58 @@ const Footer = () => {
 
                     {/* Download Our App */}
                     <div>
-                        <h3 className="font-bold text-lg text-gray-800 mb-3 text-center md:text-left">Download Our App</h3>
-                        <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
-                            <img src="/play_store 1.png" alt="Google Play" className="w-[80px] sm:w-[120px] md:w-[150px] h-auto max-w-full" />
-                            <img src="/IOS.png" alt="App Store" className="w-[80px] sm:w-[120px] md:w-[150px] h-auto max-w-full" />
-                        </div>
-                    </div>
-
-
-                    {/* Logos */}
-                    <div>
-                        <div className="flex flex-wrap justify-center gap-4 mt-6">
-                            <img src="/CG logo.webp" alt="Logo 1" className="w-[50px] md:w-[70px] h-auto" />
-                            <img src="/digitalIndia 1.png" alt="Logo 2" className="w-[80px] md:w-[110px] h-auto" />
-                            <img src="/mygov.png" alt="Logo 3" className="w-[80px] md:w-[110px] h-auto" />
-                            <img src="/azadi-ka-amrit-mahotsav 1.png" alt="Logo 4" className="w-[80px] md:w-[110px] h-auto" />
-                        </div>
-                    </div>
-
-                    {/* Follow Us */}
-                    <div>
-                        <h3 className="font-bold text-lg text-gray-800 mb-3 text-center md:text-left">Follow Us</h3>
-                        <div className="flex gap-4 justify-center md:justify-start">
-                            {socialLinks.map((social, index) => (
-                                <a key={index} href={social.url}>
-                                    <img src={social.icon} alt={social.name} className="w-[30px] md:w-[40px] h-auto max-w-full" />
-                                </a>
-                            ))}
-                        </div>
-                    </div>
-
+                  <h3 className="font-bold text-lg text-gray-800  text-center md:text-left">Download Our App</h3>
+                  <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+                    <img src="/play_store 1 (1).svg" alt="Google Play" className="w-[100px] sm:w-[120px] md:w-[150px] h-auto max-w-full" />
+                    {/* <img src="/app_store 1.png" alt="App Store" className="w-[80px] sm:w-[120px] md:w-[150px] h-auto max-w-full" /> */}
+                  </div>
                 </div>
 
-                {/* Footer Bottom */}
-                <div className="w-full text-center py-4 mt-8">
-                    <p className="text-sm text-gray-500">
-                        © 2025 CMO Gallery | Initiative by DPR Chhattisgarh
-                    </p>
+                {/* Logos */}
+                <div>
+                  <div className="flex flex-wrap justify-center gap-4 ml-4 mt-6">
+                    <img src="/cggov.svg" alt="Logo 1" className="w-[50px] md:w-[70px] h-auto" />
+                    <img src="/digitalIndia 1.svg" alt="Logo 2" className="w-[70px] md:w-[100px] h-auto" />
+                    <img src="/mygov1.svg" alt="Logo 3" className="w-[70px] md:w-[100px] h-auto" />
+                    <img src="/azadi-ka-amrit-mahotsav 1.svg" alt="Logo 4" className="w-[70px] md:w-[100px] h-auto" />
+                  </div>
                 </div>
+
+                {/* Social Media */}
+                <div>
+                  <h3 className="font-bold text-lg text-gray-800 mb-3 text-center md:text-left">Follow Us</h3>
+                  <div className="flex gap-4 justify-center md:justify-start">
+                    {[
+                      { name: "Twitter", icon: "/x.svg", url: "https://x.com/dprchhattisgarh" },
+                      { name: "Facebook", icon: "/fb.svg", url: "https://www.facebook.com/DPRChhattisgarh" },
+                      { name: "Instagram", icon: "/insta.svg", url: "https://www.instagram.com/dpr.chhattisgarh/" },
+                      { name: "YouTube", icon: "/youtube 1 (1).svg", url: "https://www.youtube.com/@DPRChhattisgarh" }
+                    ].map((social, index) => (
+                      <a
+                        key={index}
+                        href={social.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={social.icon}
+                          alt={social.name}
+                          className="w-[30px] md:w-[35px] h-auto max-w-full"
+                        />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Footer Bottom */}
+              <div className="w-full text-center py-4 ">
+                <p className="text-sm text-gray-500">
+                  © 2025 CMO Gallery | Initiative by <a href="https://dprcg.gov.in/" target="_blank" rel="noopener noreferrer" className="underline">DPR Chhattisgarh</a>
+                </p>
+
+              </div>
 
             </div>
         </footer>

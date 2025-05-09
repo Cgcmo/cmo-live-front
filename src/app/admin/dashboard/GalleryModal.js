@@ -2,61 +2,73 @@ import React, { useState } from "react";
 import API_URL from '@/app/api';
 
 const GalleryModal = ({ isOpen, setIsOpen, albumId, fetchPhotos, fetchAllStats }) => {
-  const [uploadedImages, setUploadedImages] = useState([]);
+
   const [loading, setLoading] = useState(false);  // ✅ Track loading state
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [rejectedFiles, setRejectedFiles] = useState([]);
+
 
   if (!isOpen) return null;
 
-  const toBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result.split(",")[1]);
-      reader.onerror = (error) => reject(error);
+
+  const handleImageUpload = (event) => {
+  setSelectedFiles([...event.target.files]);
+};
+
+const handleSave = async () => {
+  if (!selectedFiles.length) {
+    alert("Please upload images before saving.");
+    return;
+  }
+
+  setLoading(true);
+  setRejectedFiles([]); // Clear previously rejected images
+
+  const formData = new FormData();
+  selectedFiles.forEach((file) => {
+    formData.append("photos", file);
+  });
+
+  try {
+    const response = await fetch(`${API_URL}/upload-gallery/${albumId}`, {
+      method: "POST",
+      body: formData,
     });
-  };
 
-  const handleImageUpload = async (event) => {
-    const files = event.target.files;
-    const base64Images = await Promise.all([...files].map(toBase64));
-    setUploadedImages(base64Images);
-  };
+    const result = await response.json();
 
-  const handleSave = async () => {
-    if (!uploadedImages.length) {
-      alert("Please upload images before saving.");
-      return;
-    }
+    if (response.ok) {
+      // Match rejected file names to File objects
+      if (result.rejected && result.rejected.length > 0) {
+        const rejectedSet = new Set(result.rejected);
+        const rejected = selectedFiles.filter(file => rejectedSet.has(file.name));
+        setRejectedFiles(rejected);
 
-    setLoading(true); 
-
-    try {
-      const response = await fetch(`${API_URL}/upload-gallery/${albumId}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ images: uploadedImages }),
-      });
-
-      if (response.ok) {
-        alert("Photos uploaded successfully");
-
-        // ✅ Fetch updated photos instantly
-        fetchPhotos({ _id: albumId }); // Ensure it fetches fresh data
-        fetchAllStats();
-        setIsOpen(false);
+        alert(`${result.rejected.length} image(s) skipped due to no clear face.`);
+        setSelectedFiles([]);
       } else {
-        alert("Failed to upload photos");
+        alert("Photos uploaded successfully");
+        setIsOpen(false);
+        setSelectedFiles([]);   // ✅ Clear uploaded files
+        setRejectedFiles([]);
       }
-    } catch (error) {
-      console.error("Error uploading photos:", error);
-    }finally {
-        setLoading(false);  // ✅ Stop loading when finished
+
+      fetchPhotos({ _id: albumId });
+      fetchAllStats();
+
+    } else {
+      alert("Failed to upload photos");
     }
-  };
+  } catch (error) {
+    console.error("Error uploading photos:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   // ✅ Fix: Define removeImage function
   const removeImage = (index) => {
-    setUploadedImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    setSelectedFiles((prevImages) => prevImages.filter((_, i) => i !== index));
   };
 
 
@@ -66,7 +78,11 @@ const GalleryModal = ({ isOpen, setIsOpen, albumId, fetchPhotos, fetchAllStats }
         {/* Close Button */}
         <button
           className="absolute top-4 right-4 text-gray-600 text-xl"
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            setIsOpen(false);          // ❌ Close modal
+            setSelectedFiles([]);      // ✅ Clear uploaded images
+            setRejectedFiles([]);      // ✅ Clear rejected previews
+          }}
         >
           ✕
         </button>
@@ -80,7 +96,24 @@ const GalleryModal = ({ isOpen, setIsOpen, albumId, fetchPhotos, fetchAllStats }
           Choose an image that will appear everywhere in our app.
         </p>
 
-        <p className="text-black mb-3  flex justify-center  font-bold">Uploaded New Images</p>
+        {rejectedFiles.length > 0 && (
+  <>
+    <p className="text-red-600 text-center mt-6 font-bold">Rejected Images (No Face Detected)</p>
+    <div className="grid grid-cols-5 gap-2 my-2 bg-red-100 rounded-lg p-4">
+      {rejectedFiles.map((file, index) => (
+        <div key={index} className="relative w-20 h-20">
+          <img
+            src={URL.createObjectURL(file)}
+            alt={`Rejected ${index + 1}`}
+            className="w-20 h-20 object-cover rounded-lg border border-red-400"
+          />
+        </div>
+      ))}
+    </div>
+  </>
+)}
+
+        <p className="text-black mb-3  flex justify-center  font-bold">Upload New Images</p>
 
         {/* Image Upload Box */}
         <label
@@ -103,10 +136,9 @@ const GalleryModal = ({ isOpen, setIsOpen, albumId, fetchPhotos, fetchAllStats }
         <div className="mt-8">
           <p className="text-black flex justify-center font-bold">Uploaded Images</p>
           <div className="grid grid-cols-5 gap-2 mt-4 bg-gray-200 rounded-lg p-8 relative">
-            {uploadedImages.map((image, index) => (
+          {selectedFiles.map((file, index) => (
               <div key={index} className="relative w-20 h-20">
-                <img
-                  src={`data:image/jpeg;base64,${image}`}
+                <img src={URL.createObjectURL(file)}
                   alt={`Uploaded ${index + 1}`}
                   className="w-20 h-20 object-cover rounded-lg border"
                 />

@@ -933,8 +933,7 @@ useEffect(() => {
                 Sign Up With WhatsApp
               </button>
               <div className="flex justify-center gap-6 mt-4">
-                <button className="text-[#170645] hover:underline text-sm">Customer Support</button>
-                <button className="text-[#170645] hover:underline text-sm">Terms of Service</button>
+                <button  onClick={() => setShowSignup(false)} className="text-[#170645] hover:underline text-sm">Already Registered? <span className="font-semibold">Sign In Here </span></button>
               </div>
             </div>
           ) : (
@@ -1046,10 +1045,6 @@ useEffect(() => {
     setShowSignup(true);  // ✅ Open Signup form
   }}>Register Now</span>
               </p>
-              <div className="flex justify-center gap-4 mt-4">
-                <button className="text-[#170645] hover:underline">Customer Support</button>
-                <button className="text-[#170645] hover:underline">Terms of Service</button>
-              </div>
             </div>
           )}
         </div>

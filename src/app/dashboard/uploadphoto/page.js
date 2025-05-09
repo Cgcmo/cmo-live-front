@@ -119,19 +119,19 @@ export default function UploadPhoto() {
   const handleProceed = async () => {
     const eventSelect = document.querySelector("select").value;
     const selectedDate = document.querySelector('input[type="date"]').value;
-
+  
     if (!eventSelect && !selectedDate && !file) {
       alert("Please select an event, a date, or upload a photo.");
       return;
     }
-
+  
     setIsLoading(true);
-
+  
     try {
       let eventPhotos = [];
       let datePhotos = [];
       let uploadPhotos = [];
-
+  
       if (eventSelect && eventSelect !== "Select Event") {
         const eventResponse = await fetch(`${API_URL}/fetch-album-photos`, {
           method: "POST",
@@ -146,7 +146,7 @@ export default function UploadPhoto() {
           console.warn("Event API:", eventData.error || "No photos found.");
         }
       }
-
+  
       if (selectedDate) {
         const dateResponse = await fetch(`${API_URL}/fetch-photos-by-date`, {
           method: "POST",
@@ -161,69 +161,51 @@ export default function UploadPhoto() {
           console.warn("Date API:", dateData.error || "No photos found.");
         }
       }
-
+  
       if (file) {
-        const reader = new FileReader();
-        reader.onloadend = async () => {
-          const base64String = reader.result.split(",")[1];
-          const uploadResponse = await fetch(`${API_URL}/search-by-upload`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ image: base64String }),
-          });
-          const uploadData = await uploadResponse.json();
-          if (uploadResponse.ok) {
-            uploadPhotos = uploadData.photos;
-          } else {
-            console.warn("Upload API:", uploadData.error || "No photos found.");
-          }
-
-          const mergedPhotos = [...new Map([
-            ...eventPhotos,
-            ...datePhotos,
-            ...uploadPhotos
-          ].map(photo => [photo.photo_id, photo])).values()];
-
-          if (mergedPhotos.length > 0) {
-            setShowGallery(true);
-            setImages(mergedPhotos);
-            setTotalPages(Math.ceil(mergedPhotos.length / imagesPerPage));
-            setCurrentPage(1);
-
-          } else {
-            alert("No photos found for the selected filters. If Searching with Photo Make sure Face is clear");
-          }
-
-          setIsLoading(false);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        const mergedPhotos = [...new Map([
-          ...eventPhotos,
-          ...datePhotos
-        ].map(photo => [photo.photo_id, photo])).values()];
-
-        if (mergedPhotos.length > 0) {
-          setShowGallery(true);
-          setImages(mergedPhotos);
-          setTotalPages(Math.ceil(mergedPhotos.length / imagesPerPage));
-          setCurrentPage(1);
-
+        const formData = new FormData();
+        formData.append("image", file); // append raw image
+  
+        const uploadResponse = await fetch(`${API_URL}/search-by-upload`, {
+          method: "POST",
+          body: formData, // no headers — browser sets them for FormData
+        });
+  
+        const uploadData = await uploadResponse.json();
+        if (uploadResponse.ok) {
+          uploadPhotos = uploadData.photos;
         } else {
-          alert("No photos found for the selected filters. If Searching with Photo Make sure Face is clear");
+          console.warn("Upload API:", uploadData.error || "No photos found.");
         }
-
-        setIsLoading(false);
       }
-
-    } catch (error) {
+  
+      // Merge all photo sources and remove duplicates by photo_id
+      const mergedPhotos = [...new Map([
+        ...eventPhotos,
+        ...datePhotos,
+        ...uploadPhotos
+      ].map(photo => [photo.photo_id, photo])).values()];
+  
+      if (mergedPhotos.length > 0) {
+        setShowGallery(true);
+        setImages(mergedPhotos);
+        setTotalPages(Math.ceil(mergedPhotos.length / imagesPerPage));
+        setCurrentPage(1);
+      } else {
+        alert("No photos found for the selected filters. If Searching with Photo Make sure Face is clear");
+        setFile(null);
+        setSelectedDate("");
+        document.querySelector("select").value = "";
+      }
+  
+      
+    }  catch (error) {
       console.error("Error fetching photos:", error);
       alert("Failed to fetch photos.");
-      setIsLoading(false);
+    } finally {
+      setIsLoading(false); // ✅ This will always run
     }
   };
-
-
 
   const handleDownload = (src) => {
     const link = document.createElement("a");
@@ -436,8 +418,24 @@ export default function UploadPhoto() {
     }
   };
   
-
-
+  useEffect(() => {
+    if (!isDownloading) return;
+  
+    const fallback = setTimeout(() => {
+      setIsDownloading(false);
+    }, 5000); // fallback stop after 5 seconds
+  
+    return () => clearTimeout(fallback);
+  }, [isDownloading]);
+  
+  useEffect(() => {
+    if (!showGallery) {
+      setFile(null);         // ✅ Clear uploaded image
+      setSelectedDate("");   // ✅ (Optional) Clear date
+      // Reset dropdown manually if needed
+    }
+  }, [showGallery]);
+  
   if (isPageLoading) {
     return (
       <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-white z-50">
@@ -473,6 +471,7 @@ export default function UploadPhoto() {
       </div>
     );
   }
+  
 
   return (
     <div className="items-center min-h-screen bg-white font-sans">
@@ -739,7 +738,7 @@ export default function UploadPhoto() {
                       checked={selectedImages.includes(image.image)}
                       onChange={() => handleImageSelect(image.image)}
                     />
-                    <img src={image.image} alt={image.title} onClick={() => handleImageSelect(image.image)}  onLoad={() => setLoadedImages((prev) => prev + 1)} className="w-full rounded-[30px]" />
+                    <img src={image.image} alt={image.title} onClick={() => handleImageSelect(image.image)}  onLoad={() => setLoadedImages((prev) => prev + 1)}  onError={() => setLoadedImages((prev) => prev + 1)} className="w-full rounded-[30px]" />
                   </div>
                 </div>
               ))}

@@ -40,7 +40,7 @@ export default function InfoPage() {
    "copyright-policy": {
      title: "कॉपीराइट नीति",
      content: `
- nbdigital.online पर होस्ट की गई सभी सामग्री — जैसे चित्र, वीडियो और टेक्स्ट — पूरी तरह से मुख्यमंत्री कार्यालय (CMO), छत्तीसगढ़, भारत सरकार की संपत्ति है।
+ CMO PHOTO GALLERY पर होस्ट की गई सभी सामग्री — जैसे चित्र, वीडियो और टेक्स्ट — पूरी तरह से मुख्यमंत्री कार्यालय (CMO), छत्तीसगढ़, भारत सरकार की संपत्ति है।
  
  1. **मालिकाना हक:**
     - इस वेबसाइट पर मौजूद सभी फोटोग्राफ, वीडियो और लिखित सामग्री भारतीय कॉपीराइट कानूनों द्वारा संरक्षित हैं।
@@ -61,7 +61,7 @@ export default function InfoPage() {
    disclaimer: {
      title: "अस्वीकरण",
      content: `
- nbdigital.online, जो मुख्यमंत्री कार्यालय, छत्तीसगढ़ द्वारा संचालित एक एआई आधारित प्लेटफॉर्म है, केवल सूचना एवं सुविधा के उद्देश्य से सेवाएं प्रदान करता है।
+ CMO PHOTO GALLERY, जो मुख्यमंत्री कार्यालय, छत्तीसगढ़ द्वारा संचालित एक एआई आधारित प्लेटफॉर्म है, केवल सूचना एवं सुविधा के उद्देश्य से सेवाएं प्रदान करता है।
  
  1. **सटीकता और विश्वसनीयता:**
     - हमारी प्रणाली FaceNet AI तकनीक पर आधारित है, लेकिन इसकी सटीकता की पूर्ण गारंटी नहीं दी जा सकती।
@@ -82,7 +82,7 @@ export default function InfoPage() {
    "site-map": {
      title: "साइट मैप",
      content: `
- यह साइट मैप nbdigital.online की संपूर्ण संरचना को दिखाता है ताकि उपयोगकर्ता प्रभावी रूप से नेविगेट कर सकें:
+ यह साइट मैप CMO PHOTO GALLERY की संपूर्ण संरचना को दिखाता है ताकि उपयोगकर्ता प्रभावी रूप से नेविगेट कर सकें:
  
  1) **उपयोगकर्ता दृश्य**
  - एल्बम और जिलों की तस्वीरें
@@ -105,7 +105,7 @@ export default function InfoPage() {
    "privacy-policy": {
      title: "गोपनीयता नीति",
      content: `
- यह नीति nbdigital.online पर आपकी व्यक्तिगत जानकारी कैसे एकत्र, उपयोग और सुरक्षित रखी जाती है, इसका विवरण देती है।
+ यह नीति CMO PHOTO GALLERY पर आपकी व्यक्तिगत जानकारी कैसे एकत्र, उपयोग और सुरक्षित रखी जाती है, इसका विवरण देती है।
  
  1. **संग्रहीत जानकारी:**
     - नाम, मोबाइल नंबर, ईमेल, जिला
@@ -132,7 +132,7 @@ export default function InfoPage() {
    "hyperlink-policy": {
      title: "हाइपरलिंक नीति",
      content: `
- nbdigital.online पर बाहरी वेबसाइटों के लिंक केवल सुविधा के लिए दिए गए हैं।
+ CMO PHOTO GALLERY पर बाहरी वेबसाइटों के लिंक केवल सुविधा के लिए दिए गए हैं।
  
  1. **बाहरी लिंक अस्वीकरण:**
     - हम किसी भी थर्ड पार्टी साइट की सटीकता या सुरक्षा की गारंटी नहीं देते।
@@ -153,7 +153,7 @@ export default function InfoPage() {
    "terms-of-use": {
      title: "उपयोग की शर्तें",
      content: `
- nbdigital.online के सभी उपयोगकर्ता निम्नलिखित शर्तों का पालन करेंगे:
+ CMO PHOTO GALLERY के सभी उपयोगकर्ता निम्नलिखित शर्तों का पालन करेंगे:
  
  1. **नैतिक उपयोग:**
     - प्लेटफॉर्म का उपयोग केवल सार्वजनिक कार्यक्रमों में खींची गई तस्वीरों को खोजने के लिए होना चाहिए।
@@ -175,7 +175,7 @@ export default function InfoPage() {
    "terms-and-conditions": {
      title: "नियम और शर्तें",
      content: `
- nbdigital.online का उपयोग करने से, उपयोगकर्ता निम्नलिखित शर्तों को स्वीकार करते हैं:
+ CMO PHOTO GALLERY का उपयोग करने से, उपयोगकर्ता निम्नलिखित शर्तों को स्वीकार करते हैं:
  
  1. **पंजीकरण:**
     - उपयोगकर्ताओं को सही जानकारी देनी होगी जैसे नाम, ईमेल, मोबाइल आदि।
@@ -200,7 +200,7 @@ export default function InfoPage() {
     "copyright-policy": {
       title: "Copyright Policy",
       content: `
-All content, including images, videos, and text hosted on nbdigital.online, is owned exclusively by the Chief Minister's Office (CMO), Chhattisgarh, Government of India.
+All content, including images, videos, and text hosted on CMO PHOTO GALLERY, is owned exclusively by the Chief Minister's Office (CMO), Chhattisgarh, Government of India.
 
 1. **Ownership:**
    - All photographs, videos, and written content on this website are protected by Indian copyright laws.
@@ -221,7 +221,7 @@ All content, including images, videos, and text hosted on nbdigital.online, is o
     disclaimer: {
       title: "Disclaimer",
       content: `
-The content and services provided by nbdigital.online, an AI-based platform maintained by the Chief Minister's Office, Chhattisgarh, are intended solely for the public's convenience and informational purposes.
+The content and services provided by CMO PHOTO GALLERY, an AI-based platform maintained by the Chief Minister's Office, Chhattisgarh, are intended solely for the public's convenience and informational purposes.
 
 1. **Accuracy and Reliability:**
    - While our platform uses advanced FaceNet AI technology for face recognition and retrieval, accuracy cannot always be guaranteed.
@@ -242,7 +242,7 @@ The content and services provided by nbdigital.online, an AI-based platform main
     "site-map": {
       title: "Site Map",
       content: `
-The following is a comprehensive map of the structure and content of nbdigital.online, designed to help users navigate effectively:
+The following is a comprehensive map of the structure and content of CMO PHOTO GALLERY, designed to help users navigate effectively:
 
 1) **User Views**
 
@@ -292,7 +292,7 @@ The following is a comprehensive map of the structure and content of nbdigital.o
     "terms-and-conditions": {
       title: "Terms and Conditions",
       content: `
-By accessing or registering on nbdigital.online, users explicitly agree to the following terms and conditions established by the Chief Minister's Office, Chhattisgarh:
+By accessing or registering on CMO PHOTO GALLERY, users explicitly agree to the following terms and conditions established by the Chief Minister's Office, Chhattisgarh:
 
 1. **User Registration:**
    - Users must provide truthful and accurate information including their name, mobile number, email address, and district.
@@ -317,7 +317,7 @@ By accessing or registering on nbdigital.online, users explicitly agree to the f
     "terms-of-use": {
       title: "Terms of Use",
       content: `
-All users of nbdigital.online agree to adhere to the following conditions to ensure the ethical and secure operation of our AI-based services provided by the Chief Minister's Office, Chhattisgarh:
+All users of CMO PHOTO GALLERY agree to adhere to the following conditions to ensure the ethical and secure operation of our AI-based services provided by the Chief Minister's Office, Chhattisgarh:
 
 1. **Ethical Usage:**
    - Users must use the AI facial recognition responsibly to find photos taken at public events with the Chief Minister.
@@ -339,7 +339,7 @@ All users of nbdigital.online agree to adhere to the following conditions to ens
 "privacy-policy": {
   title: "Privacy Policy",
   content: `
-This Privacy Policy outlines how we collect, use, and protect your personal data when you visit and interact with nbdigital.online.
+This Privacy Policy outlines how we collect, use, and protect your personal data when you visit and interact with CMO PHOTO GALLERY.
 
 1. **Information We Collect:**
    - Name, mobile number, email, district (during account creation or submissions).
@@ -370,7 +370,7 @@ For questions, contact: dprcgh@gmail.com
 "hyperlink-policy": {
   title: "Hyperlink Policy",
   content: `
-Links to external websites and platforms are provided for user convenience on nbdigital.online.
+Links to external websites and platforms are provided for user convenience on CMO PHOTO GALLERY.
 
 1. **External Link Disclaimer:**
    - We do not control or guarantee the accuracy, relevance, or security of third-party sites linked on our platform.
@@ -381,7 +381,7 @@ Links to external websites and platforms are provided for user convenience on nb
    - Linking should not misrepresent our endorsement or mislead users.
 
 3. **No Prior Permission Required:**
-   - No prior permission is required for linking to public information hosted on nbdigital.online.
+   - No prior permission is required for linking to public information hosted on CMO PHOTO GALLERY.
    - However, for use of content (logos, text, or graphics), formal permission must be obtained.
 
 4. **Removal of Unintended Links:**
@@ -415,13 +415,13 @@ This policy may be updated without prior notice.
        {/* Left: Logo */}
                     <div className="flex items-center">
                     <Link href="/" className="flex items-center">
-  <Image
-    src="/Group 833.png"
-    alt="Logo"
-    width={71}
-    height={71}
-    className="rounded-full cursor-pointer"
-  />
+                    <div className="flex items-center">
+                <img
+                  src="/cggov.svg"
+                  alt="Logo"
+                  className="w-[76px] h-[72px] rounded-full bg-white"
+                />
+              </div>
 </Link>
                     </div>
       
@@ -508,7 +508,7 @@ This policy may be updated without prior notice.
 
        {pageContent ? (
          <>
-           <h1 className="text-4xl font-bold mt-10 mb-8">{pageContent.title}</h1>
+           <h1 style={{ fontSize: `${fontSize+18}px` }} className="text-4xl font-bold mt-10 mb-8">{pageContent.title}</h1>
            <div
   className="whitespace-pre-line leading-relaxed"
   style={{ fontSize: `${fontSize}px` }}
@@ -582,50 +582,58 @@ className="hover:underline"
 
   {/* Download Our App */}
   <div>
-    <h3 className="font-bold text-lg text-gray-800 mb-3 text-center md:text-left">Download Our App</h3>
-    <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
-      <img src="/play_store 1 (1).png" alt="Google Play" className="w-[80px] sm:w-[120px] md:w-[150px] h-auto max-w-full" />
-      <img src="/app_store 1.png" alt="App Store" className="w-[80px] sm:w-[120px] md:w-[150px] h-auto max-w-full" />
-    </div>
-  </div>
+                  <h3 className="font-bold text-lg text-gray-800  text-center md:text-left">Download Our App</h3>
+                  <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+                    <img src="/play_store 1 (1).svg" alt="Google Play" className="w-[100px] sm:w-[120px] md:w-[150px] h-auto max-w-full" />
+                    {/* <img src="/app_store 1.png" alt="App Store" className="w-[80px] sm:w-[120px] md:w-[150px] h-auto max-w-full" /> */}
+                  </div>
+                </div>
 
-  {/* Logos */}
-  <div>
-    <div className="flex flex-wrap justify-center gap-4 mt-6">
-      <img src="/Group 833.png" alt="Logo 1" className="w-[40px] md:w-[60px] h-auto" />
-      <img src="/digitalIndia 1 (1).png" alt="Logo 2" className="w-[60px] md:w-[90px] h-auto" />
-      <img src="/mygov1.png" alt="Logo 3" className="w-[60px] md:w-[90px] h-auto" />
-      <img src="/azadi-ka-amrit-mahotsav 1 (1).png" alt="Logo 4" className="w-[60px] md:w-[90px] h-auto" />
-    </div>
-  </div>
+                {/* Logos */}
+                <div>
+                  <div className="flex flex-wrap justify-center gap-4 ml-4 mt-6">
+                    <img src="/cggov.svg" alt="Logo 1" className="w-[50px] md:w-[70px] h-auto" />
+                    <img src="/digitalIndia 1.svg" alt="Logo 2" className="w-[70px] md:w-[100px] h-auto" />
+                    <img src="/mygov1.svg" alt="Logo 3" className="w-[70px] md:w-[100px] h-auto" />
+                    <img src="/azadi-ka-amrit-mahotsav 1.svg" alt="Logo 4" className="w-[70px] md:w-[100px] h-auto" />
+                  </div>
+                </div>
 
-  {/* Social Media */}
-  <div>
-    <h3 className="font-bold text-lg text-gray-800 mb-3 text-center md:text-left">Follow Us</h3>
-    <div className="flex gap-4 justify-center md:justify-start">
-      {[
-        { name: "Twitter", icon: "/x.png" },
-        { name: "Facebook", icon: "/fb.png" },
-        { name: "Instagram", icon: "/insta.png" },
-        { name: "YouTube", icon: "/youtube 1 (1).png" },
-        { name: "LinkedIn", icon: "/linkedin (1) 1 (1).png" }
-      ].map((social, index) => (
-        <a key={index} href="#">
-          <img src={social.icon} alt={social.name} className="w-[30px] md:w-[40px] h-auto max-w-full" />
-        </a>
-      ))}
-    </div>
-  </div>
+                {/* Social Media */}
+                <div>
+                  <h3 className="font-bold text-lg text-gray-800 mb-3 text-center md:text-left">Follow Us</h3>
+                  <div className="flex gap-4 justify-center md:justify-start">
+                    {[
+                      { name: "Twitter", icon: "/x.svg", url: "https://x.com/dprchhattisgarh" },
+                      { name: "Facebook", icon: "/fb.svg", url: "https://www.facebook.com/DPRChhattisgarh" },
+                      { name: "Instagram", icon: "/insta.svg", url: "https://www.instagram.com/dpr.chhattisgarh/" },
+                      { name: "YouTube", icon: "/youtube 1 (1).svg", url: "https://www.youtube.com/@DPRChhattisgarh" }
+                    ].map((social, index) => (
+                      <a
+                        key={index}
+                        href={social.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={social.icon}
+                          alt={social.name}
+                          className="w-[30px] md:w-[35px] h-auto max-w-full"
+                        />
+                      </a>
+                    ))}
+                  </div>
+                </div>
 
-</div>
+              </div>
 
-{/* Footer Bottom */}
-<div className="w-full text-center py-4 mt-8">
-  <p className="text-sm text-gray-500">
-    © 2025 CMO Gallery | Initiative by DPR Chhattisgarh
-  </p>
-</div>
+              {/* Footer Bottom */}
+              <div className="w-full text-center py-4 ">
+                <p className="text-sm text-gray-500">
+                  © 2025 CMO Gallery | Initiative by <a href="https://dprcg.gov.in/" target="_blank" rel="noopener noreferrer" className="underline">DPR Chhattisgarh</a>
+                </p>
 
+              </div>
 </div>
 </footer>
    </div>

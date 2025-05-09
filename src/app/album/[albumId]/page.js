@@ -262,7 +262,13 @@ const handleShareAll = async () => {
           </label>
         </div>
 
-       
+        {photos.length === 0 ? (
+  <div className="flex justify-center items-center h-[50vh] w-full">
+    <p className="text-3xl sm:text-5xl font-extrabold text-gray-400 text-center">
+      No Photos Available
+    </p>
+  </div>
+) : (
 
 <Masonry
   breakpointCols={breakpointColumnsObj}
@@ -293,6 +299,7 @@ const handleShareAll = async () => {
           ))}
         
         </Masonry>
+        )}
 
         {totalPages > 1 && (
   <div className="flex justify-center mt-6 mb-4 space-x-4">

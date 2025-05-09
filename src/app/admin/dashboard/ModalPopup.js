@@ -74,55 +74,43 @@ const ModalPopup = ({ isOpen, setIsOpen, fetchAlbums, fetchAllStats }) => {
       alert("Please fill all fields and upload an image.");
       return;
     }
-
+  
     setLoading(true);
-
+  
+    const formData = new FormData();
+    formData.append("name", eventName);
+    formData.append("date", eventDate);
+    formData.append("department", department);
+    formData.append("districts", selectedDistrict);  // single district (string)
+    formData.append("cover", file);  // image file directly
+  
     try {
-      const base64Cover = await toBase64(file);
-      const newAlbum = {
-        name: eventName,
-        date: eventDate,
-        department,
-        districts: [selectedDistrict],
-        cover: base64Cover,
-      };
-
       const response = await fetch(`${API_URL}/create-album`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newAlbum),
+        body: formData,  // Don't set Content-Type manually
       });
-
+  
       if (response.ok) {
         alert("Album created successfully");
-
-        // ✅ Ensure onCreateAlbum is a function before calling it
-
-        if (fetchAlbums) { // ✅ Ensure fetchAlbums exists before calling
-          fetchAlbums();
-          fetchAllStats();  // ✅ Fetch updated album list
-        } else {
-          console.error("❌ fetchAlbums is not a function!");
-        }
-
-        // Clear inputs and close modal after successful album creation
+        fetchAlbums?.();
+        fetchAllStats?.();
         setEventName("");
         setEventDate("");
         setDepartment("");
         setSelectedDistrict("");
         setFile(null);
         setIsOpen(false);
-
       } else {
-        alert("Failed to create album. Please try again.");
+        alert("Failed to create album.");
       }
     } catch (error) {
-      console.error("Error uploading file:", error);
-      alert("Error uploading file: " + error);
+      console.error("Upload error:", error);
+      alert("Error uploading album.");
     } finally {
-      setLoading(false);  // ✅ Stop loading when finished
+      setLoading(false);
     }
   };
+  
 
   const addDistrict = (e) => {
     if (e.key === "Enter" && selectedDistrict.trim()) {

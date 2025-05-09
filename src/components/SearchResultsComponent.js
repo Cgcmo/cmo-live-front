@@ -36,15 +36,21 @@ export default function SearchResults() {
   
   useEffect(() => {
     const totalOnPage = Math.min(imagesPerPage, photos.length - (currentPage - 1) * imagesPerPage);
-    
-    if (loadedImages >= totalOnPage && totalOnPage > 0) {
+  
+    if (totalOnPage === 0) {
+      setIsDownloading(false);
+      return;
+    }
+  
+    if (loadedImages >= totalOnPage) {
       const elapsed = Date.now() - loaderStartTime;
-      const delay = Math.max(0, 1000 - elapsed); // ensure at least 1s
+      const delay = Math.max(0, 1000 - elapsed);
       setTimeout(() => {
         setIsDownloading(false);
       }, delay);
     }
   }, [loadedImages, photos, currentPage, loaderStartTime]);
+  
   
 
   
@@ -58,18 +64,24 @@ export default function SearchResults() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query }),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        setPhotos(data.photos || []);
-        setTotalPages(Math.ceil((data.photos?.length || 0) / imagesPerPage));
-        setLoading(false);
-  
-        // ✅ Remove search loader from navbar
-        if (window) {
-          const navLoader = document.querySelector(".search-loader");
-          if (navLoader) navLoader.remove();
-        }
-      })
+    .then((res) => res.json())
+    .then((data) => {
+      const photoList = data.photos || [];
+      setPhotos(photoList);
+      setTotalPages(Math.ceil(photoList.length / imagesPerPage));
+      setLoading(false);
+
+      // ✅ Stop loader if no photos found
+      if (photoList.length === 0) {
+        setIsDownloading(false);
+      }
+
+      // ✅ Remove search loader from navbar
+      if (typeof window !== "undefined") {
+        const navLoader = document.querySelector(".search-loader");
+        if (navLoader) navLoader.remove();
+      }
+    })
       .catch((err) => {
         console.error("Search error:", err);
         setLoading(false);
@@ -239,14 +251,14 @@ if (user?.userId) {
   
 
   return (
-    <div className="min-h-screen bg-white relative ">
+    <div className="min-h-screen  bg-white relative ">
       <Navbar setShowGallery={() => {}}  />
       <div >
         {/* Header */}
-        <div className="flex justify-between items-center w-full px-4 py-3 top-0 z-30">
+        <div className="flex justify-between items-center w-full px-4 my-3 top-0 z-30">
         <button
   onClick={() => router.push("/dashboard")}
-  className="flex items-center gap-2 text-[#170645] px-4 py-1 font-normal rounded-lg text-sm sm:text-base"
+  className="flex items-center gap-2 text-[#170645] px-4 my-1 font-normal rounded-lg text-sm sm:text-base"
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -261,7 +273,7 @@ if (user?.userId) {
   <span>Back</span>
 </button>
 
-        <h1 className="text-center w-full font-extrabold text-xl sm:text-xl text-[#170645]">
+        <h1 className="text-center my-1 w-full font-extrabold text-xl sm:text-xl text-[#170645]">
   <span className="block sm:inline">Search Results</span>{" "}
   <span className="block sm:inline">for</span>{" "}
   <span className="block sm:inline">"{query}"</span>
@@ -280,7 +292,11 @@ if (user?.userId) {
 
         {/* Gallery */}
         {photos.length === 0 ? (
-          <p className="text-center text-gray-600 mt-6">No related photos found.</p>
+          <div className="flex justify-center items-center h-[50vh] w-full">
+          <p className="text-3xl sm:text-5xl my-6 font-extrabold text-gray-400 text-center">
+            No Related Photos Found
+          </p>
+        </div>
         ) : (
           <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4 mt-4">
             {photos

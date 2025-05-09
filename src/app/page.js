@@ -42,29 +42,29 @@ export default function Home() {
     { name: "Terms And Conditions", url: "/info/terms-and-conditions" },
     { name: "Terms Of Use", url: "/info/terms-of-use" },
   ];
-  
+
 
 
   useEffect(() => {
     const url = new URL(window.location.href);
     const error = url.searchParams.get("error");
     const showSignup = url.searchParams.get("showSignup");
-  
+
     if (error?.toLowerCase()?.includes("inactive")) {
       alert("Your account has been temporarily suspended. Please contact the administrator.");
     }
-  
+
     if (showSignup === "true") {
       setShowLoginPage(true);  // This will show AuthPage
     }
-  
+
     // Clean up the URL AFTER checking
     url.searchParams.delete("error");
     url.searchParams.delete("showSignup");
     url.searchParams.delete("showLogin");
     window.history.replaceState({}, "", url.pathname);
   }, []);
-  
+
 
 
 
@@ -166,12 +166,10 @@ export default function Home() {
             >
               {/* Left: Logo */}
               <div className="flex items-center">
-                <Image
-                  src="/Group 833.png"
+                <img
+                  src="/cggov.svg"
                   alt="Logo"
-                  width={71}
-                  height={71}
-                  className="rounded-full"
+                  className="w-[76px] h-[72px] rounded-full bg-white"
                 />
               </div>
 
@@ -183,7 +181,7 @@ export default function Home() {
                   onClick={() => setShowLoginPage(true)}
                   className="sm:hidden bg-yellow-400 text-[#170645] px-3 py-2 rounded-full font-semibold text-sm mr-2 flex  space-x-1"
                 >
-                 <img src="/log_icon.png" alt="Login Icon" className="w-4 h-4" />
+                  <img src="/log_icon.png" alt="Login Icon" className="w-4 h-4" />
                   <span>Login</span>
                 </button>
                 <button
@@ -234,7 +232,7 @@ export default function Home() {
                   onClick={() => setShowLoginPage(true)}
                   className="bg-yellow-400 text-[#170645] px-4 h-[45px] rounded-full font-medium flex items-center space-x-1"
                 >
-                <img src="/log_icon.png" alt="Login Icon" className="w-4 h-4" />
+                  <img src="/log_icon.png" alt="Login Icon" className="w-4 h-4" />
                   <span>Login</span>
                 </button>
               </div>
@@ -264,7 +262,7 @@ export default function Home() {
                   <button onClick={() => setFontSize((prev) => Math.max(prev - 2, 12))}>A-</button>
                 </div>
 
-               
+
               </div>
             )}
           </div>
@@ -375,7 +373,7 @@ export default function Home() {
                 onClick={() => {
                   localStorage.setItem("showSignup", "true"); // 📦 Save small info in localstorage
                   setShowLoginPage(true);                     // 📃 Open AuthPage
-                }}                
+                }}
                 className="group relative text-white px-8 py-3 rounded-lg font-semibold overflow-hidden z-10 transition-transform duration-300 transform hover:scale-105"
               >
                 {/* Glowy background */}
@@ -472,114 +470,108 @@ export default function Home() {
 
           </div>
 
-{/* Chief Minister Section */}
-<section className="relative py-16 px-4 sm:px-8 md:px-16 bg-[#fff7c2]">
-  <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12">
+          {/* Welcome Section */}
+          <section className="relative py-16 px-4 sm:px-8 md:px-16 bg-[#fff7c2]">
+            <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12">
 
-    {/* Left Text */}
-    <div className="w-full lg:w-1/2 text-center lg:text-left">
-      <p className="text-[#170645] text-xl sm:text-2xl md:text-3xl mb-4">
-        {isHindi ? 'अपने ' : 'Know Your '}
-        <span
-          className="inline-block font-bold text-black px-3 py-1"
-          style={{
-            backgroundImage: "url('/bgy.png')",
-            backgroundSize: '100% 100%',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
-          }}
-        >
-          {isHindi ? 'मुख्यमंत्री' : 'Chief Minister'}
-        </span>
-      </p>
+              {/* Left Text */}
+              <div className="w-full lg:w-1/2 text-center lg:text-left">
+                <p style={{ fontSize: `${fontSize+14}px` }} className="text-[#170645]  mb-4">
+                  {isHindi ? ' प्रस्तुत है !' : 'Welcome to the '}
+                  <span
+                    className="inline-block font-bold text-black px-3 py-1"
+                    style={{
+                      backgroundImage: "url('/bgy.png')",
+                      backgroundSize: '100% 100%',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'center',
+                    }}
+                  >
+                    {isHindi ? 'सीएमओ फोटो मैच ऐप' : 'CMO Photo Match App'}
+                  </span>
+                </p>
 
-      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#170645] mb-6">
-        {isHindi ? 'श्री विष्णुदेव साय' : 'Shri Vishnu Deo Sai'}
-      </h2>
+                {/* <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#170645] mb-6">
+                  {isHindi ? 'श्री विष्णुदेव साय' : 'Shri Vishnu Deo Sai'}
+                </h2> */}
 
-      <p className="text-gray-800 text-[16px] leading-relaxed mb-4">
-        {isHindi 
-          ? '21 फरवरी 1964 को जन्मे, श्री विष्णुदेव साय छत्तीसगढ़ के 4वें मुख्यमंत्री हैं। वे इस पद को संभालने वाले पहले आदिवासी नेता हैं। वे 2020 से 2022 तक भारतीय जनता पार्टी, छत्तीसगढ़ के अध्यक्ष भी रहे हैं और वर्तमान में कुनकुरी विधानसभा क्षेत्र से विधायक हैं।'
-          : 'Born 21 February 1964, Shri Vishnu Deo Sai is an Indian politician currently serving as the 4th Chief Minister of Chhattisgarh. He is the first tribal leader to hold the post. He also served as President of Bharatiya Janata Party, Chhattisgarh from 2020 until 2022. He currently represents Kunkuri in Chhattisgarh Legislative Assembly.'
-        }
-      </p>
-      <p className="text-gray-800 text-[16px] leading-relaxed">
-        {isHindi
-          ? 'श्री विष्णुदेव साय का जन्म जशपुर जिले के बगिया गांव में एक कृषक परिवार में हुआ था। उनके पिता का नाम श्री राम प्रसाद साय और माता का नाम श्रीमती जशमणी देवी है। उनका विवाह 1991 में श्रीमती कौशल्या देवी से हुआ।'
-          : 'Shri Vishnu Deo Sai was born in a farmer\'s family in Bagia Village of Jashpur District to Shri Ram Prasad Sai and Smt. Jashmani Devi. He married Kaushalya Devi in 1991.'
-        }
-      </p>
-    </div>
+                <p style={{ fontSize: `${fontSize}px` }} className="text-gray-800 leading-relaxed mb-4">
+                  {isHindi
+                    ? 'छत्तीसगढ़ सरकार द्वारा प्रस्तुत यह अभिनव ऐप आपको सीधे जोड़ती है प्रदेश के यशस्वी मुख्यमंत्री श्री विष्णु देव साय जी के नेतृत्व से। अब आप फेस रिकग्निशन तकनीक की मदद से उन सभी यादगार लम्हों को फिर से तलाश सकते हैं, जब आपने मुख्यमंत्री जी की उपस्थिति में किसी जनसभा, कार्यक्रम या आयोजन में हिस्सा लिया था। बस अपनी एक फोटो अपलोड करें — और पाएं उन पलों की तस्वीरें जो आपने छत्तीसगढ़ की विकास यात्रा में साझा की थीं। छत्तीसगढ़ संवाद के सहयोग से विकसित यह डिजिटल प्लेटफ़ॉर्म राज्य सरकार की पारदर्शिता, जनभागीदारी और तकनीकी सशक्तिकरण की प्रतिबद्धता का प्रतीक है। यह ऐप केवल एक तकनीकी सुविधा नहीं, बल्कि मुख्यमंत्री श्री विष्णु देव साय जी के नेतृत्व में आपके योगदान और सहभागिता का सजीव दस्तावेज़ है। अपनी तस्वीर खोजिए, अपनी यादों को ताज़ा कीजिए — और बनिए छत्तीसगढ़ के विकास गाथा का हिस्सा!'
+                    : 'This app is an initiative by the Government of Chhattisgarh to bring citizens closer to the leadership of the Hon’ble Chief Minister Shri Vishnu Deo Sai. Powered by cutting-edge facial recognition technology, the app allows people across the state to easily find their photographs from various public events and programs led by the Chief Minister. Developed in collaboration with Chhattisgarh Samvad, this platform reflects the government’s commitment to transparency, public participation, and digital empowerment. By simply uploading your photo, you can discover and relive your moments of engagement with the state’s developmental journey under the dynamic leadership of Shri Vishnu Deo Sai.'
+                  }
+                </p>
+              </div>
 
-    {/* Right Images */}
-<div className="w-full lg:w-1/2 relative min-h-[600px] hidden lg:block">
-  {/* Desktop Layout - Absolute positioning */}
-  <div className="absolute top-0 left-0 w-[28vw] max-w-[396px] rounded-[50px] overflow-hidden z-10">
-    <img
-      src="/Rectangle 4215.png"
-      alt="Big Vertical Image"
-      className="w-full h-auto object-contain"
-    />
-  </div>
+              {/* Right Images */}
+              <div className="w-full lg:w-1/2 relative min-h-[600px] hidden lg:block">
+                {/* Desktop Layout - Absolute positioning */}
+                <div className="absolute top-0 left-0 w-[28vw] max-w-[396px] rounded-[50px] overflow-hidden z-10">
+                  <img
+                    src="/Rectangle 4215.png"
+                    alt="Big Vertical Image"
+                    className="w-full h-auto object-contain"
+                  />
+                </div>
 
-  <div className="absolute top-0 right-[-1%] w-[17vw] max-w-[248px]  rounded-[30px] overflow-hidden">
-    <img
-      src="/Rectangle 4216.png"
-      alt="Small Image 1"
-      className="w-full h-auto object-contain"
-    />
-  </div>
+                <div className="absolute top-0 right-[-1%] w-[17vw] max-w-[248px]  rounded-[30px] overflow-hidden">
+                  <img
+                    src="/Rectangle 4216.png"
+                    alt="Small Image 1"
+                    className="w-full h-auto object-contain"
+                  />
+                </div>
 
-  <div className="absolute top-[40%] right-[4%] w-[13vw] max-w-[186px] rounded-[30px] overflow-hidden">
-    <img
-      src="/002.png"
-      alt="Small Image 2"
-      className="w-full h-auto object-contain"
-    />
-  </div>
+                <div className="absolute top-[40%] right-[4%] w-[13vw] max-w-[186px] rounded-[30px] overflow-hidden">
+                  <img
+                    src="/002.png"
+                    alt="Small Image 2"
+                    className="w-full h-auto object-contain"
+                  />
+                </div>
 
-  <div className="absolute top-[60%] left-[18%] w-[15vw] max-w-[227px] rounded-[30px] overflow-hidden mt-10">
-    <img
-      src="/006.png"
-      alt="Small Image 3"
-      className="w-full h-auto object-contain"
-    />
-  </div>
+                <div className="absolute top-[60%] left-[18%] w-[15vw] max-w-[227px] rounded-[30px] overflow-hidden mt-10">
+                  <img
+                    src="/006.png"
+                    alt="Small Image 3"
+                    className="w-full h-auto object-contain"
+                  />
+                </div>
 
-  <div className="absolute top-[70%] right-[-2%] w-[17vw] max-w-[253px] rounded-[30px] overflow-hidden">
-    <img
-      src="/001.png"
-      alt="Small Image 4"
-      className="w-full h-auto object-contain"
-    />
-  </div>
-</div>
+                <div className="absolute top-[70%] right-[-2%] w-[17vw] max-w-[253px] rounded-[30px] overflow-hidden">
+                  <img
+                    src="/001.png"
+                    alt="Small Image 4"
+                    className="w-full h-auto object-contain"
+                  />
+                </div>
+              </div>
 
-{/* Mobile Layout - Stacked grid (fallback) */}
-<div className="block lg:hidden grid grid-cols-2 gap-4 mt-6">
-  <div className="col-span-2 rounded-[30px] overflow-hidden">
-    <img
-      src="/Rectangle 4215.png"
-      alt="Big Image Mobile"
-      className="w-full h-auto object-contain"
-    />
-  </div>
-  <div className="rounded-[30px] overflow-hidden">
-    <img src="/Rectangle 4216.png" alt="Small 1" className="w-full h-auto object-contain" />
-  </div>
-  <div className="rounded-[30px] overflow-hidden">
-    <img src="/002.png" alt="Small 2" className="w-full h-auto object-contain" />
-  </div>
-  <div className="rounded-[30px] overflow-hidden">
-    <img src="/006.png" alt="Small 3" className="w-full h-auto object-contain" />
-  </div>
-  <div className="rounded-[30px] overflow-hidden">
-    <img src="/001.png" alt="Small 4" className="w-full h-auto object-contain" />
-  </div>
-</div>
+              {/* Mobile Layout - Stacked grid (fallback) */}
+              <div className="block lg:hidden grid grid-cols-2 gap-4 mt-6">
+                <div className="col-span-2 rounded-[30px] overflow-hidden">
+                  <img
+                    src="/Rectangle 4215.png"
+                    alt="Big Image Mobile"
+                    className="w-full h-auto object-contain"
+                  />
+                </div>
+                <div className="rounded-[30px] overflow-hidden">
+                  <img src="/Rectangle 4216.png" alt="Small 1" className="w-full h-auto object-contain" />
+                </div>
+                <div className="rounded-[30px] overflow-hidden">
+                  <img src="/002.png" alt="Small 2" className="w-full h-auto object-contain" />
+                </div>
+                <div className="rounded-[30px] overflow-hidden">
+                  <img src="/006.png" alt="Small 3" className="w-full h-auto object-contain" />
+                </div>
+                <div className="rounded-[30px] overflow-hidden">
+                  <img src="/001.png" alt="Small 4" className="w-full h-auto object-contain" />
+                </div>
+              </div>
 
-</div>
-</section>
+            </div>
+          </section>
 
 
           {/* Chief Minister Section */}
@@ -632,18 +624,23 @@ export default function Home() {
                 </h2>
                 <p style={{ fontSize: `${fontSize}px` }} className="text-gray-800 leading-relaxed mb-3">
                   {isHindi
-                    ? '21 फरवरी 1964 को जन्मे, वे छत्तीसगढ़ के वर्तमान और चौथे मुख्यमंत्री हैं। वे इस पद को संभालने वाले पहले आदिवासी नेता हैं। वे 2020 से 2022 तक भारतीय जनता पार्टी, छत्तीसगढ़ के अध्यक्ष भी रह चुके हैं और वर्तमान में कुनकुरी से विधायक हैं।'
-                    : 'Born 21 February 1964, he is an Indian politician currently serving as the 4th Chief Minister of Chhattisgarh. He is the first tribal leader to hold the post. He also served as President of Bharatiya Janata Party, Chhattisgarh from 2020 until 2022. He currently represents Kunkuri in the Chhattisgarh Legislative Assembly.'}
+                    ? 'छत्तीसगढ़ के जशपुर ज़िले के छोटे से गांव बगिया में 21 फरवरी 1964 को जन्मे विष्णु देव साय राज्य के चौथे मुख्यमंत्री हैं। 13 दिसंबर 2023 को उन्होंने मुख्यमंत्री पद की शपथ ली और इस तरह वे छत्तीसगढ़ के पहले सर्वसम्मति से चुने गए आदिवासी मुख्यमंत्री बने।'
+                    : 'Vishnu Deo Sai, born on 21 February 1964 in Bagia village of Jashpur, Chhattisgarh, is the fourth Chief Minister of the state. He took oath on 13 December 2023, becoming the first unopposed tribal leader to hold this position.'}
                 </p>
                 <p style={{ fontSize: `${fontSize}px` }} className="text-gray-800 leading-relaxed mb-3">
                   {isHindi
-                    ? 'श्री विष्णुदेव साय का जन्म जशपुर जिले के बगिया गांव में एक कृषक परिवार में श्री राम प्रसाद साय और श्रीमती जशमणी देवी के घर हुआ था। उन्होंने 1991 में श्रीमती कौशल्या देवी से विवाह किया।'
-                    : 'Shri Vishnu Deo Sai was born in a farmer\'s family in Bagia village of Jashpur District to Shri Ram Prasad Sai and Smt. Jashmani Devi on 21 February 1964. He married Kaushalya Devi in 1991.'}
+                    ? 'किसान परिवार से आने वाले श्री साय की प्रारंभिक शिक्षा कुंकुरी स्थित लोयोला सेकेंडरी सस्कूल में हुई। उनके पिता श्री राम प्रसाद साय और माता श्रीमती जशमनी देवी ने उन्हें जीवन मूल्यों और समाज सेवा की भावना से ओत-प्रोत किया। वर्ष 1991 में उनका विवाह श्रीमती कौशल्या देवी से हुआ।'
+                    : 'Coming from a farmer’s family, Sai completed his higher secondary education at Loyola Secondary School in Kunkuri. He is the son of Shri Ram Prasad Sai and Shrimati Jashmani Devi. In 1991, he married Smt. Kaushalya Devi.'}
                 </p>
-                <p style={{ fontSize: `${fontSize}px` }} className="text-gray-800 leading-relaxed">
+                <p style={{ fontSize: `${fontSize}px` }} className="text-gray-800 leading-relaxed mb-3">
                   {isHindi
-                    ? '13 दिसंबर 2023 को, श्री विष्णुदेव साय ने रायपुर के साइंस कॉलेज ग्राउंड में छत्तीसगढ़ के मुख्यमंत्री पद की शपथ ली।'
-                    : 'On 13 December 2023, Shri Vishnu Deo Sai took oath as Chief Minister of Chhattisgarh at the Science College Ground in Raipur.'}
+                    ? '1990 के दशक में उन्होंने भारतीय जनता पार्टी से अपने राजनीतिक सफर की शुरुआत की। जनता से जुड़ाव, साफ़ छवि और कर्मठता के बल पर वे राजनीति में निरंतर आगे बढ़ते गए।श्री साय वर्ष 1999 से 2014 तक लगातार तीन बार रायगढ़ लोकसभा सीट से सांसद रहे। इसके बाद वे कुंकुरी क्षेत्र से 16वीं लोकसभा के सदस्य के रूप में चुने गए। वर्ष 2014 में प्रधानमंत्री नरेंद्र मोदी की पहली सरकार में उन्हें इस्पात, श्रम एवं रोजगार मंत्रालय में राज्य मंत्री बनाया गया।'
+                    : 'Sai began his political journey with the Bharatiya Janata Party in the 1990s. He served as MP from Raigarh (1999–2014) and later represented Kunkuri in the 16th Lok Sabha. In 2014, he was appointed Union Minister of State for Steel, Labour & Employment in Prime Minister Modi’s first cabinet.'}
+                </p>
+                <p style={{ fontSize: `${fontSize}px` }} className="text-gray-800 leading-relaxed mb-3 ">
+                  {isHindi
+                    ? 'वर्ष 2020 से 2022 तक उन्होंने भाजपा के छत्तीसगढ़ प्रदेश अध्यक्ष के रूप में संगठन को मजबूत किया और पार्टी को जमीनी स्तर पर नई मजबूती दी। विधानसभा चुनाव 2023 में भाजपा की शानदार जीत के बाद उन्हें सर्वसम्मति से विधायक दल का नेता चुना गया। 13 दिसंबर 2023 को वे छत्तीसगढ़ के मुख्यमंत्री बने। उनकी पूरी राजनीतिक यात्रा जनता के विश्वास, परिश्रम और आदिवासी समाज के सशक्तिकरण के प्रति समर्पण का प्रतीक रही है।'
+                    : 'From 2020 to 2022, he served as BJP’s Chhattisgarh state president. Following the party’s victory in the 2023 Assembly elections, he was unanimously chosen as the Chief Minister of Chhattisgarh.'}
                 </p>
               </div>
             </div>
@@ -658,7 +655,7 @@ export default function Home() {
 
               {/* Left Content */}
               <div className="w-full md:w-1/2">
-                <h2 className="text-[32px] font-bold leading-snug mb-4">
+                <h2 style={{ fontSize: `${fontSize+18}px` }} className=" font-bold leading-snug mb-4">
                   {isHindi ? 'अपनी तस्वीरों को' : 'Discover Perfect Image Matches With'}{' '}
                   <span
                     className="text-black px-4 py-1 rounded-sm font-bold inline-block"
@@ -674,15 +671,15 @@ export default function Home() {
                   {isHindi ? 'तकनिकी से खोजें' : 'Uploads'} :
                 </h2>
 
-                <p className="text-gray-300 text-[18px] mb-6">
+                <p style={{ fontSize: `${fontSize+4}px` }}className="text-gray-300 mb-6">
                   {isHindi
                     ? 'अपनी छवि अपलोड करें और हमारी एआई तकनीक से मिलती-जुलती तस्वीरें तुरंत पाएं।'
                     : 'Upload your image and let our AI technology work its magic. Our advanced image recognition system scans the ImgAR dataset to find the most accurate and relevant matches to your uploaded image.'}
                 </p>
 
-                <h3 className="text-[28px] font-bold mb-4">{isHindi ? 'कैसे काम करता है:' : 'How It Works:'}</h3>
+                <h3 style={{ fontSize: `${fontSize+14}px` }} className=" font-bold mb-4">{isHindi ? 'कैसे काम करता है:' : 'How It Works:'}</h3>
 
-                <ul className="space-y-3 text-gray-200 text-[18px]">
+                <ul style={{ fontSize: `${fontSize+4}px` }} className="space-y-3 text-gray-200 text-[18px]">
                   <li className="flex items-start gap-2">
                     <img src="/arrow.png" alt="arrow" className="w-[20px] h-[20px] mt-[2px] mr-2" />
                     <span>
@@ -708,7 +705,7 @@ export default function Home() {
                     localStorage.setItem("showSignup", "true"); // 📦 Save small info in localstorage
                     setShowLoginPage(true);                     // 📃 Open AuthPage
                   }}
-                  
+
                   className="mt-8 border border-yellow-400 text-yellow-400 px-14 py-4 rounded-full hover:bg-yellow-400 hover:text-black transition text-[18px] font-semibold"
                 >
                   {isHindi ? 'रजिस्टर करें' : 'Register Now'}
@@ -746,16 +743,17 @@ export default function Home() {
             {/* Social Media Cards */}
             <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
               {/* Twitter */}
+               <a href="https://x.com/dprchhattisgarh" target="_blank" rel="noopener noreferrer">
               <div className="flex flex-col items-center">
                 <div className="text-[#170645] text-2xl font-semibold flex items-center gap-2 mb-2">
-                  <img src="/x.png" alt="Twitter" className="w-[35px] h-[35px]" />
+                  <img src="/x.svg" alt="Twitter" className="w-[35px] h-[35px]" />
                   <span>Twitter</span>
                 </div>
 
                 <div className="relative border-[10px] border-black rounded-[39px] overflow-hidden w-full max-w-[280px]">
                   {/* Background Image */}
                   <img
-                    src="/twitter.png"
+                    src="/twitter.svg"
                     alt="Twitter Post"
                     className="w-full h-full object-cover"
                   />
@@ -768,6 +766,8 @@ export default function Home() {
                   />
                 </div>
               </div>
+              </a>
+
 
               <style jsx>{`
   @keyframes y-rotate-vibe {
@@ -805,34 +805,38 @@ export default function Home() {
 
 
               {/* Instagram */}
+              <a href="https://www.instagram.com/dpr.chhattisgarh/" target="_blank" rel="noopener noreferrer">
               <div className="flex flex-col items-center">
                 <div className="text-[#170645] text-2xl font-semibold flex items-center gap-2 mb-2">
-                  <img src="/insta.png" alt="Instagram" className="w-[40px] h-[40px]" />
+                  <img src="/insta.svg" alt="Instagram" className="w-[40px] h-[40px]" />
                   <span>Instagram</span>
                 </div>
                 <div className="border-[10px] border-black rounded-[39px] overflow-hidden w-full max-w-[280px]">
                   <img
-                    src="/instagram.png"
+                    src="/instagram.svg"
                     alt="Instagram Post"
                     className="object-cover"
                   />
                 </div>
               </div>
+              </a>
 
               {/* Facebook */}
+              <a href="https://www.facebook.com/DPRChhattisgarh" target="_blank" rel="noopener noreferrer" >
               <div className="flex flex-col items-center">
                 <div className="text-[#170645] text-2xl font-semibold flex items-center gap-2 mb-2">
-                  <img src="/fb.png" alt="Facebook" className="w-[41px] h-[41px]" />
+                  <img src="/fb.svg" alt="Facebook" className="w-[41px] h-[41px]" />
                   <span>Facebook</span>
                 </div>
                 <div className="border-[10px] border-black rounded-[39px] overflow-hidden w-full max-w-[280px]">
                   <img
-                    src="/facebk.png"
+                    src="/facebk.svg"
                     alt="Facebook Post"
                     className="object-cover "
                   />
                 </div>
               </div>
+              </a>
             </div>
 
           </section>
@@ -844,13 +848,13 @@ export default function Home() {
               <div className="marquee-track whitespace-nowrap flex items-center gap-12 px-4">
                 {[...Array(2)].map((_, i) => (
                   <React.Fragment key={i}>
-                    <img src="/Group 833.png" alt="Logo 1" className="h-[20vh] w-[12vw] object-contain" />
-                    <img src="/1 91.png" alt="Logo 2" className="h-[20vh] w-[10vw] object-contain" />
-                    <img src="/2 25.png" alt="Logo 3" className="h-[20vh] w-[10vw] object-contain" />
-                    <img src="/3 8.png" alt="Logo 4" className="h-[20vh] w-[10vw] object-contain" />
-                    <img src="/44.png" alt="Logo 5" className="h-[20vh] w-[10vw] object-contain" />
-                    <img src="/6 1.png" alt="Logo 6" className="h-[20vh] w-[10vw] object-contain" />
-                    <img src="/7 7.png" alt="Logo 7" className="h-[20vh] w-[10vw] object-contain" />
+                    <img src="/sb01.svg" alt="Logo 1" className="h-[150px] w-[150px] object-contain" />
+                    <img src="/sb02.svg" alt="Logo 2" className="h-[150px] w-[150px] object-contain" />
+                    <img src="/sb03.svg" alt="Logo 3" className="h-[150px] w-[150px] object-contain" />
+                    <img src="/sb04.svg" alt="Logo 4" className="h-[150px] w-[150px] object-contain" />
+                    <img src="/sb05.svg" alt="Logo 5" className="h-[150px] w-[150px] object-contain" />
+                    <img src="/sb06.svg" alt="Logo 6" className="h-[150px] w-[150px] object-contain" />
+                    <img src="/sb07.svg" alt="Logo 7" className="h-[150px] w-[150px] object-contain" />
                   </React.Fragment>
                 ))}
               </div>
@@ -868,23 +872,23 @@ export default function Home() {
 
                 {/* Featured Links */}
                 <div>
-  <h3 className="font-bold text-lg text-gray-800 mb-3">Featured Links</h3>
-  <div className="text-sm text-gray-600 flex flex-wrap gap-x-2 gap-y-2">
-    {featuredLinks.map((link, index) => (
-      <span key={index} className="flex items-center">
-        <a
-          href={link.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:underline"
-        >
-          {link.name}
-        </a>
-        {index !== featuredLinks.length - 1 && <span className="mx-2">|</span>}
-      </span>
-    ))}
-  </div>
-</div>
+                  <h3 className="font-bold text-lg text-gray-800 mb-3">Featured Links</h3>
+                  <div className="text-sm text-gray-600 flex flex-wrap gap-x-2 gap-y-2">
+                    {featuredLinks.map((link, index) => (
+                      <span key={index} className="flex items-center">
+                        <a
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:underline"
+                        >
+                          {link.name}
+                        </a>
+                        {index !== featuredLinks.length - 1 && <span className="mx-2">|</span>}
+                      </span>
+                    ))}
+                  </div>
+                </div>
 
 
                 {/* Reach Us */}
@@ -916,20 +920,20 @@ export default function Home() {
 
                 {/* Download Our App */}
                 <div>
-                  <h3 className="font-bold text-lg text-gray-800 mb-3 text-center md:text-left">Download Our App</h3>
+                  <h3 className="font-bold text-lg text-gray-800  text-center md:text-left">Download Our App</h3>
                   <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
-                    <img src="/play_store 1 (1).png" alt="Google Play" className="w-[80px] sm:w-[120px] md:w-[150px] h-auto max-w-full" />
-                    <img src="/app_store 1.png" alt="App Store" className="w-[80px] sm:w-[120px] md:w-[150px] h-auto max-w-full" />
+                    <img src="/play_store 1 (1).svg" alt="Google Play" className="w-[100px] sm:w-[120px] md:w-[150px] h-auto max-w-full" />
+                    {/* <img src="/app_store 1.png" alt="App Store" className="w-[80px] sm:w-[120px] md:w-[150px] h-auto max-w-full" /> */}
                   </div>
                 </div>
 
                 {/* Logos */}
                 <div>
-                  <div className="flex flex-wrap justify-center gap-4 mt-6">
-                    <img src="/Group 833.png" alt="Logo 1" className="w-[40px] md:w-[60px] h-auto" />
-                    <img src="/digitalIndia 1 (1).png" alt="Logo 2" className="w-[60px] md:w-[90px] h-auto" />
-                    <img src="/mygov1.png" alt="Logo 3" className="w-[60px] md:w-[90px] h-auto" />
-                    <img src="/azadi-ka-amrit-mahotsav 1 (1).png" alt="Logo 4" className="w-[60px] md:w-[90px] h-auto" />
+                  <div className="flex flex-wrap justify-center gap-4 ml-4 mt-6">
+                    <img src="/cggov.svg" alt="Logo 1" className="w-[50px] md:w-[70px] h-auto" />
+                    <img src="/digitalIndia 1.svg" alt="Logo 2" className="w-[70px] md:w-[100px] h-auto" />
+                    <img src="/mygov1.svg" alt="Logo 3" className="w-[70px] md:w-[100px] h-auto" />
+                    <img src="/azadi-ka-amrit-mahotsav 1.svg" alt="Logo 4" className="w-[70px] md:w-[100px] h-auto" />
                   </div>
                 </div>
 
@@ -938,14 +942,22 @@ export default function Home() {
                   <h3 className="font-bold text-lg text-gray-800 mb-3 text-center md:text-left">Follow Us</h3>
                   <div className="flex gap-4 justify-center md:justify-start">
                     {[
-                      { name: "Twitter", icon: "/x.png" },
-                      { name: "Facebook", icon: "/fb.png" },
-                      { name: "Instagram", icon: "/insta.png" },
-                      { name: "YouTube", icon: "/youtube 1 (1).png" },
-                      { name: "LinkedIn", icon: "/linkedin (1) 1 (1).png" }
+                      { name: "Twitter", icon: "/x.svg", url: "https://x.com/dprchhattisgarh" },
+                      { name: "Facebook", icon: "/fb.svg", url: "https://www.facebook.com/DPRChhattisgarh" },
+                      { name: "Instagram", icon: "/insta.svg", url: "https://www.instagram.com/dpr.chhattisgarh/" },
+                      { name: "YouTube", icon: "/youtube 1 (1).svg", url: "https://www.youtube.com/@DPRChhattisgarh" }
                     ].map((social, index) => (
-                      <a key={index} href="#">
-                        <img src={social.icon} alt={social.name} className="w-[30px] md:w-[40px] h-auto max-w-full" />
+                      <a
+                        key={index}
+                        href={social.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={social.icon}
+                          alt={social.name}
+                          className="w-[30px] md:w-[35px] h-auto max-w-full"
+                        />
                       </a>
                     ))}
                   </div>
@@ -954,10 +966,11 @@ export default function Home() {
               </div>
 
               {/* Footer Bottom */}
-              <div className="w-full text-center py-4 mt-8">
+              <div className="w-full text-center py-4 ">
                 <p className="text-sm text-gray-500">
-                  © 2025 CMO Gallery | Initiative by DPR Chhattisgarh
+                  © 2025 CMO Gallery | Initiative by <a href="https://dprcg.gov.in/" target="_blank" rel="noopener noreferrer" className="underline">DPR Chhattisgarh</a>
                 </p>
+
               </div>
 
             </div>
