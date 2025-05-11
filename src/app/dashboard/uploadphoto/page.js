@@ -236,7 +236,9 @@ export default function UploadPhoto() {
         }
       } else {
         console.warn("Upload API:", uploadData.error || "No photos found.");
-      }
+        alert(uploadData.error || "Failed to find matching photos. Please upload a clear photo.");
+        setFile(null);
+      }      
     } catch (error) {
       console.error("Error fetching photos:", error);
       alert("Failed to fetch photos.");
@@ -597,7 +599,7 @@ export default function UploadPhoto() {
                   <p className="mx-4 text-gray-500">Upload Photo</p>
                   <hr className="flex-grow border-gray-300" />
                 </div> */}
-                <p className="text-red-600 text-xs font-semibold my-4 text-center">
+                <p className="text-red-600 text-sm font-semibold my-4 text-center">
   Dont use photos with filters, heavy editing, or blurred backgrounds.
 </p>
 

@@ -454,7 +454,7 @@ function App() {
                 <label htmlFor="selectAll" className="text-sm cursor-pointer text-[#686868]">Select All</label>
               </div>
               <button
-                className="bg-[#170645] text-[#FFE100] w-full sm:w-[174px] h-[40px] sm:h-[54px] rounded-lg font-normal"
+                className="bg-[#170645] text-[#FFE100] w-full sm:w-[174px] h-[40px] sm:h-[54px] rounded-full font-normal"
                 onClick={handleDownload}
               >
                 Download
