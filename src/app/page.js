@@ -9,6 +9,7 @@ import AuthPage from './AuthPage'; // ✅ Correct for default export
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation'; // add at the top
 import SearchParamHandler from './SearchParamHandler';
+import TwitterEmbed from './TwitterEmbed';
 const arc1Images = ['share.png', 'heart.png'];
 const arc2Images = ['download.png', 'smily.png', 'gallery.png'];
 
@@ -266,12 +267,6 @@ export default function Home() {
               </div>
             )}
           </div>
-
-
-
-
-
-
           <div className="relative w-full h-auto sm:h-[30px] md:h-[60px]">
             <svg viewBox="0 0 1440 400" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto absolute top-0 left-0 pointer-events-none z-0">
               {/* Draw arcs */}
@@ -476,7 +471,7 @@ export default function Home() {
 
               {/* Left Text */}
               <div className="w-full lg:w-1/2 text-center lg:text-left">
-                <p style={{ fontSize: `${fontSize+14}px` }} className="text-[#170645]  mb-4">
+                <p style={{ fontSize: `${fontSize + 14}px` }} className="text-[#170645]  mb-4">
                   {isHindi ? ' प्रस्तुत है !' : 'Welcome to the '}
                   <span
                     className="inline-block font-bold text-black px-3 py-1"
@@ -655,7 +650,7 @@ export default function Home() {
 
               {/* Left Content */}
               <div className="w-full md:w-1/2">
-                <h2 style={{ fontSize: `${fontSize+18}px` }} className=" font-bold leading-snug mb-4">
+                <h2 style={{ fontSize: `${fontSize + 18}px` }} className=" font-bold leading-snug mb-4">
                   {isHindi ? 'अपनी तस्वीरों को' : 'Discover Perfect Image Matches With'}{' '}
                   <span
                     className="text-black px-4 py-1 rounded-sm font-bold inline-block"
@@ -671,15 +666,15 @@ export default function Home() {
                   {isHindi ? 'तकनिकी से खोजें' : 'Uploads'} :
                 </h2>
 
-                <p style={{ fontSize: `${fontSize+4}px` }}className="text-gray-300 mb-6">
+                <p style={{ fontSize: `${fontSize + 4}px` }} className="text-gray-300 mb-6">
                   {isHindi
                     ? 'अपनी छवि अपलोड करें और हमारी एआई तकनीक से मिलती-जुलती तस्वीरें तुरंत पाएं।'
                     : 'Upload your image and let our AI technology work its magic. Our advanced image recognition system scans the ImgAR dataset to find the most accurate and relevant matches to your uploaded image.'}
                 </p>
 
-                <h3 style={{ fontSize: `${fontSize+14}px` }} className=" font-bold mb-4">{isHindi ? 'कैसे काम करता है:' : 'How It Works:'}</h3>
+                <h3 style={{ fontSize: `${fontSize + 14}px` }} className=" font-bold mb-4">{isHindi ? 'कैसे काम करता है:' : 'How It Works:'}</h3>
 
-                <ul style={{ fontSize: `${fontSize+4}px` }} className="space-y-3 text-gray-200 text-[18px]">
+                <ul style={{ fontSize: `${fontSize + 4}px` }} className="space-y-3 text-gray-200 text-[18px]">
                   <li className="flex items-start gap-2">
                     <img src="/arrow.png" alt="arrow" className="w-[20px] h-[20px] mt-[2px] mr-2" />
                     <span>
@@ -743,99 +738,77 @@ export default function Home() {
             {/* Social Media Cards */}
             <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
               {/* Twitter */}
-               <a href="https://x.com/dprchhattisgarh" target="_blank" rel="noopener noreferrer">
+
               <div className="flex flex-col items-center">
-                <div className="text-[#170645] text-2xl font-semibold flex items-center gap-2 mb-2">
-                  <img src="/x.svg" alt="Twitter" className="w-[35px] h-[35px]" />
-                  <span>Twitter</span>
+                <a
+                  href="https://twitter.com/ChhattisgarhCMO"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center no-underline"
+                >
+                  <div className="text-[#170645] text-2xl font-semibold flex items-center gap-2 mb-2">
+
+                    <img src="/x.svg" alt="Twitter" className="w-[35px] h-[35px]" />
+                    <span>Twitter</span>
+
+                  </div>
+
+                </a>
+                <div className="border-[10px] border-black rounded-[39px] overflow-hidden w-full max-w-[280px] bg-white flex items-center justify-center aspect-[9/18]">
+                  {/* Twitter Embed */}
+                  <TwitterEmbed />
+
                 </div>
 
-                <div className="relative border-[10px] border-black rounded-[39px] overflow-hidden w-full max-w-[280px]">
-                  {/* Background Image */}
-                  <img
-                    src="/twitter.svg"
-                    alt="Twitter Post"
-                    className="w-full h-full object-cover"
-                  />
-
-                  {/* Overlay Image */}
-                  <img
-                    src="/jansam.png"
-                    alt="Overlay"
-                    className="absolute mt-5 top-0 left-0 w-full max-w-[253px] h-full max-h-[100px] object-cover animate-y-vibe "
-                  />
-                </div>
               </div>
-              </a>
 
 
-              <style jsx>{`
-  @keyframes y-rotate-vibe {
-      0% {
-      transform: rotateY(0deg);
-    }
-    20% {
-      transform: rotateY(400deg);
-    }
-    22% {
-      transform: rotateY(320deg); /* Recoil */
-    }
-    24% {
-      transform: rotateY(380deg);
-    }
-    26% {
-      transform: rotateY(340deg); /* Recoil */
-    }
-    28% {
-      transform: rotateY(360deg); /* Settle back */
-    }
 
-    100% {
-      transform: rotateY(360deg); /* Hold */
-    }
-  }
-  .animate-y-vibe {
-    animation: y-rotate-vibe 6s ease-in-out infinite;
-    transform-style: preserve-3d;
-    backface-visibility: hidden;
-  }
-    
-
-`}</style>
 
 
               {/* Instagram */}
               <a href="https://www.instagram.com/dpr.chhattisgarh/" target="_blank" rel="noopener noreferrer">
-              <div className="flex flex-col items-center">
-                <div className="text-[#170645] text-2xl font-semibold flex items-center gap-2 mb-2">
-                  <img src="/insta.svg" alt="Instagram" className="w-[40px] h-[40px]" />
-                  <span>Instagram</span>
+                <div className="flex flex-col items-center">
+                  <div className="text-[#170645] text-2xl font-semibold flex items-center gap-2 mb-2">
+                    <img src="/insta.svg" alt="Instagram" className="w-[40px] h-[40px]" />
+                    <span>Instagram</span>
+                  </div>
+                  <div className="border-[10px] border-black rounded-[39px] overflow-hidden w-full max-w-[280px] p-2 bg-white flex items-center justify-center aspect-[9/18]">
+                    <iframe
+                      src="https://www.instagram.com/dpr.chhattisgarh/embed"
+                      width="100%"
+                      height="100%"
+                      frameBorder="0"
+                      scrolling="no"
+                      allowtransparency="true"
+                      allow="encrypted-media"
+                      className="w-full h-full"
+                    ></iframe>
+                  </div>
+
                 </div>
-                <div className="border-[10px] border-black rounded-[39px] overflow-hidden w-full max-w-[280px]">
-                  <img
-                    src="/instagram.svg"
-                    alt="Instagram Post"
-                    className="object-cover"
-                  />
-                </div>
-              </div>
               </a>
 
               {/* Facebook */}
               <a href="https://www.facebook.com/DPRChhattisgarh" target="_blank" rel="noopener noreferrer" >
-              <div className="flex flex-col items-center">
-                <div className="text-[#170645] text-2xl font-semibold flex items-center gap-2 mb-2">
-                  <img src="/fb.svg" alt="Facebook" className="w-[41px] h-[41px]" />
-                  <span>Facebook</span>
+                <div className="flex flex-col items-center">
+                  <div className="text-[#170645] text-2xl font-semibold flex items-center gap-2 mb-2">
+                    <img src="/fb.svg" alt="Facebook" className="w-[41px] h-[41px]" />
+                    <span>Facebook</span>
+                  </div>
+                  <div className="border-[10px] border-black rounded-[39px] overflow-hidden w-full max-w-[280px]  bg-white flex items-center justify-center aspect-[9/18]">
+                    <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FDPRChhattisgarh&tabs=timeline&width=280&height=560&small_header=false&adapt_container_width=true&hide_cover=true&show_facepile=true&appId"
+                      width="100%"
+                      height="100%"
+                      style={{ border: "none", overflow: "hidden" }}
+                      scrolling="no"
+                      frameBorder="0"
+                      allowFullScreen={true}
+                      allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                      className="w-full h-full"
+                    ></iframe>
+                  </div>
                 </div>
-                <div className="border-[10px] border-black rounded-[39px] overflow-hidden w-full max-w-[280px]">
-                  <img
-                    src="/facebk.svg"
-                    alt="Facebook Post"
-                    className="object-cover "
-                  />
-                </div>
-              </div>
               </a>
             </div>
 

@@ -7,37 +7,32 @@ function CustomBarChart({ onPercentageChange }) {
 
   const [chartData, setChartData] = useState([]);
 
-  useEffect(() => {
-    const fetchVisitorStats = async () => {
-      try {
-        const response = await fetch(`${API_URL}/visitor-stats`);
-        const data = await response.json();
+  const fetchVisitorStats = async () => {
+    try {
+      const response = await fetch(`${API_URL}/visitor-stats`);
+      const data = await response.json();
 
-        // Format data for recharts (x as day number or short name)
-        const formatted = data.map((item, index) => ({
-          day: `Day ${index + 1}`, // or use: new Date(item.date).toLocaleDateString('en-US', { weekday: 'short' })
-          value: item.count,
-        }));
+      const formatted = data.map((item, index) => ({
+        day: `Day ${index + 1}`,
+        value: item.count,
+      }));
 
-        setChartData(formatted);
-        if (data.length >= 7) {
-          const day6 = data[5].count;
-          const day7 = data[6].count;
-          const change = day6 === 0 ? 100 : ((day7 - day6) / day6) * 100;
+      setChartData(formatted);
 
-          // Send value to parent
-          onPercentageChange && onPercentageChange(change.toFixed(2));
-        }
-      } catch (err) {
-        console.error("Failed to fetch visitor stats:", err);
+      if (data.length >= 7) {
+        const day6 = data[5].count;
+        const day7 = data[6].count;
+        const change = day6 === 0 ? 100 : ((day7 - day6) / day6) * 100;
+
+        onPercentageChange && onPercentageChange(change.toFixed(2));
       }
-    };
+    } catch (err) {
+      console.error("Failed to fetch visitor stats:", err);
+    }
+  };
 
-    fetchVisitorStats();
-    const interval = setInterval(fetchVisitorStats, 10000);
-
-    // Clear on unmount
-    return () => clearInterval(interval);
+  useEffect(() => {
+    fetchVisitorStats(); // ✅ Only once on page load
   }, []);
 
   const CustomTooltip = ({ active, payload, label }) => {
@@ -61,7 +56,7 @@ function CustomBarChart({ onPercentageChange }) {
   };
   
   return (
-    <div className="bg-[#ECECEC] p-4  rounded-[20px] shadow-md w-full mt-5 h-[420px]">
+    <div className="bg-[#ECECEC] p-4  rounded-[20px] shadow-md w-full mt-5 h-[420px]"  onMouseEnter={fetchVisitorStats} >
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={chartData} margin={{ top: 10, right: 20, left: 20, bottom: 20 }}>
           {/* Y-Axis Grid Lines */}

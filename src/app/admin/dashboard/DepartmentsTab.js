@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import API_URL from '@/app/api';
+import Loader from "./Loader";
 
 export default function DepartmentsTab() {
   const [departmentName, setDepartmentName] = useState(""); // Store input value
   const [departments, setDepartments] = useState([]);
   const [editIndex, setEditIndex] = useState(null); // Track the department being edited
   const [editedName, setEditedName] = useState(""); // Store the edited name
-
+  const [showLoader, setShowLoader] = useState(false);
   useEffect(() => {
     fetch(`${API_URL}/departments`)
       .then((res) => res.json())
@@ -28,7 +29,22 @@ export default function DepartmentsTab() {
       });
     }
   };
+  const showLoadingScreen = () => {
+    setShowLoader(true);
+    const minTime = new Promise(resolve => setTimeout(resolve, 1000));
+    const maxTime = new Promise(resolve => setTimeout(resolve, 10000));
+    return Promise.race([minTime, maxTime]);
+  };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      await showLoadingScreen();
+      // your API fetch here
+      setShowLoader(false); // hide loader after fetch
+    };
+    fetchData();
+  }, []);
+  
   // Function to enable editing mode
   const handleEdit = (index) => {
     setEditIndex(index);
@@ -150,6 +166,8 @@ export default function DepartmentsTab() {
           </tbody>
         </table>
       </div>
+      {showLoader && <Loader />}
+
     </div>
   );
 }

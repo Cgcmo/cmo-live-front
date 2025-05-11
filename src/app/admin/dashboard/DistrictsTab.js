@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import API_URL from '@/app/api';
+import Loader from "./Loader";
 
 export default function DistrictsTab() {
   const [districtName, setDistrictName] = useState(""); // Store input value
   const [districts, setDistricts] = useState([]);
-
+  const [showLoader, setShowLoader] = useState(false);
   const [editIndex, setEditIndex] = useState(null); // Track the district being edited
   const [editedName, setEditedName] = useState(""); // Store the edited name
 
@@ -54,6 +55,23 @@ export default function DistrictsTab() {
     }
   };
   
+  const showLoadingScreen = () => {
+    setShowLoader(true);
+    const minTime = new Promise(resolve => setTimeout(resolve, 1000));
+    const maxTime = new Promise(resolve => setTimeout(resolve, 10000));
+    return Promise.race([minTime, maxTime]);
+  };
+  
+  // inside useEffect or any fetch function:
+  useEffect(() => {
+    const fetchData = async () => {
+      await showLoadingScreen();
+      // your API fetch here
+      setShowLoader(false); // hide loader after fetch
+    };
+    fetchData();
+  }, []);
+
   // Function to cancel editing
   const handleCancelEdit = () => {
     setEditIndex(null); // Exit editing mode without saving
@@ -160,6 +178,8 @@ export default function DistrictsTab() {
           </tbody>
         </table>
       </div>
+      {showLoader && <Loader />}
+
     </div>
   );
 }

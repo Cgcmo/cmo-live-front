@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import API_URL from '@/app/api';
+import Loader from "./Loader";
 
 export default function Profile() {
   const [user, setUser] = useState({
@@ -15,6 +16,25 @@ export default function Profile() {
   });
   const [districts, setDistricts] = useState([]); // Store districts list
   const router = useRouter();
+
+  const [showLoader, setShowLoader] = useState(false);
+
+const showLoadingScreen = () => {
+  setShowLoader(true);
+  const minTime = new Promise(resolve => setTimeout(resolve, 1000));
+  const maxTime = new Promise(resolve => setTimeout(resolve, 10000));
+  return Promise.race([minTime, maxTime]);
+};
+
+// inside useEffect or any fetch function:
+useEffect(() => {
+  const fetchData = async () => {
+    await showLoadingScreen();
+    // your API fetch here
+    setShowLoader(false); // hide loader after fetch
+  };
+  fetchData();
+}, []);
 
   useEffect(() => {
     const userId = Cookies.get("loggedInUserId");
@@ -167,6 +187,7 @@ export default function Profile() {
           Logout
         </button>
       </div>
+      {showLoader && <Loader />}
     </div>
   );
 }

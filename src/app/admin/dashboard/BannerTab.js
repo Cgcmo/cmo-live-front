@@ -10,23 +10,40 @@ export default function BannerTab() {
   const [selectedImage, setSelectedImage] = useState(null);
 const [isUploading, setIsUploading] = useState(false);
 const [banners, setBanners] = useState([]);
-const [showLoader, setShowLoader] = useState(false);
+const [pageLoading, setPageLoading] = useState(true);
+
 
 useEffect(() => {
-  let timeout;
-  if (isUploading) {
-    setShowLoader(true);
-    timeout = setTimeout(() => {
-      setShowLoader(false);
-    }, 10000); // max 10 sec
-  } else {
-    setTimeout(() => {
-      setShowLoader(false);
-    }, 1000); // min 1 sec
-  }
+  let minTimer, maxTimer;
 
-  return () => clearTimeout(timeout);
-}, [isUploading]);
+  setPageLoading(true);
+
+  // Start min 1 sec timer
+  minTimer = setTimeout(() => {
+    setPageLoading(false);
+  }, 1000);
+
+  // Start max 10 sec timer
+  maxTimer = setTimeout(() => {
+    setPageLoading(false);
+  }, 10000);
+
+  fetch(`${API_URL}/get-banners`)
+    .then((res) => res.json())
+    .then((data) => {
+      setBanners(data);
+      clearTimeout(maxTimer); // stop max timer if data came early
+      if (!minTimer) {
+        setPageLoading(false); // If 1 sec already passed
+      }
+    });
+
+  return () => {
+    clearTimeout(minTimer);
+    clearTimeout(maxTimer);
+  };
+}, []);
+
 
 
 const handleDelete = async (id) => {
@@ -140,49 +157,43 @@ const handleDelete = async (id) => {
   onChange={(e) => {
     const file = e.target.files[0];
     if (!file) return;
-
+  
     if (file.size > 5 * 1024 * 1024) {
       alert("Image size must be under 5MB.");
       return;
     }
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64Data = reader.result;
-      const img = new Image();
-      img.src = base64Data;
-
-      setIsUploading(true); // already exists
-const start = Date.now();
-
-img.onload = () => {
-  const duration = () => Math.max(1000 - (Date.now() - start), 0); // minimum 1 sec delay
-
-  const aspectRatio = img.width / img.height;
-  const isCloseTo2x1 = aspectRatio > 1.9 && aspectRatio < 2.1;
-
-  if (!isCloseTo2x1) {
-    const proceed = confirm(`This Image size is ${img.width}x${img.height}, recommended size is 800x400 or atlest in ratio of 2:1`);
-    if (!proceed) {
-      setTimeout(() => setIsUploading(false), duration());
-      return;
-    }
-  }
-
-  setTimeout(() => {
-    setSelectedImage({
-      title: bannerTitle || "Untitled Banner",
-      size: (file.size / 1024).toFixed(1) + "kb",
-      image: base64Data,
-    });
-    setIsUploading(false);
-  }, duration());
-};
-
+  
+    const img = new Image();
+    img.src = URL.createObjectURL(file); // ✅ direct preview without reading base64
+  
+    setIsUploading(true);
+    const start = Date.now();
+  
+    img.onload = () => {
+      const duration = () => Math.max(1000 - (Date.now() - start), 0);
+      const aspectRatio = img.width / img.height;
+      const isCloseTo2x1 = aspectRatio > 1.9 && aspectRatio < 2.1;
+  
+      if (!isCloseTo2x1) {
+        const proceed = confirm(`This Image size is ${img.width}x${img.height}, recommended size is 800x400 or at least 2:1`);
+        if (!proceed) {
+          setTimeout(() => setIsUploading(false), duration());
+          return;
+        }
+      }
+  
+      setTimeout(() => {
+        setSelectedImage({
+          file: file,                          // ✅ Save raw file
+          preview: img.src,                    // ✅ Save preview URL
+          title: bannerTitle || "Untitled Banner",
+          size: (file.size / 1024).toFixed(1) + "kb",
+        });
+        setIsUploading(false);
+      }, duration());
     };
-
-    reader.readAsDataURL(file);
   }}
+  
 />
 
 
@@ -202,7 +213,7 @@ img.onload = () => {
     <div className="flex items-center gap-3">
       <div className="relative">
         <img
-          src={selectedImage.image}
+          src={selectedImage.preview}
           alt="Preview"
           className="w-14 h-14 rounded-lg object-cover"
         />
@@ -242,43 +253,36 @@ onClick={async () => {
   setIsUploading(true);
 
   try {
-    const base64 = selectedImage.image; // ✅ Don’t remove the header;
+    const formData = new FormData();
+    formData.append("image", selectedImage.file); // ✅ Real file
+    formData.append("title", bannerTitle);
+    formData.append("size", selectedImage.size);
 
     const response = await fetch(`${API_URL}/upload-banner`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: bannerTitle,
-        image: base64,
-        size: selectedImage.size,
-      }),
+      body: formData,  // ✅ No need for Content-Type
     });
 
     const data = await response.json();
-    const delay = Math.max(1000 - (Date.now() - start), 0); // enforce 1 sec minimum
+    const delay = Math.max(1000 - (Date.now() - start), 0);
 
     setTimeout(() => {
       setIsUploading(false);
+
       if (!response.ok) {
         alert("❌ Upload failed: " + (data.error || "Unknown error"));
         return;
       }
 
+      const newBanner = {
+        id: data.id,
+        title: bannerTitle,
+        size: selectedImage.size,
+        date: new Date().toLocaleDateString("en-IN"),
+        image: data.url,
+      };
 
-    if (!response.ok) {
-      alert("❌ Upload failed: " + (data.error || "Unknown error"));
-      return;
-    }
-
-    const newBanner = {
-      id: data.id,
-      title: bannerTitle,
-      size: selectedImage.size,
-      date: new Date().toLocaleDateString("en-IN"),
-      image: data.url,
-    };
-
-   setBanners([newBanner, ...banners]);
+      setBanners([newBanner, ...banners]);
       setSelectedImage(null);
       setBannerTitle("");
       document.getElementById("bannerImageInput").value = "";
@@ -286,8 +290,8 @@ onClick={async () => {
     }, delay);
   } catch (error) {
     setIsUploading(false);
-    alert("❌ Upload failed");
     console.error(error);
+    alert("❌ Upload failed");
   }
 }}
 
@@ -328,7 +332,7 @@ onClick={async () => {
       </div>
       </div>
       
-      {isUploading && (
+      {(isUploading || pageLoading) && ( 
  <div className="fixed top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-black bg-opacity-30 z-[9999] backdrop-blur-sm">
  <div className="flex flex-col items-center p-6 rounded-2xl">
    {/* Spinner */}

@@ -818,7 +818,7 @@ useEffect(() => {
           ) : showSignup ? (
             <div>
               <h2 className="text-3xl font-bold text-center text-[#170645]">AI Based CMO Gallery</h2>
-              <p className="text-center text-[#170645] text-lg mt-1">One Click Download</p>
+              
               <div className="flex items-center my-4">
                 <hr className="flex-grow border-gray-300" />
                 {/* <span className="px-3 text-[#908AA0] text-sm">Or, Sign Up With Your Email</span> */}
@@ -939,7 +939,7 @@ useEffect(() => {
           ) : (
             <div>
               <h2 className="text-2xl font-bold text-center text-[#170645]">AI Based CMO Gallery</h2>
-              <p className="text-center text-[#170645]">One Click Download</p>
+      
               <button className="flex items-center justify-center w-full border p-2 mt-4 rounded-full hover:bg-gray-200" onClick={() => signIn("google")}>
                 <img src="/google pic.png" alt="Google" className="w-5 mr-2" onClick={async () => {
                   console.log("🔵 Google Sign-In button clicked");

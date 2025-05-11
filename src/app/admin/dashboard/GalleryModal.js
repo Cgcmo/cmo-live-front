@@ -12,8 +12,23 @@ const GalleryModal = ({ isOpen, setIsOpen, albumId, fetchPhotos, fetchAllStats }
 
 
   const handleImageUpload = (event) => {
-  setSelectedFiles([...event.target.files]);
-};
+    const newFiles = Array.from(event.target.files);
+  
+    setSelectedFiles((prevFiles) => {
+      // Merge old and new files
+      const combinedFiles = [...prevFiles, ...newFiles];
+  
+      // Limit to 20 images
+      if (combinedFiles.length > 20) {
+        alert("You can only select up to 20 images. Auto selcting first 20 images...");
+        return combinedFiles.slice(0, 20);
+      }
+  
+      return combinedFiles;
+    });
+  };
+  
+  
 
 const handleSave = async () => {
   if (!selectedFiles.length) {
@@ -22,45 +37,46 @@ const handleSave = async () => {
   }
 
   setLoading(true);
-  setRejectedFiles([]); // Clear previously rejected images
-
-  const formData = new FormData();
-  selectedFiles.forEach((file) => {
-    formData.append("photos", file);
-  });
+  setRejectedFiles([]);
 
   try {
-    const response = await fetch(`${API_URL}/upload-gallery/${albumId}`, {
-      method: "POST",
-      body: formData,
-    });
+    const uploadPromises = selectedFiles.map(async (file) => {
+      const formData = new FormData();
+      formData.append("photos", file);  // Single photo
 
-    const result = await response.json();
+      const response = await fetch(`${API_URL}/upload-gallery/${albumId}`, {
+        method: "POST",
+        body: formData,
+      });
 
-    if (response.ok) {
-      // Match rejected file names to File objects
-      if (result.rejected && result.rejected.length > 0) {
-        const rejectedSet = new Set(result.rejected);
-        const rejected = selectedFiles.filter(file => rejectedSet.has(file.name));
-        setRejectedFiles(rejected);
-
-        alert(`${result.rejected.length} image(s) skipped due to no clear face.`);
-        setSelectedFiles([]);
-      } else {
-        alert("Photos uploaded successfully");
-        setIsOpen(false);
-        setSelectedFiles([]);   // ✅ Clear uploaded files
-        setRejectedFiles([]);
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || "Upload failed");
       }
 
-      fetchPhotos({ _id: albumId });
-      fetchAllStats();
+      return result.rejected || [];  // Return rejected files (if any)
+    });
 
+    const rejectedResults = await Promise.all(uploadPromises);
+    const allRejected = rejectedResults.flat();
+
+    if (allRejected.length > 0) {
+      const rejectedSet = new Set(allRejected);
+      const rejected = selectedFiles.filter(file => rejectedSet.has(file.name));
+      setRejectedFiles(rejected);
+
+      alert(`${allRejected.length} image(s) skipped due to no clear face.`);
     } else {
-      alert("Failed to upload photos");
+      alert("Photos uploaded successfully!");
+      setIsOpen(false);
     }
+
+    setSelectedFiles([]);
+    fetchPhotos({ _id: albumId });
+    fetchAllStats();
   } catch (error) {
     console.error("Error uploading photos:", error);
+    alert("Something went wrong while uploading.");
   } finally {
     setLoading(false);
   }
@@ -117,20 +133,32 @@ const handleSave = async () => {
 
         {/* Image Upload Box */}
         <label
-          htmlFor="fileInput"
-          className="border-dashed border-2 border-gray-400 rounded-lg py-12 text-center block cursor-pointer hover:bg-gray-100 transition"
-        >
-          <p className="text-[#170645]">Click or Drag & Drop To Upload Multiple Images</p>
-          <p className="text-gray-400 text-sm">PNG, JPG, JPEG (Max 250KB per image)</p>
-        </label>
+  htmlFor="fileInput"
+  className={`border-dashed border-2 rounded-lg py-12 text-center block transition ${
+    selectedFiles.length >= 20
+      ? "border-red-400 bg-red-50 text-red-500 cursor-not-allowed"
+      : "border-gray-400 hover:bg-gray-100 cursor-pointer"
+  }`}
+>
+  <p className={selectedFiles.length >= 20 ? "text-red-500 font-bold" : "text-[#170645]"}>
+    {selectedFiles.length > 0
+      ? `${selectedFiles.length}/20 Images Selected`
+      : "Click or Drag & Drop To Upload Multiple Images"}
+  </p>
+  <p className={`text-sm ${selectedFiles.length >= 20 ? "text-red-400" : "text-gray-400"}`}>
+    PNG, JPG, JPEG (Max 250KB per image)
+  </p>
+</label>
+
         <input
-          id="fileInput"
-          type="file"
-          accept="image/png, image/jpeg"
-          multiple
-          className="hidden"
-          onChange={handleImageUpload}
-        />
+  id="fileInput"
+  type="file"
+  accept="image/png, image/jpeg"
+  multiple
+  className="hidden"
+  onChange={handleImageUpload}
+  disabled={selectedFiles.length >= 20}
+/>
 
         {/* Uploaded Images Preview */}
         <div className="mt-8">

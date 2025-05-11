@@ -12,34 +12,34 @@ export default function InfoPage() {
   const [fontSize, setFontSize] = useState(18);
 
   const featuredLinks = [
-   { name: "Home", url: "/" },
-   { name: "Copyright Policy", url: "/info/copyright-policy" },
-   { name: "Disclaimer", url: "/info/disclaimer" },
-   { name: "Site Map", url: "/info/site-map" },
-   { name: "Hyperlink Policy", url: "/info/hyperlink-policy" },
-   { name: "Privacy Policy", url: "/info/privacy-policy" },
-   { name: "Terms And Conditions", url: "/info/terms-and-conditions" },
-   { name: "Terms Of Use", url: "/info/terms-of-use" },
- ];
+    { name: "Home", url: "/" },
+    { name: "Copyright Policy", url: "/info/copyright-policy" },
+    { name: "Disclaimer", url: "/info/disclaimer" },
+    { name: "Site Map", url: "/info/site-map" },
+    { name: "Hyperlink Policy", url: "/info/hyperlink-policy" },
+    { name: "Privacy Policy", url: "/info/privacy-policy" },
+    { name: "Terms And Conditions", url: "/info/terms-and-conditions" },
+    { name: "Terms Of Use", url: "/info/terms-of-use" },
+  ];
 
- function renderBoldContent(text) {
-   return text.split("**").map((part, index) =>
-     index % 2 === 1 ? (
-       <span key={index} className="font-semibold text-[#222]">
-         {part}
-       </span>
-     ) : (
-       <span key={index} className="text-gray-800">
-         {part}
-       </span>
-     )
-   );
- }
+  function renderBoldContent(text) {
+    return text.split("**").map((part, index) =>
+      index % 2 === 1 ? (
+        <span key={index} className="font-semibold text-[#222]">
+          {part}
+        </span>
+      ) : (
+        <span key={index} className="text-gray-800">
+          {part}
+        </span>
+      )
+    );
+  }
 
- const contentHindi = {
-   "copyright-policy": {
-     title: "कॉपीराइट नीति",
-     content: `
+  const contentHindi = {
+    "copyright-policy": {
+      title: "कॉपीराइट नीति",
+      content: `
  CMO PHOTO GALLERY पर होस्ट की गई सभी सामग्री — जैसे चित्र, वीडियो और टेक्स्ट — पूरी तरह से मुख्यमंत्री कार्यालय (CMO), छत्तीसगढ़, भारत सरकार की संपत्ति है।
  
  1. **मालिकाना हक:**
@@ -56,11 +56,11 @@ export default function InfoPage() {
  4. **कानूनी कार्रवाई:**
     - किसी भी प्रकार का अनधिकृत व्यावसायिक उपयोग या शोषण भारतीय कानूनों के तहत कानूनी कार्रवाई को जन्म दे सकता है।
      `,
-   },
- 
-   disclaimer: {
-     title: "अस्वीकरण",
-     content: `
+    },
+
+    disclaimer: {
+      title: "अस्वीकरण",
+      content: `
  CMO PHOTO GALLERY, जो मुख्यमंत्री कार्यालय, छत्तीसगढ़ द्वारा संचालित एक एआई आधारित प्लेटफॉर्म है, केवल सूचना एवं सुविधा के उद्देश्य से सेवाएं प्रदान करता है।
  
  1. **सटीकता और विश्वसनीयता:**
@@ -77,11 +77,11 @@ export default function InfoPage() {
  4. **तकनीकी समस्याएं:**
     - साइट की उपलब्धता सुनिश्चित करने के लिए हर संभव प्रयास किया जाता है, लेकिन अनियोजित तकनीकी समस्याएं हो सकती हैं।
      `,
-   },
- 
-   "site-map": {
-     title: "साइट मैप",
-     content: `
+    },
+
+    "site-map": {
+      title: "साइट मैप",
+      content: `
  यह साइट मैप CMO PHOTO GALLERY की संपूर्ण संरचना को दिखाता है ताकि उपयोगकर्ता प्रभावी रूप से नेविगेट कर सकें:
  
  1) **उपयोगकर्ता दृश्य**
@@ -100,11 +100,11 @@ export default function InfoPage() {
  - सूचना पेज
  - सर्च परिणाम
      `,
-   },
- 
-   "privacy-policy": {
-     title: "गोपनीयता नीति",
-     content: `
+    },
+
+    "privacy-policy": {
+      title: "गोपनीयता नीति",
+      content: `
  यह नीति CMO PHOTO GALLERY पर आपकी व्यक्तिगत जानकारी कैसे एकत्र, उपयोग और सुरक्षित रखी जाती है, इसका विवरण देती है।
  
  1. **संग्रहीत जानकारी:**
@@ -127,11 +127,11 @@ export default function InfoPage() {
  5. **उपयोगकर्ता अधिकार:**
     - डेटा हटाने या संशोधन का अनुरोध dprcgh@gmail.com पर करें।
      `,
-   },
- 
-   "hyperlink-policy": {
-     title: "हाइपरलिंक नीति",
-     content: `
+    },
+
+    "hyperlink-policy": {
+      title: "हाइपरलिंक नीति",
+      content: `
  CMO PHOTO GALLERY पर बाहरी वेबसाइटों के लिंक केवल सुविधा के लिए दिए गए हैं।
  
  1. **बाहरी लिंक अस्वीकरण:**
@@ -148,11 +148,11 @@ export default function InfoPage() {
  4. **अनावश्यक लिंक हटाने का अनुरोध:**
     - किसी अनुचित लिंक की सूचना dprcgh@gmail.com पर दें।
      `,
-   },
- 
-   "terms-of-use": {
-     title: "उपयोग की शर्तें",
-     content: `
+    },
+
+    "terms-of-use": {
+      title: "उपयोग की शर्तें",
+      content: `
  CMO PHOTO GALLERY के सभी उपयोगकर्ता निम्नलिखित शर्तों का पालन करेंगे:
  
  1. **नैतिक उपयोग:**
@@ -170,11 +170,11 @@ export default function InfoPage() {
     - सभी भारतीय साइबर और गोपनीयता कानूनों का पालन अनिवार्य है।
     - उल्लंघन की स्थिति में कानूनी कार्रवाई हो सकती है।
      `,
-   },
- 
-   "terms-and-conditions": {
-     title: "नियम और शर्तें",
-     content: `
+    },
+
+    "terms-and-conditions": {
+      title: "नियम और शर्तें",
+      content: `
  CMO PHOTO GALLERY का उपयोग करने से, उपयोगकर्ता निम्नलिखित शर्तों को स्वीकार करते हैं:
  
  1. **पंजीकरण:**
@@ -192,10 +192,10 @@ export default function InfoPage() {
  5. **उल्लंघन के परिणाम:**
     - खाता निलंबन या समाप्ति, और कानूनी कार्यवाही हो सकती है।
      `,
-   },
- };
+    },
+  };
 
- 
+
   const content = {
     "copyright-policy": {
       title: "Copyright Policy",
@@ -336,9 +336,9 @@ All users of CMO PHOTO GALLERY agree to adhere to the following conditions to en
    - Misuse, unauthorized sharing, or redistribution of protected content may result in legal proceedings and penalties.
       `,
     },
-"privacy-policy": {
-  title: "Privacy Policy",
-  content: `
+    "privacy-policy": {
+      title: "Privacy Policy",
+      content: `
 This Privacy Policy outlines how we collect, use, and protect your personal data when you visit and interact with CMO PHOTO GALLERY.
 
 1. **Information We Collect:**
@@ -365,11 +365,11 @@ This Privacy Policy outlines how we collect, use, and protect your personal data
 
 For questions, contact: dprcgh@gmail.com
   `,
-},
+    },
 
-"hyperlink-policy": {
-  title: "Hyperlink Policy",
-  content: `
+    "hyperlink-policy": {
+      title: "Hyperlink Policy",
+      content: `
 Links to external websites and platforms are provided for user convenience on CMO PHOTO GALLERY.
 
 1. **External Link Disclaimer:**
@@ -389,13 +389,13 @@ Links to external websites and platforms are provided for user convenience on CM
 
 This policy may be updated without prior notice.
   `,
-},
+    },
 
   };
 
   const pageContent = isHindi ? contentHindi[params.slug] : content[params.slug];
 
-  
+
 
   if (!pageContent) {
     return (
@@ -406,236 +406,236 @@ This policy may be updated without prior notice.
     );
   }
 
-  
+
 
   return (
-   <div className="bg-[#170645] text-white min-h-screen flex flex-col">
-     {/* Navbar */}
-     <nav className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 sm:px-6 py-2 bg-[#170645] shadow-md">
-       {/* Left: Logo */}
-                    <div className="flex items-center">
-                    <Link href="/" className="flex items-center">
-                    <div className="flex items-center">
-                <img
-                  src="/cggov.svg"
-                  alt="Logo"
-                  className="w-[76px] h-[72px] rounded-full bg-white"
+    <div className="bg-white text-white min-h-screen flex flex-col">
+      {/* Navbar */}
+      <nav className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 sm:px-6 py-2 bg-[#170645] shadow-md">
+        {/* Left: Logo */}
+        <div className="flex items-center">
+          <Link href="/" className="flex items-center">
+            <div className="flex items-center">
+              <img
+                src="/cggov.svg"
+                alt="Logo"
+                className="w-[76px] h-[72px] rounded-full bg-white"
+              />
+            </div>
+          </Link>
+        </div>
+
+
+
+        {/* Hamburger Icon on Mobile */}
+        <div className=" flex items-center space-x-3 sm:hidden relative z-50">
+
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="text-white focus:outline-none"
+          >
+            <svg
+              className="w-8 h-8"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {menuOpen ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
                 />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              )}
+            </svg>
+          </button>
+        </div>
+
+        {/* Right Controls (Hidden on Mobile) */}
+        <div className="hidden sm:flex items-center space-x-3">
+          <button
+            className="bg-white text-[#170645] px-4 h-[45px] rounded-full text-md"
+            onClick={() => setIsHindi(!isHindi)}
+          >
+            A<sub>अ</sub> {isHindi ? 'Eng' : 'Hindi'}
+          </button>
+
+          <div className="bg-white text-[#170645] px-4 h-[45px] rounded-full text-md flex space-x-2">
+            <button onClick={() => setFontSize((prev) => Math.min(prev + 2, 24))}>A+</button>
+            <button onClick={() => setFontSize((prev) => Math.max(prev - 2, 12))}>A-</button>
+          </div>
+        </div>
+        {menuOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-30"
+            onClick={() => setMenuOpen(false)}
+          ></div>
+        )}
+
+        {/* Mobile Dropdown Menu (positioned below nav) */}
+        {menuOpen && (
+          <div className="fixed top-20 right-0 w-[30vw] px-4 py-4 flex flex-col items-end space-y-3  z-40">
+            {/* Language Toggle */}
+            <button
+              className="bg-white text-[#170645] w-full max-w-[260px] py-2 rounded-full text-sm font-medium"
+              onClick={() => setIsHindi(!isHindi)}
+            >
+              A<sub className="text-xs">अ</sub> {isHindi ? 'Eng' : 'Hindi'}
+            </button>
+
+            {/* Font Size Controls */}
+            <div className="bg-white text-[#170645] w-full max-w-[260px] py-2 rounded-full text-sm font-medium flex justify-around">
+              <button onClick={() => setFontSize((prev) => Math.min(prev + 2, 24))}>A+</button>
+              <button onClick={() => setFontSize((prev) => Math.max(prev - 2, 12))}>A-</button>
+            </div>
+
+
+          </div>
+        )}
+      </nav>
+
+      {/* Page Content */}
+      <main className="flex-grow pt-24 max-w-5xl mx-auto py-16 px-6 md:px-12 bg-white text-black">
+
+        {pageContent ? (
+          <>
+            <h1 style={{ fontSize: `${fontSize + 18}px` }} className="text-4xl font-bold mt-10 mb-8">{pageContent.title}</h1>
+            <div
+              className="whitespace-pre-line leading-relaxed"
+              style={{ fontSize: `${fontSize}px` }}
+            >
+              {renderBoldContent(pageContent.content)}
+            </div>
+          </>
+        ) : (
+          <>
+            <h1 className="text-3xl font-bold mb-4">Page Not Found</h1>
+            <p className="text-gray-600">Sorry, the page you're looking for does not exist.</p>
+          </>
+        )}
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-gray-200 text-black py-8">
+
+        <div className="max-w-[1621px] mx-auto px-6 md:px-16">
+
+          {/* Featured Links & Reach Us */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-16">
+
+            {/* Featured Links */}
+            <div>
+              <h3 className="font-bold text-lg text-gray-800 mb-3">Featured Links</h3>
+              <div className="text-sm text-gray-600 flex flex-wrap gap-x-2 gap-y-2">
+                {featuredLinks.map((link, index) => (
+                  <span key={index} className="flex items-center">
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:underline"
+                    >
+                      {link.name}
+                    </a>
+                    {index !== featuredLinks.length - 1 && <span className="mx-2">|</span>}
+                  </span>
+                ))}
               </div>
-</Link>
-                    </div>
-      
-      
-      
-                    {/* Hamburger Icon on Mobile */}
-                    <div className=" flex items-center space-x-3 sm:hidden relative z-50">
-                      
-                      <button
-                        onClick={() => setMenuOpen(!menuOpen)}
-                        className="text-white focus:outline-none"
-                      >
-                        <svg
-                          className="w-8 h-8"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          {menuOpen ? (
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M6 18L18 6M6 6l12 12"
-                            />
-                          ) : (
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M4 6h16M4 12h16M4 18h16"
-                            />
-                          )}
-                        </svg>
-                      </button>
-                    </div>
-      
-                    {/* Right Controls (Hidden on Mobile) */}
-                    <div className="hidden sm:flex items-center space-x-3">
-                      <button
-                        className="bg-white text-[#170645] px-4 h-[45px] rounded-full text-md"
-                        onClick={() => setIsHindi(!isHindi)}
-                      >
-                        A<sub>अ</sub> {isHindi ? 'Eng' : 'Hindi'}
-                      </button>
-      
-                      <div className="bg-white text-[#170645] px-4 h-[45px] rounded-full text-md flex space-x-2">
-                        <button onClick={() => setFontSize((prev) => Math.min(prev + 2, 24))}>A+</button>
-                        <button onClick={() => setFontSize((prev) => Math.max(prev - 2, 12))}>A-</button>
-                      </div>
-                    </div>
-                    {menuOpen && (
-              <div
-                className="fixed inset-0 bg-black bg-opacity-50 z-30"
-                onClick={() => setMenuOpen(false)}
-              ></div>
-            )}
-
-            {/* Mobile Dropdown Menu (positioned below nav) */}
-            {menuOpen && (
-              <div className="fixed top-20 right-0 w-[30vw] px-4 py-4 flex flex-col items-end space-y-3  z-40">
-                {/* Language Toggle */}
-                <button
-                  className="bg-white text-[#170645] w-full max-w-[260px] py-2 rounded-full text-sm font-medium"
-                  onClick={() => setIsHindi(!isHindi)}
-                >
-                  A<sub className="text-xs">अ</sub> {isHindi ? 'Eng' : 'Hindi'}
-                </button>
-
-                {/* Font Size Controls */}
-                <div className="bg-white text-[#170645] w-full max-w-[260px] py-2 rounded-full text-sm font-medium flex justify-around">
-                  <button onClick={() => setFontSize((prev) => Math.min(prev + 2, 24))}>A+</button>
-                  <button onClick={() => setFontSize((prev) => Math.max(prev - 2, 12))}>A-</button>
-                </div>
-
-               
-              </div>
-            )}
-                  </nav>
-
-     {/* Page Content */}
-     <main className="flex-grow pt-24 max-w-5xl mx-auto py-16 px-6 md:px-12 bg-white text-black">
-
-       {pageContent ? (
-         <>
-           <h1 style={{ fontSize: `${fontSize+18}px` }} className="text-4xl font-bold mt-10 mb-8">{pageContent.title}</h1>
-           <div
-  className="whitespace-pre-line leading-relaxed"
-  style={{ fontSize: `${fontSize}px` }}
->
-           {renderBoldContent(pageContent.content)}
-           </div>
-         </>
-       ) : (
-         <>
-           <h1 className="text-3xl font-bold mb-4">Page Not Found</h1>
-           <p className="text-gray-600">Sorry, the page you're looking for does not exist.</p>
-         </>
-       )}
-     </main>
-
-     {/* Footer */}
-     <footer className="bg-gray-200 text-black py-8">
-
-       <div className="max-w-[1621px] mx-auto px-6 md:px-16">
-
-{/* Featured Links & Reach Us */}
-<div className="grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-16">
-
-  {/* Featured Links */}
-  <div>
-<h3 className="font-bold text-lg text-gray-800 mb-3">Featured Links</h3>
-<div className="text-sm text-gray-600 flex flex-wrap gap-x-2 gap-y-2">
-{featuredLinks.map((link, index) => (
-<span key={index} className="flex items-center">
-<a
-href={link.url}
-target="_blank"
-rel="noopener noreferrer"
-className="hover:underline"
->
-{link.name}
-</a>
-{index !== featuredLinks.length - 1 && <span className="mx-2">|</span>}
-</span>
-))}
-</div>
-</div>
+            </div>
 
 
-  {/* Reach Us */}
-  <div>
-    <h3 className="font-bold text-lg text-gray-800 mb-3">Reach Us</h3>
-    <div className="text-sm text-gray-600 space-y-3">
-      <p className="flex items-center gap-3">
-        <img src="/loc.png" alt="Location" className="w-[10px] h-auto md:w-[15px]" />
-        Directorate of Public Relations, Naya Raipur, Chhattisgarh, 492001
-      </p>
-      <p className="flex items-center gap-3">
-        <img src="/cal.png" alt="Phone" className="w-[10px] h-auto md:w-[15px]" />
-        +91-771-2221614
-      </p>
-      <p className="flex items-center gap-3">
-        <img src="/mai.png" alt="Email" className="w-[10px] h-auto md:w-[15px]" />
-        dprcgh@gmail.com
-      </p>
-    </div>
-  </div>
-
-</div>
-
-{/* Horizontal Divider */}
-<div className="border-b border-gray-400 my-6"></div>
-
-{/* App, Logos, Social */}
-<div className="flex flex-col md:flex-row justify-between items-center gap-12">
-
-  {/* Download Our App */}
-  <div>
-                  <h3 className="font-bold text-lg text-gray-800  text-center md:text-left">Download Our App</h3>
-                  <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
-                    <img src="/play_store 1 (1).svg" alt="Google Play" className="w-[100px] sm:w-[120px] md:w-[150px] h-auto max-w-full" />
-                    {/* <img src="/app_store 1.png" alt="App Store" className="w-[80px] sm:w-[120px] md:w-[150px] h-auto max-w-full" /> */}
-                  </div>
-                </div>
-
-                {/* Logos */}
-                <div>
-                  <div className="flex flex-wrap justify-center gap-4 ml-4 mt-6">
-                    <img src="/cggov.svg" alt="Logo 1" className="w-[50px] md:w-[70px] h-auto" />
-                    <img src="/digitalIndia 1.svg" alt="Logo 2" className="w-[70px] md:w-[100px] h-auto" />
-                    <img src="/mygov1.svg" alt="Logo 3" className="w-[70px] md:w-[100px] h-auto" />
-                    <img src="/azadi-ka-amrit-mahotsav 1.svg" alt="Logo 4" className="w-[70px] md:w-[100px] h-auto" />
-                  </div>
-                </div>
-
-                {/* Social Media */}
-                <div>
-                  <h3 className="font-bold text-lg text-gray-800 mb-3 text-center md:text-left">Follow Us</h3>
-                  <div className="flex gap-4 justify-center md:justify-start">
-                    {[
-                      { name: "Twitter", icon: "/x.svg", url: "https://x.com/dprchhattisgarh" },
-                      { name: "Facebook", icon: "/fb.svg", url: "https://www.facebook.com/DPRChhattisgarh" },
-                      { name: "Instagram", icon: "/insta.svg", url: "https://www.instagram.com/dpr.chhattisgarh/" },
-                      { name: "YouTube", icon: "/youtube 1 (1).svg", url: "https://www.youtube.com/@DPRChhattisgarh" }
-                    ].map((social, index) => (
-                      <a
-                        key={index}
-                        href={social.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <img
-                          src={social.icon}
-                          alt={social.name}
-                          className="w-[30px] md:w-[35px] h-auto max-w-full"
-                        />
-                      </a>
-                    ))}
-                  </div>
-                </div>
-
-              </div>
-
-              {/* Footer Bottom */}
-              <div className="w-full text-center py-4 ">
-                <p className="text-sm text-gray-500">
-                  © 2025 CMO Gallery | Initiative by <a href="https://dprcg.gov.in/" target="_blank" rel="noopener noreferrer" className="underline">DPR Chhattisgarh</a>
+            {/* Reach Us */}
+            <div>
+              <h3 className="font-bold text-lg text-gray-800 mb-3">Reach Us</h3>
+              <div className="text-sm text-gray-600 space-y-3">
+                <p className="flex items-center gap-3">
+                  <img src="/loc.png" alt="Location" className="w-[10px] h-auto md:w-[15px]" />
+                  Directorate of Public Relations, Naya Raipur, Chhattisgarh, 492001
                 </p>
-
+                <p className="flex items-center gap-3">
+                  <img src="/cal.png" alt="Phone" className="w-[10px] h-auto md:w-[15px]" />
+                  +91-771-2221614
+                </p>
+                <p className="flex items-center gap-3">
+                  <img src="/mai.png" alt="Email" className="w-[10px] h-auto md:w-[15px]" />
+                  dprcgh@gmail.com
+                </p>
               </div>
-</div>
-</footer>
-   </div>
- );
+            </div>
+
+          </div>
+
+          {/* Horizontal Divider */}
+          <div className="border-b border-gray-400 my-6"></div>
+
+          {/* App, Logos, Social */}
+          <div className="flex flex-col md:flex-row justify-between items-center gap-12">
+
+            {/* Download Our App */}
+            <div>
+              <h3 className="font-bold text-lg text-gray-800  text-center md:text-left">Download Our App</h3>
+              <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+                <img src="/play_store 1 (1).svg" alt="Google Play" className="w-[100px] sm:w-[120px] md:w-[150px] h-auto max-w-full" />
+                {/* <img src="/app_store 1.png" alt="App Store" className="w-[80px] sm:w-[120px] md:w-[150px] h-auto max-w-full" /> */}
+              </div>
+            </div>
+
+            {/* Logos */}
+            <div>
+              <div className="flex flex-wrap justify-center gap-4 ml-4 mt-6">
+                <img src="/cggov.svg" alt="Logo 1" className="w-[50px] md:w-[70px] h-auto" />
+                <img src="/digitalIndia 1.svg" alt="Logo 2" className="w-[70px] md:w-[100px] h-auto" />
+                <img src="/mygov1.svg" alt="Logo 3" className="w-[70px] md:w-[100px] h-auto" />
+                <img src="/azadi-ka-amrit-mahotsav 1.svg" alt="Logo 4" className="w-[70px] md:w-[100px] h-auto" />
+              </div>
+            </div>
+
+            {/* Social Media */}
+            <div>
+              <h3 className="font-bold text-lg text-gray-800 mb-3 text-center md:text-left">Follow Us</h3>
+              <div className="flex gap-4 justify-center md:justify-start">
+                {[
+                  { name: "Twitter", icon: "/x.svg", url: "https://x.com/dprchhattisgarh" },
+                  { name: "Facebook", icon: "/fb.svg", url: "https://www.facebook.com/DPRChhattisgarh" },
+                  { name: "Instagram", icon: "/insta.svg", url: "https://www.instagram.com/dpr.chhattisgarh/" },
+                  { name: "YouTube", icon: "/youtube 1 (1).svg", url: "https://www.youtube.com/@DPRChhattisgarh" }
+                ].map((social, index) => (
+                  <a
+                    key={index}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src={social.icon}
+                      alt={social.name}
+                      className="w-[30px] md:w-[35px] h-auto max-w-full"
+                    />
+                  </a>
+                ))}
+              </div>
+            </div>
+
+          </div>
+
+          {/* Footer Bottom */}
+          <div className="w-full text-center py-4 ">
+            <p className="text-sm text-gray-500">
+              © 2025 CMO Gallery | Initiative by <a href="https://dprcg.gov.in/" target="_blank" rel="noopener noreferrer" className="underline">DPR Chhattisgarh</a>
+            </p>
+
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
 }

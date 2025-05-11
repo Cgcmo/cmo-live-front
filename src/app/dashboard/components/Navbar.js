@@ -226,11 +226,13 @@ export default function Navbar({ setShowGallery, setGalleryPhotos }) {
 
     {/* Dropdown itself */}
     <div className="absolute right-0 mt-3 w-[150px] bg-white border border-gray-100 rounded-xl shadow-xl z-50 text-sm py-2">
-      <button
-        onClick={() => {
-          router.push("/profile");
-          setShowDropdown(false);
-        }}
+    <button
+  onClick={() => {
+    setShowDropdown(false);
+    setTimeout(() => {
+      router.push("/profile");
+    }, 50); // wait 50ms before redirect
+  }}
         className="w-full flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100"
       >
         <FiUser className="text-[17px]" />

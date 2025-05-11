@@ -6,7 +6,7 @@ import React, { useState, useEffect } from "react";
 import Switch from "./Switch"; // Import your custom switch
 import "./ToggleSwitch.css"; // Ensure styles are applied
 import API_URL from '@/app/api';
-
+import Loader from "./Loader";
 
 export default function UsersTable({fetchAllStats}) {
   const [editIndex, setEditIndex] = useState(null);
@@ -23,6 +23,25 @@ export default function UsersTable({fetchAllStats}) {
   }); 
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 10;
+  const [showLoader, setShowLoader] = useState(false);
+
+const showLoadingScreen = () => {
+  setShowLoader(true);
+  const minTime = new Promise(resolve => setTimeout(resolve, 1000));
+  const maxTime = new Promise(resolve => setTimeout(resolve, 10000));
+  return Promise.race([minTime, maxTime]);
+};
+
+// inside useEffect or any fetch function:
+useEffect(() => {
+  const fetchData = async () => {
+    await showLoadingScreen();
+    await fetchUsers();   // Call fetchUsers after loading screen
+    setShowLoader(false); // Hide loader
+  };
+  fetchData();
+}, [currentPage]); // 🛠️ Now add [currentPage] dependency
+
 
 
   const toggleStatus = async (id, currentStatus) => {
@@ -86,12 +105,14 @@ export default function UsersTable({fetchAllStats}) {
   const fetchUsers = async () => {
     try {
       const response = await fetch(`${API_URL}/users`);
+      if (!response.ok) throw new Error("Failed to fetch users");
       const data = await response.json();
       setUsers(data);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
   };
+  
 
   // Handle Input Change
   const handleChange = (e) => {
@@ -388,6 +409,8 @@ export default function UsersTable({fetchAllStats}) {
           </div>
         </div>
       )}
+      {showLoader && <Loader />}
+
 
     </div>
 

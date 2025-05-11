@@ -116,97 +116,135 @@ export default function UploadPhoto() {
   }, []);
   
 
-  const handleProceed = async () => {
-    const eventSelect = document.querySelector("select").value;
-    const selectedDate = document.querySelector('input[type="date"]').value;
+  // const handleProceed = async () => {
+  //   const eventSelect = document.querySelector("select").value;
+  //   const selectedDate = document.querySelector('input[type="date"]').value;
   
-    if (!eventSelect && !selectedDate && !file) {
-      alert("Please select an event, a date, or upload a photo.");
+  //   if (!eventSelect && !selectedDate && !file) {
+  //     alert("Please select an event, a date, or upload a photo.");
+  //     return;
+  //   }
+  
+  //   setIsLoading(true);
+  
+  //   try {
+  //     let eventPhotos = [];
+  //     let datePhotos = [];
+  //     let uploadPhotos = [];
+  
+  //     if (eventSelect && eventSelect !== "Select Event") {
+  //       const eventResponse = await fetch(`${API_URL}/fetch-album-photos`, {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         mode: "cors",
+  //         body: JSON.stringify({ eventName: eventSelect }),
+  //       });
+  //       const eventData = await eventResponse.json();
+  //       if (eventResponse.ok) {
+  //         eventPhotos = eventData.photos;
+  //       } else {
+  //         console.warn("Event API:", eventData.error || "No photos found.");
+  //       }
+  //     }
+  
+  //     if (selectedDate) {
+  //       const dateResponse = await fetch(`${API_URL}/fetch-photos-by-date`, {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         mode: "cors",
+  //         body: JSON.stringify({ date: selectedDate }),
+  //       });
+  //       const dateData = await dateResponse.json();
+  //       if (dateResponse.ok) {
+  //         datePhotos = dateData.photos;
+  //       } else {
+  //         console.warn("Date API:", dateData.error || "No photos found.");
+  //       }
+  //     }
+  
+  //     if (file) {
+  //       const formData = new FormData();
+  //       formData.append("image", file); // append raw image
+  
+  //       const uploadResponse = await fetch(`${API_URL}/search-by-upload`, {
+  //         method: "POST",
+  //         body: formData, // no headers — browser sets them for FormData
+  //       });
+  
+  //       const uploadData = await uploadResponse.json();
+  //       if (uploadResponse.ok) {
+  //         uploadPhotos = uploadData.photos;
+  //       } else {
+  //         console.warn("Upload API:", uploadData.error || "No photos found.");
+  //       }
+  //     }
+  
+  //     // Merge all photo sources and remove duplicates by photo_id
+  //     const mergedPhotos = [...new Map([
+  //       ...eventPhotos,
+  //       ...datePhotos,
+  //       ...uploadPhotos
+  //     ].map(photo => [photo.photo_id, photo])).values()];
+  
+  //     if (mergedPhotos.length > 0) {
+  //       setShowGallery(true);
+  //       setImages(mergedPhotos);
+  //       setTotalPages(Math.ceil(mergedPhotos.length / imagesPerPage));
+  //       setCurrentPage(1);
+  //     } else {
+  //       alert("No photos found for the selected filters. If Searching with Photo Make sure Face is clear");
+  //       setFile(null);
+  //       setSelectedDate("");
+  //       document.querySelector("select").value = "";
+  //     }
+  
+      
+  //   }  catch (error) {
+  //     console.error("Error fetching photos:", error);
+  //     alert("Failed to fetch photos.");
+  //   } finally {
+  //     setIsLoading(false); // ✅ This will always run
+  //   }
+  // };
+  const handleProceed = async () => {
+    if (!file) {
+      alert("Please upload a photo.");
       return;
     }
   
     setIsLoading(true);
   
     try {
-      let eventPhotos = [];
-      let datePhotos = [];
-      let uploadPhotos = [];
+      const formData = new FormData();
+      formData.append("image", file);
   
-      if (eventSelect && eventSelect !== "Select Event") {
-        const eventResponse = await fetch(`${API_URL}/fetch-album-photos`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          mode: "cors",
-          body: JSON.stringify({ eventName: eventSelect }),
-        });
-        const eventData = await eventResponse.json();
-        if (eventResponse.ok) {
-          eventPhotos = eventData.photos;
+      const uploadResponse = await fetch(`${API_URL}/search-by-upload`, {
+        method: "POST",
+        body: formData,
+      });
+  
+      const uploadData = await uploadResponse.json();
+      if (uploadResponse.ok) {
+        if (uploadData.photos.length > 0) {
+          setShowGallery(true);
+          setImages(uploadData.photos);
+          setTotalPages(Math.ceil(uploadData.photos.length / imagesPerPage));
+          setCurrentPage(1);
         } else {
-          console.warn("Event API:", eventData.error || "No photos found.");
+          alert("No photos found. Please use a clearer photo.");
+          setFile(null);
         }
-      }
-  
-      if (selectedDate) {
-        const dateResponse = await fetch(`${API_URL}/fetch-photos-by-date`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          mode: "cors",
-          body: JSON.stringify({ date: selectedDate }),
-        });
-        const dateData = await dateResponse.json();
-        if (dateResponse.ok) {
-          datePhotos = dateData.photos;
-        } else {
-          console.warn("Date API:", dateData.error || "No photos found.");
-        }
-      }
-  
-      if (file) {
-        const formData = new FormData();
-        formData.append("image", file); // append raw image
-  
-        const uploadResponse = await fetch(`${API_URL}/search-by-upload`, {
-          method: "POST",
-          body: formData, // no headers — browser sets them for FormData
-        });
-  
-        const uploadData = await uploadResponse.json();
-        if (uploadResponse.ok) {
-          uploadPhotos = uploadData.photos;
-        } else {
-          console.warn("Upload API:", uploadData.error || "No photos found.");
-        }
-      }
-  
-      // Merge all photo sources and remove duplicates by photo_id
-      const mergedPhotos = [...new Map([
-        ...eventPhotos,
-        ...datePhotos,
-        ...uploadPhotos
-      ].map(photo => [photo.photo_id, photo])).values()];
-  
-      if (mergedPhotos.length > 0) {
-        setShowGallery(true);
-        setImages(mergedPhotos);
-        setTotalPages(Math.ceil(mergedPhotos.length / imagesPerPage));
-        setCurrentPage(1);
       } else {
-        alert("No photos found for the selected filters. If Searching with Photo Make sure Face is clear");
-        setFile(null);
-        setSelectedDate("");
-        document.querySelector("select").value = "";
+        console.warn("Upload API:", uploadData.error || "No photos found.");
       }
-  
-      
-    }  catch (error) {
+    } catch (error) {
       console.error("Error fetching photos:", error);
       alert("Failed to fetch photos.");
     } finally {
-      setIsLoading(false); // ✅ This will always run
+      setIsLoading(false);
     }
   };
-
+  
   const handleDownload = (src) => {
     const link = document.createElement("a");
     link.href = src;
@@ -480,30 +518,39 @@ export default function UploadPhoto() {
         <>
           {/* Back Button full screen top-left */}
           <div className="w-full flex justify-start px-4 py-3">
-            <button
-              onClick={() => window.history.back()} // or setShowGallery(false)
-              className="flex items-center gap-2 text-[#170645] font-semibold text-base"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-              <span>Back</span>
-            </button>
+          <button
+  onClick={() => {
+    if (showGallery) {
+      setShowGallery(false); // ✅ if showing gallery, go back to upload form
+      setSelectedImages([]);
+      setSelectAll(false);
+    } else {
+      router.push("/dashboard"); // ✅ if on upload form, go back to dashboard
+    }
+  }}
+  className="flex items-center gap-2 text-[#170645] font-semibold text-base"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
+    viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+  </svg>
+  <span>Back</span>
+</button>
+
           </div>
           <div className="flex flex-col items-center min-h-screen bg-white font-sans">
 
             <h1 className="text-3xl font-extrabold text-[#170645]">Upload Photo</h1>
-            <p className="text-sm text-[#170645] mt-1">& Event Details</p>
+            {/* <p className="text-sm text-[#170645] mt-1">& Event Details</p>
             <div className="flex items-center w-full max-w-md mt-4">
               <hr className="flex-grow border-gray-300" />
               <p className="mx-4 text-gray-500">Event Details</p>
               <hr className="flex-grow border-gray-300" />
-            </div>
+            </div> */}
 
-            <div className="w-full max-w-md mt-6">
+            <div className="w-full max-w-md mt-2">
               <div className="p-4  bg-white">
-                <div className="relative w-full mb-4">
+                {/* <div className="relative w-full mb-4">
                   <p className="text-sm font-medium ml-2 text-gray-600 mb-2">Select Date</p>
                   <input
                     type="date"
@@ -544,17 +591,17 @@ export default function UploadPhoto() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                     </svg>
                   </div>
-                </div>
-                <div className="flex items-center w-full max-w-md mt-7 mb-6">
+                </div> */}
+                {/* <div className="flex items-center w-full max-w-md mt-7 mb-6">
                   <hr className="flex-grow border-gray-300" />
                   <p className="mx-4 text-gray-500">Upload Photo</p>
                   <hr className="flex-grow border-gray-300" />
-                </div>
-                <p className="text-red-600 text-xs font-semibold mt-4 text-center">
+                </div> */}
+                <p className="text-red-600 text-xs font-semibold my-4 text-center">
   Dont use photos with filters, heavy editing, or blurred backgrounds.
 </p>
 
-                <label
+                {/* <label
                   htmlFor="file-upload"
                   onDragOver={(e) => {
                     e.preventDefault();
@@ -633,7 +680,60 @@ export default function UploadPhoto() {
                     onChange={handleFileChange}
                   />
                 </label>
-                
+                 */}
+<label
+  htmlFor="file-upload"
+  onDragOver={(e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }}
+  onDragLeave={(e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  }}
+  onDrop={(e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile) {
+      if (!droppedFile.type.startsWith("image/")) {
+        alert("Please upload a valid image file (jpg, png, jpeg etc.)");
+        return;
+      }
+      setFile(droppedFile);
+    }
+  }}
+  className={`flex flex-col items-center justify-center w-full max-w-2xl p-10 border-2 border-dashed rounded-lg cursor-pointer transition-all duration-500 ease-in-out ${
+    isDragging ? "border-[#170645] border-[2px] bg-blue-50" : "border-[#170645] bg-white  border-[2px] hover:bg-gray-50"
+  }`}  
+>
+  {/* Smiley Upload Icon */}
+  <img
+  src="/face icon CMO.svg"
+  alt="Upload Icon"
+  className="w-25 h-20 mb-4"
+/>
+
+  {/* Text Instructions */}
+  <p className="text-sm text-[#170645] font-semibold mb-1">Drag An Image Here</p>
+  <p className="text-sm text-[#170645] font-semibold mb-1">Or Upload A Photo</p>
+  <p className="text-sm text-[#170645] font-semibold">
+    Or{" "}
+    <span className="text-green-600 font-semibold hover:underline">
+      Browse
+    </span>{" "}
+    Image On Your Computer
+  </p>
+
+  {/* Hidden File Input */}
+  <input
+    id="file-upload"
+    type="file"
+    accept="image/*"
+    className="hidden"
+    onChange={handleFileChange}
+  />
+</label>
 
                 {file && <p className="text-sm mt-2 text-gray-600 text-center">{file.name}</p>}
                 <button onClick={handleProceed} className="w-full mt-6 bg-[#170645] text-yellow-500 py-3 rounded-full text-lg font-semibold shadow-md hover:shadow-lg transition-all">Proceed</button>
