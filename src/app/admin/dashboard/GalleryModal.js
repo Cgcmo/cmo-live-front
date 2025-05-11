@@ -30,57 +30,60 @@ const GalleryModal = ({ isOpen, setIsOpen, albumId, fetchPhotos, fetchAllStats }
   
   
 
-const handleSave = async () => {
-  if (!selectedFiles.length) {
-    alert("Please upload images before saving.");
-    return;
-  }
-
-  setLoading(true);
-  setRejectedFiles([]);
-
-  try {
-    const uploadPromises = selectedFiles.map(async (file) => {
-      const formData = new FormData();
-      formData.append("photos", file);  // Single photo
-
-      const response = await fetch(`${API_URL}/upload-gallery/${albumId}`, {
-        method: "POST",
-        body: formData,
-      });
-
-      const result = await response.json();
-      if (!response.ok) {
-        throw new Error(result.error || "Upload failed");
-      }
-
-      return result.rejected || [];  // Return rejected files (if any)
-    });
-
-    const rejectedResults = await Promise.all(uploadPromises);
-    const allRejected = rejectedResults.flat();
-
-    if (allRejected.length > 0) {
-      const rejectedSet = new Set(allRejected);
-      const rejected = selectedFiles.filter(file => rejectedSet.has(file.name));
-      setRejectedFiles(rejected);
-
-      alert(`${allRejected.length} image(s) skipped due to no clear face.`);
-    } else {
-      alert("Photos uploaded successfully!");
-      setIsOpen(false);
+  const handleSave = async () => {
+    if (!selectedFiles.length) {
+      alert("Please upload images before saving.");
+      return;
     }
-
-    setSelectedFiles([]);
-    fetchPhotos({ _id: albumId });
-    fetchAllStats();
-  } catch (error) {
-    console.error("Error uploading photos:", error);
-    alert("Something went wrong while uploading.");
-  } finally {
-    setLoading(false);
-  }
-};
+  
+    setLoading(true);
+    setRejectedFiles([]);
+    const allRejected = [];
+  
+    try {
+      // 🔥 Upload files one by one (sequentially)
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const file = selectedFiles[i];
+        const formData = new FormData();
+        formData.append("photos", file);
+  
+        const response = await fetch(`${API_URL}/upload-gallery/${albumId}`, {
+          method: "POST",
+          body: formData,
+        });
+  
+        const result = await response.json();
+  
+        if (!response.ok) {
+          throw new Error(result.error || "Upload failed");
+        }
+  
+        if (result.rejected && result.rejected.length > 0) {
+          allRejected.push(...result.rejected);
+        }
+      }
+  
+      if (allRejected.length > 0) {
+        const rejectedSet = new Set(allRejected);
+        const rejected = selectedFiles.filter(file => rejectedSet.has(file.name));
+        setRejectedFiles(rejected);
+        alert(`${allRejected.length} image(s) skipped due to no clear face.`);
+      } else {
+        alert("Photos uploaded successfully!");
+        setIsOpen(false);
+      }
+  
+      setSelectedFiles([]);
+      fetchPhotos({ _id: albumId });
+      fetchAllStats();
+    } catch (error) {
+      console.error("Error uploading photos:", error);
+      alert("Something went wrong while uploading.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  
 
   // ✅ Fix: Define removeImage function
   const removeImage = (index) => {
