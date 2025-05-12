@@ -5,14 +5,17 @@ import { useRouter } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import API_URL from '@/app/api';
+import emailjs from '@emailjs/browser';
 
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-poppins", // CSS Variable for Tailwind
-});
+emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY);
+
+// const poppins = Poppins({
+//   subsets: ["latin"],
+//   weight: ["300", "400", "500", "600", "700"],
+//   variable: "--font-poppins", // CSS Variable for Tailwind
+// });
 export default function AuthPage({ setShowLoginPage }) {
-  const [showVideoThumbnail, setShowVideoThumbnail] = useState(false);
+  // const [showVideoThumbnail, setShowVideoThumbnail] = useState(false);
   const [mobile, setMobile] = useState("");
   const [showOTP, setShowOTP] = useState(false);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -26,8 +29,8 @@ export default function AuthPage({ setShowLoginPage }) {
   const [showVideoFrame, setShowVideoFrame] = useState(false);
   const [districts, setDistricts] = useState([]);
   const [selectedDistrict, setSelectedDistrict] = useState("");
-  const [signupData, setSignupData] = useState({});
-  const [showOtpless, setShowOtpless] = useState(false);
+  // const [signupData, setSignupData] = useState({});
+  // const [showOtpless, setShowOtpless] = useState(false);
   const [verifiedMobile, setVerifiedMobile] = useState("");
   const searchParams = useSearchParams();
   const [showLoginPassword, setShowLoginPassword] = useState(false);
@@ -41,6 +44,9 @@ export default function AuthPage({ setShowLoginPage }) {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [readyToRender, setReadyToRender] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
 
   
 
@@ -167,64 +173,64 @@ useEffect(() => {
     }).catch((err) => console.error("Failed to record visit:", err));
   }, []);
 
-  const handleSignUp = async () => {
-    let errors = [];
+  // const handleSignUp = async () => {
+  //   let errors = [];
 
-    if (!fullName.trim()) {
-      errors.push("Full Name is required.");
-    } else if (!/^[A-Za-z ]+$/.test(fullName)) {
-      errors.push("Full Name should contain only alphabets.");
-    }
+  //   if (!fullName.trim()) {
+  //     errors.push("Full Name is required.");
+  //   } else if (!/^[A-Za-z ]+$/.test(fullName)) {
+  //     errors.push("Full Name should contain only alphabets.");
+  //   }
 
-    if (!mobile.trim()) {
-      errors.push("Mobile number is required.");
-    } else if (!/^[6-9]\d{9}$/.test(mobile)) {
-      errors.push("Mobile number must be exactly 10 digits and start with 6-9.");
-    }
+  //   if (!mobile.trim()) {
+  //     errors.push("Mobile number is required.");
+  //   } else if (!/^[6-9]\d{9}$/.test(mobile)) {
+  //     errors.push("Mobile number must be exactly 10 digits and start with 6-9.");
+  //   }
 
-    if (!email.trim()) {
-      errors.push("Email is required.");
-    } else if (!/^[\w.-]+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)) {
-      errors.push("Please enter a valid email address.");
-    }
-    if (!selectedDistrict) {
-      errors.push("Please select a district.");
-    }
+  //   if (!email.trim()) {
+  //     errors.push("Email is required.");
+  //   } else if (!/^[\w.-]+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)) {
+  //     errors.push("Please enter a valid email address.");
+  //   }
+  //   if (!selectedDistrict) {
+  //     errors.push("Please select a district.");
+  //   }
 
-    if (!password.trim()) {
-      errors.push("Password is required.");
-    } else if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)) {
-      errors.push("Password must be at least 8 characters long and include a letter, a number, and a special character.");
-    }
+  //   if (!password.trim()) {
+  //     errors.push("Password is required.");
+  //   } else if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)) {
+  //     errors.push("Password must be at least 8 characters long and include a letter, a number, and a special character.");
+  //   }
 
-    if (errors.length > 0) return alert(errors.join("\n"));
+  //   if (errors.length > 0) return alert(errors.join("\n"));
 
-    try {
-      const res = await fetch(`${API_URL}/complete-signup`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: fullName,
-          email,
-          mobile,
-          district: selectedDistrict,
-          password
-        })
-      });
+  //   try {
+  //     const res = await fetch(`${API_URL}/complete-signup`, {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         name: fullName,
+  //         email,
+  //         mobile,
+  //         district: selectedDistrict,
+  //         password
+  //       })
+  //     });
 
-      const result = await res.json();
+  //     const result = await res.json();
 
-      if (res.ok) {
-        alert("✅ Account created successfully! Please sign in.");
-        setShowSignup(false); // 👈 Show sign-in screen
-      } else {
-        alert(result.error || "Signup failed.");
-      }
-    } catch (err) {
-      alert("Something went wrong while signing up.");
-      console.error(err);
-    }
-  };
+  //     if (res.ok) {
+  //       alert("✅ Account created successfully! Please sign in.");
+  //       setShowSignup(false); // 👈 Show sign-in screen
+  //     } else {
+  //       alert(result.error || "Signup failed.");
+  //     }
+  //   } catch (err) {
+  //     alert("Something went wrong while signing up.");
+  //     console.error(err);
+  //   }
+  // };
 
   const handleSignIn = async () => {
     if (!mobile || !password) return alert("Mobile number and password are required.");
@@ -317,13 +323,13 @@ useEffect(() => {
   
 
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setShowVideoThumbnail((prev) => !prev); // Toggle state every 2 seconds
-    }, 4000); // Total cycle duration: 4 seconds (2s fade-out + 2s fade-in)
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setShowVideoThumbnail((prev) => !prev); // Toggle state every 2 seconds
+  //   }, 4000); // Total cycle duration: 4 seconds (2s fade-out + 2s fade-in)
 
-    return () => clearInterval(interval);
-  }, []);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   const col1DefaultImages = [
     "/ban-01.png",
@@ -442,10 +448,41 @@ useEffect(() => {
   }, []);
   
   const sendOtpBeforeSignup = async () => {
-    if (!fullName.trim() || !email.trim() || !selectedDistrict || !password.trim() || !/^[6-9]\d{9}$/.test(mobile)) {
-      alert("Please fill all fields properly.");
-      return;
-    }
+    let errors = [];
+
+  if (!fullName.trim()) {
+    errors.push("Full Name is required.");
+  } else if (!/^[A-Za-z ]+$/.test(fullName)) {
+    errors.push("Full Name should contain only alphabets.");
+  }
+
+  if (!email.trim()) {
+    errors.push("Email is required.");
+  } else if (!/^[\w.-]+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)) {
+    errors.push("Invalid Email address.");
+  }
+
+  if (!selectedDistrict) {
+    errors.push("Please select a district.");
+  }
+
+  if (!password.trim()) {
+    errors.push("Password is required.");
+  } else if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)) {
+    errors.push("Password must be 8+ characters, include letter, number & special character.");
+  }
+
+  if (!mobile.trim()) {
+    errors.push("Mobile number is required.");
+  } else if (!/^[6-9]\d{9}$/.test(mobile)) {
+    errors.push("Mobile number must be 10 digits starting with 6-9.");
+  }
+
+  if (errors.length > 0) {
+    alert(errors.join("\n"));
+    return;
+  }
+
   
     if (!OTPlessSignin) {
       alert("OTP Service not ready. Please wait 2 seconds and try again.");
@@ -486,9 +523,47 @@ useEffect(() => {
   };
   
 
+  // const handleSignupAfterOtp = async () => {
+  //   const mobileNumber = verifiedMobile || otpSessionMobile;
+  
+  
+  //   try {
+  //     const res = await fetch(`${API_URL}/complete-signup`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "X-Otpless-Mobile": mobileNumber,
+  //         "X-Otpless-Token": token,
+  //       },
+  //       body: JSON.stringify({
+  //         name: fullName,
+  //         email,
+  //         password,
+  //         district: selectedDistrict,
+  //       }),
+  //     });
+  
+  //     const result = await res.json();
+  
+  //     if (res.ok) {
+  //       alert("✅ Signup successful!");
+  //       setShowSignup(false);     // ✅ Switch to Signin Form
+  //       setShowOTP(false);        // ✅ Hide OTP Form
+  //       setOtp(["", "", "", "", "", ""]);  // ✅ Clear OTP Inputs
+  //       setMobile(mobileNumber);  // ✅ Fill mobile field automatically
+  //       setPassword("");          // ✅ Clear password field
+  //     } else {
+  //       alert(result.error || "Signup failed.");
+  //     }
+  //   } catch (err) {
+  //     console.error("❌ Signup error:", err);
+  //     alert("Something went wrong. Try again.");
+  //   }
+  // };
+  
+
   const handleSignupAfterOtp = async () => {
     const mobileNumber = verifiedMobile || otpSessionMobile;
-  
   
     try {
       const res = await fetch(`${API_URL}/complete-signup`, {
@@ -509,12 +584,38 @@ useEffect(() => {
       const result = await res.json();
   
       if (res.ok) {
-        alert("✅ Signup successful!");
-        setShowSignup(false);     // ✅ Switch to Signin Form
-        setShowOTP(false);        // ✅ Hide OTP Form
-        setOtp(["", "", "", "", "", ""]);  // ✅ Clear OTP Inputs
-        setMobile(mobileNumber);  // ✅ Fill mobile field automatically
-        setPassword("");          // ✅ Clear password field
+  alert("✅ Signup successful!");
+
+  setShowSignup(false);
+  setShowOTP(false);
+  setOtp(["", "", "", "", "", ""]);
+  setFullName("");
+setMobile("");
+setEmail("");
+setPassword("");
+setSelectedDistrict("");
+
+
+  // 🔥 FIX: Delay sending by 100ms
+  setTimeout(() => {
+    emailjs.send(
+      process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
+      process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
+      {
+        name: fullName,
+        email: email,
+      },
+      process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+    )
+    
+    .then((response) => {
+      console.log('✅ Welcome email sent successfully!', response.status, response.text);
+    })
+    .catch((error) => {
+      console.error('❌ Failed to send welcome email:', error);
+    });
+  }, 100); // 🔥 small delay helps in browser-based apps
+
       } else {
         alert(result.error || "Signup failed.");
       }
@@ -524,7 +625,6 @@ useEffect(() => {
     }
   };
   
-
   const handleForgotPasswordSendOtp = async () => {
     if (!/^[6-9]\d{9}$/.test(mobile)) {
       return alert("Please enter a valid 10-digit mobile number.");
@@ -585,7 +685,8 @@ useEffect(() => {
       });
   
       console.log("✅ OTP Verified Successfully");
-      setForgotPasswordStep(3); // Move to New Password Step
+      setForgotPasswordStep(3);
+      setOtp(["", "", "", "", "", ""]);  // Move to New Password Step
     } catch (err) {
       console.error("❌ Error verifying OTP:", err);
       alert("OTP verification failed. Please try again.");
@@ -601,8 +702,8 @@ useEffect(() => {
       return alert("Passwords do not match.");
     }
   
-    if (newPassword.length < 8) {
-      return alert("Password must be at least 8 characters long.");
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(newPassword)) {
+      return alert("Password must be at least 8 characters long, with 1 lowercase, 1 uppercase, 1 number, and 1 special character.");
     }
   
     try {
@@ -711,12 +812,18 @@ useEffect(() => {
         <h2 className="text-2xl pt-2 font-bold text-[#170645]">Reset Your Password</h2>
         <p className="text-[#170645] pt-2 mt-2">Enter your registered mobile number</p>
         <input
-          type="text"
-          placeholder="Mobile No."
-          value={mobile}
-          onChange={(e) => setMobile(e.target.value)}
-          className="border w-full p-3 rounded-full mt-4 text-[#170645]"
-        />
+  type="text"
+  placeholder="Mobile No."
+  value={mobile}
+  onChange={(e) => {
+    const input = e.target.value.replace(/\D/g, ""); // only digits
+    if (input.length <= 10) {
+      setMobile(input);
+    }
+  }}
+  className="border w-full p-3 rounded-full mt-4 text-[#170645]"
+/>
+
         <button
           onClick={handleForgotPasswordSendOtp}
           className="w-full bg-[#170645] text-yellow-400 p-3 mt-4 rounded-full text-lg font-bold"
@@ -755,20 +862,119 @@ useEffect(() => {
       <div className="text-center">
         <h2 className="text-2xl pt-2 font-bold text-[#170645]">Set New Password</h2>
         <p className="text-[#170645] pt-2 mt-2">Mobile: {forgotOtpSessionMobile}</p>
-        <input
-          type="password"
-          placeholder="New Password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          className="border w-full p-3 rounded-full mt-4 text-[#170645]"
-        />
-        <input
-          type="password"
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          className="border w-full p-3 rounded-full mt-4 text-[#170645]"
-        />
+        <div className="relative mt-4">
+  <input
+    type={showNewPassword ? "text" : "password"}
+    placeholder="New Password"
+    value={newPassword}
+    onChange={(e) => setNewPassword(e.target.value)}
+    className="border w-full p-3 rounded-full text-[#170645] pr-10"
+  />
+  <button
+    type="button"
+    onClick={() => setShowNewPassword(!showNewPassword)}
+    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#170645]"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      className="h-5 w-5"
+    >
+      {showNewPassword ? (
+        <>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+          />
+        </>
+      ) : (
+        <>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.977 9.977 0 013.008-4.525m3.224-1.885A9.956 9.956 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.973 9.973 0 01-4.117 5.225"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M3 3l18 18"
+          />
+        </>
+      )}
+    </svg>
+  </button>
+</div>
+<div className="relative mt-4">
+  <input
+    type={showConfirmPassword ? "text" : "password"}
+    placeholder="Confirm Password"
+    value={confirmPassword}
+    onChange={(e) => setConfirmPassword(e.target.value)}
+    className="border w-full p-3 rounded-full text-[#170645] pr-10"
+  />
+  <button
+    type="button"
+    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#170645]"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      className="h-5 w-5"
+    >
+      {showConfirmPassword ? (
+        <>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+          />
+        </>
+      ) : (
+        <>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.977 9.977 0 013.008-4.525m3.224-1.885A9.956 9.956 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.973 9.973 0 01-4.117 5.225"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M3 3l18 18"
+          />
+        </>
+      )}
+    </svg>
+  </button>
+</div>
+
         <button
           onClick={handleResetPasswordSubmit}
           className="w-full bg-[#170645] text-yellow-400 p-3 mt-4 rounded-full text-lg font-bold"
@@ -796,7 +1002,7 @@ useEffect(() => {
           ) : showOTP ? (
             <div className="text-center">
               <h2 className="text-2xl pt-2 font-bold text-[#170645]">Verification Code</h2>
-              <p className="text-[#170645] pt-2 mt-2">We Have Sent The Verification Code To Your Mobile Number</p>
+              <p className="text-[#170645] pt-2 mt-2">We Have Sent The Verification Code To Your WhatsApp</p>
               <div className="flex justify-center gap-3 flex-wrap py-2 mt-4">
                 {otp.map((digit, index) => (
                   <input
@@ -812,7 +1018,7 @@ useEffect(() => {
                 ))}
               </div>
               <button onClick={handleOTPSubmit} className="w-full bg-[#170645] text-yellow-400 p-3 mt-5 mb-4 rounded-full text-lg font-bold">
-                Confirm
+                Confirm With WhatsApp
               </button>
             </div>
           ) : showSignup ? (
@@ -831,15 +1037,17 @@ useEffect(() => {
   type="text"
   value={verifiedMobile || mobile}
   onChange={(e) => {
-    if (!verifiedMobile) setMobile(e.target.value); // allow edit only if not verified
+    if (!verifiedMobile) {
+      const input = e.target.value.replace(/\D/g, ""); // remove non-digits
+      if (input.length <= 10) {
+        setMobile(input);
+      }
+    }
   }}
   readOnly={!!verifiedMobile}
   placeholder="Mobile No."
   className={`border w-1/2 p-3 h-11 rounded-full text-[#170645] bg-white ${verifiedMobile ? "opacity-60 cursor-not-allowed" : ""}`}
 />
-
-
-
 
               </div>
               <input type="email" value={email}
